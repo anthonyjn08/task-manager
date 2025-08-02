@@ -5,7 +5,7 @@ class TaskRepository:
 
     try:
         # Create database called tasks
-        db = sqlite3.connect("tasks.db")
+        db = sqlite3.connect("taskManager.db")
 
         # Create a cursor object
         cursor = db.cursor()
@@ -15,7 +15,7 @@ class TaskRepository:
             """
             CREATE TABLE IF NOT EXISTS
             user(id INTEGER PRIMARY KEY, username TEXT, password TEXT, email TEXT,
-            isAdmin INTEGER)
+            isAdmin TEXT)
             """
         )
 
@@ -37,3 +37,23 @@ class TaskRepository:
     finally:
         # Close the db connection
         db.close()
+
+    def get_task(self, task_id):
+        db = sqlite3.connect("taskManager.db")
+
+        cursor = db.cursor()
+
+        cursor.execute(
+            """
+            SELECT *
+            FROM tasks
+            WHERE id = ?
+            """,
+            (task_id,),
+        )
+        task = cursor.fetchone()
+
+        if task is None:
+            print("\nTask not found\n")
+
+        return task

@@ -23,8 +23,8 @@ class TaskRepository:
         cursor.execute(
             """
             CREATE TABLE IF NOT EXISTS
-            tasks(id INTEGER PRIMARY KEY, title TEXT, description TEXT,assignedDate TEXT,
-            dueDate TEXT, status TEXT, isComplete TEXT, user TEXT)
+            tasks(id INTEGER PRIMARY KEY, title TEXT, description TEXT, assignedDate TEXT,
+            dueDate TEXT, isComplete BOOLEAN DEFAULT 0, user TEXT)
             """
         )
 
@@ -38,11 +38,28 @@ class TaskRepository:
         # Close the db connection
         db.close()
 
+    def add_task(self, title, description, assignedDate, dueDate, user):
+        try:
+            db = sqlite3.connect("taskManager.db")
+            cursor = db.cursor()
+            cursor.execute(
+                """
+                INSERT INTO tasks(title, description, assignedDate, dueDate,
+                user)
+                VALUES(?, ?, ?, ?, ?)
+                """,
+                (title, description, assignedDate, dueDate, user),
+            )
+        except Exception as e:
+            db.rollback()
+            raise e
+        finally:
+            # Close the db connection
+            db.close()
+
     def get_task(self, task_id):
         db = sqlite3.connect("taskManager.db")
-
         cursor = db.cursor()
-
         cursor.execute(
             """
             SELECT *

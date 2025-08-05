@@ -38,7 +38,7 @@ class TaskRepository:
         # Close the db connection
         db.close()
 
-    def add_task(self, title, description, assignedDate, dueDate, user):
+    def add_task(self, title, description, assigned_date, due_date, user):
         try:
             db = sqlite3.connect("taskManager.db")
             cursor = db.cursor()
@@ -48,7 +48,7 @@ class TaskRepository:
                 user)
                 VALUES(?, ?, ?, ?, ?)
                 """,
-                (title, description, assignedDate, dueDate, user),
+                (title, description, assigned_date, due_date, user),
             )
         except Exception as e:
             db.rollback()
@@ -74,3 +74,21 @@ class TaskRepository:
             print("\nTask not found\n")
 
         return task
+
+    def update_task(self, id, title, description, due_date, user):
+        try:
+            db = sqlite3.connect("taskManager.db")
+            cursor = db.cursor()
+            cursor.execute(
+                '''
+                UPDATE tasks
+                SET title = ?, description = ?, dueDate = ?, user = ?
+                WHERE id = ?''',
+                (title, description, due_date, user, id)
+            )
+        except Exception as e:
+            db.rollback()
+            raise e
+        finally:
+            # Close the db connection
+            db.close()

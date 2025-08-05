@@ -97,7 +97,7 @@ class TaskRepository:
             print("\nYou have no tasks!\n")
 
         return tasks
-    
+
     def view_all_tasks(self):
         db = sqlite3.connect("taskManager.db")
         cursor = db.cursor()
@@ -113,6 +113,24 @@ class TaskRepository:
             print("\nThere are currently no tasks!\n")
 
         return all_tasks
+    
+    def completed_tasks(self):
+        is_complete = True
+        db = sqlite3.connect("taskManager.db")
+        cursor = db.cursor()
+        cursor.execute(
+            """
+            SELECT *
+            FROM tasks
+            WHERE isComplete = ?
+            """, (is_complete,)
+        )
+        completed_tasks = cursor.fetchall()
+
+        if completed_tasks is None:
+            print("\nThere are currently no completed tasks!\n")
+
+        return completed_tasks
 
     def update_task(self, id, title, description, due_date, user):
         try:

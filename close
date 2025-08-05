@@ -1,0 +1,65 @@
+[33mcommit 85aed441383c734f27d5d55872ab22987fb92b17[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: Anthony Nelson <anthonyjnelson@hotmail.com>
+Date:   Tue Aug 5 18:39:08 2025 +0100
+
+    Add get_my_tasks() to data_access.py
+
+[33mcommit 86f24080524bbcd1dae8d9a77c4a66d0b383fc63[m
+Author: Anthony Nelson <anthonyjnelson@hotmail.com>
+Date:   Tue Aug 5 17:19:54 2025 +0100
+
+    Add delete_users function to data_access.py
+
+[33mcommit ffec4d85b4f0aeee36fc6b39fa561890e8bac902[m
+Author: Anthony Nelson <anthonyjnelson@hotmail.com>
+Date:   Tue Aug 5 17:13:36 2025 +0100
+
+    Add update_user function to data_access.py
+
+[33mcommit f1c45dff3e5439c7004ac388e5eeaec7482c93f8[m
+Author: Anthony Nelson <anthonyjnelson@hotmail.com>
+Date:   Tue Aug 5 17:05:44 2025 +0100
+
+    Add add_user function to data_access.py
+
+[33mcommit 3f00d9d6c5c3193f95658a3cbab307dbeaef2334[m
+Author: Anthony Nelson <anthonyjnelson@hotmail.com>
+Date:   Tue Aug 5 16:04:21 2025 +0100
+
+    Add set_complete function to data_access.py
+
+[33mcommit 0920980b5fbced76a071e55e29b8313accb5ad3c[m
+Author: Anthony Nelson <anthonyjnelson@hotmail.com>
+Date:   Tue Aug 5 13:55:28 2025 +0100
+
+    Add update_task funtion to data_access.py
+
+[33mcommit b80ea295f17882f3150e72b49636f08c24f353c6[m
+Author: Anthony Nelson <anthonyjnelson@hotmail.com>
+Date:   Sun Aug 3 17:55:22 2025 +0100
+
+    Add add_task function to data_access.py
+
+[33mcommit 314bbb430579ab662405d313e7571a8ecb14221f[m
+Author: Anthony Nelson <anthonyjnelson@hotmail.com>
+Date:   Sat Aug 2 18:54:49 2025 +0100
+
+    Add get_task funtion to TaskRepository class in data_access.py
+
+[33mcommit 6762b3de285ff408774fe6e73227ecc26c66b456[m
+Author: Anthony Nelson <anthonyjnelson@hotmail.com>
+Date:   Sat Aug 2 16:20:18 2025 +0100
+
+    Add requirements.txt file
+
+[33mcommit cf31358b903a48e440bc526df47ac63908cbb5a6[m
+Author: Anthony Nelson <anthonyjnelson@hotmail.com>
+Date:   Sat Aug 2 16:03:14 2025 +0100
+
+    Add create user and tasks tables to data_access.py
+
+[33mcommit 4a5a8cb1d9444c0c89f082e1754fa1fea58750eb[m
+Author: Anthony Nelson <anthonyjnelson@hotmail.com>
+Date:   Fri Aug 1 21:02:20 2025 +0100
+
+    Initial commit

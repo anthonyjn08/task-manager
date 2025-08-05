@@ -97,6 +97,22 @@ class TaskRepository:
             print("\nYou have no tasks!\n")
 
         return tasks
+    
+    def view_all_tasks(self):
+        db = sqlite3.connect("taskManager.db")
+        cursor = db.cursor()
+        cursor.execute(
+            """
+            SELECT *
+            FROM tasks
+            """
+        )
+        all_tasks = cursor.fetchall()
+
+        if all_tasks is None:
+            print("\nThere are currently no tasks!\n")
+
+        return all_tasks
 
     def update_task(self, id, title, description, due_date, user):
         try:

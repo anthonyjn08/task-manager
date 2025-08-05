@@ -92,3 +92,23 @@ class TaskRepository:
         finally:
             # Close the db connection
             db.close()
+
+    def mark_complete(self, id):
+        try:
+            is_complete = True
+            db = sqlite3.connect("taskManager.db")
+            cursor = db.cursor()
+            cursor.execute(
+                '''
+                UPDATE tasks
+                SET isComplete = ?
+                WHERE id = ?
+                ''',
+                (is_complete, id)
+            )
+        except Exception as e:
+            db.rollback()
+            raise e
+        finally:
+            # Close the db connection
+            db.close()

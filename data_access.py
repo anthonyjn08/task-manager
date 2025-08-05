@@ -180,3 +180,43 @@ class TaskRepository:
         finally:
             # Close the db connection
             db.close()
+
+    def make_admin(self, id):
+        try:
+            is_admin = True
+            db = sqlite3.connect("taskManager.db")
+            cursor = db.cursor()
+            cursor.execute(
+                '''
+                UPDATE users
+                SET isAdmin = ?
+                WHERE id = ?
+                ''', (is_admin, id)
+            )
+            # Commit the changes
+            db.commit()
+        except Exception as e:
+            db.rollback()
+            raise e
+        finally:
+            # Close the db connection
+            db.close()
+
+    def delete_user(self, id):
+        try:
+            db = sqlite3.connect("taskManager.db")
+            cursor = db.cursor()
+            cursor.execute(
+                '''
+                DELETE FROM users
+                WHERE id = ?
+                ''', (id,)
+            )
+            # Commit the changes
+            db.commit()
+        except Exception as e:
+            db.rollback()
+            raise e
+        finally:
+            # Close the db connection
+            db.close()

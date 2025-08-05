@@ -52,6 +52,8 @@ class TaskRepository:
                 """,
                 (title, description, assigned_date, due_date, user),
             )
+            # Commit the changes
+            db.commit()
         except Exception as e:
             db.rollback()
             raise e
@@ -88,6 +90,8 @@ class TaskRepository:
                 WHERE id = ?''',
                 (title, description, due_date, user, id)
             )
+            # Commit the changes
+            db.commit()
         except Exception as e:
             db.rollback()
             raise e
@@ -108,6 +112,8 @@ class TaskRepository:
                 ''',
                 (is_complete, id)
             )
+            # Commit the changes
+            db.commit()
         except Exception as e:
             db.rollback()
             raise e
@@ -125,6 +131,8 @@ class TaskRepository:
                 WHERE ID = ?
                 ''', (id,)
             )
+            # Commit the changes
+            db.commit()
         except Exception as e:
             db.rollback()
             raise e
@@ -144,6 +152,28 @@ class TaskRepository:
                 VAULEs(?, ?, ?)
                 ''', (username, password, email)
             )
+            # Commit the changes
+            db.commit()
+        except Exception as e:
+            db.rollback()
+            raise e
+        finally:
+            # Close the db connection
+            db.close()
+
+    def update_user(self, id, username, password, email):
+        try:
+            db = sqlite3.connect("taskManager.db")
+            cursor = db.cursor()
+            cursor.execute(
+                '''
+                UPDATE users
+                SET username = ?, password = ?, email = ?
+                WHERE id = ?
+                ''', (username, password, email, id)
+            )
+            # Commit the changes
+            db.commit()
         except Exception as e:
             db.rollback()
             raise e

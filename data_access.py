@@ -14,8 +14,8 @@ class TaskRepository:
         cursor.execute(
             """
             CREATE TABLE IF NOT EXISTS
-            user(id INTEGER PRIMARY KEY, username TEXT, password TEXT, email TEXT,
-            isAdmin TEXT)
+            user(id INTEGER PRIMARY KEY, username TEXT UNIQUE, password TEXT,
+            email TEXT, isAdmin TEXT)
             """
         )
 
@@ -24,7 +24,8 @@ class TaskRepository:
             """
             CREATE TABLE IF NOT EXISTS
             tasks(id INTEGER PRIMARY KEY, title TEXT, description TEXT,
-            assignedDate TEXT, dueDate TEXT, isComplete BOOLEAN DEFAULT 0, user TEXT)
+            assignedDate TEXT, dueDate TEXT, isComplete BOOLEAN DEFAULT 0,
+            user TEXT)
             """
         )
 
@@ -78,6 +79,24 @@ class TaskRepository:
             print("\nTask not found\n")
 
         return task
+    
+    def get_my_tasks(self, user):
+        db = sqlite3.connect("taskManager.db")
+        cursor = db.cursor()
+        cursor.execute(
+            """
+            SELECT *
+            FROM tasks
+            WHERE user = ?
+            """,
+            (user,),
+        )
+        tasks = cursor.fetchall()
+
+        if tasks is None:
+            print("\nYou have no tasks!\n")
+
+        return tasks
 
     def update_task(self, id, title, description, due_date, user):
         try:

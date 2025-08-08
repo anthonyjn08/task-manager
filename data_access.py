@@ -29,8 +29,32 @@ class TaskRepository:
             """
         )
 
+        # Check count of users and if 0 add admin user
+        cursor.execute(
+        '''
+        SELECT COUNT(*)
+        FROM users
+        '''
+        )
+        user_count = cursor.fetchone()
+        
+        # Admin variables
+        username = "admin"
+        password = "admin"
+        email = "test@test.com"
+        isAdmin = True
+
+        if user_count[0] == 0:
+            cursor.executemany(
+                '''
+                INSERT INTO users(username, password, email, isAdmin)
+                VALUES(?, ?, ?, ?)
+            ''', (username, password, email, isAdmin)
+            )
+
         # Commit the changes
         db.commit()
+        
     # Catch and exceptions
     except Exception as e:
         db.rollback()

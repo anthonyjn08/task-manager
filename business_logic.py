@@ -6,9 +6,11 @@ class TaskService:
         """Initialise the TaskService with a TaskRepository"""
         self.task_repository = TaskRepository()
 
-    def add_task(self, task):
+    def add_task(self, title, description, due_date, assigned_date,
+                 user):
         "Create new task in database"
-        self.task_repository.add_task(task)
+        self.task_repository.add_task(title, description, assigned_date,
+                                      due_date, user)
 
 
 class Task:

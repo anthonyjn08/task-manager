@@ -19,3 +19,12 @@ class Task:
         self.assigned_date = assigned_date
         self.due_date = due_date
         self.user = user
+
+
+class User:
+    def __init__(self, username, password, email, is_admin):
+        """Initialises user object"""
+        self.username = username
+        self.password = password
+        self.email = email
+        self.is_admin = is_admin

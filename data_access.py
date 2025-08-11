@@ -3,42 +3,37 @@ import sqlite3
 
 class TaskRepository:
 
-    try:
-        # Create database called tasks
-        db = sqlite3.connect("taskManager.db")
+    def __init__(self):
+        self._create_table()
 
-        # Create a cursor object
-        cursor = db.cursor()
+    def _create_table(self):
+        try:
+            # Create database called tasks
+            db = sqlite3.connect("taskManager.db")
 
-        # Check for table called task and create if it does not exist
-        cursor.execute(
-            """
-            CREATE TABLE IF NOT EXISTS
-            user(id INTEGER PRIMARY KEY, username TEXT UNIQUE, password TEXT,
-            email TEXT, isAdmin TEXT)
-            """
-        )
+            # Create a cursor object
+            cursor = db.cursor()
 
-        # Check for tasks table and create if it does not exist
-        cursor.execute(
-            """
-            CREATE TABLE IF NOT EXISTS
-            tasks(id INTEGER PRIMARY KEY, title TEXT, description TEXT,
-            assignedDate TEXT, dueDate TEXT, isComplete BOOLEAN DEFAULT 0,
-            user TEXT)
-            """
-        )
+            # Check for tasks table and create if it does not exist
+            cursor.execute(
+                """
+                CREATE TABLE IF NOT EXISTS
+                tasks(id INTEGER PRIMARY KEY, title TEXT, description TEXT,
+                assignedDate TEXT, dueDate TEXT, isComplete BOOLEAN DEFAULT 0,
+                user TEXT)
+                """
+            )
 
-        # Commit the changes
-        db.commit()
-        
-    # Catch and exceptions
-    except Exception as e:
-        db.rollback()
-        raise e
-    finally:
-        # Close the db connection
-        db.close()
+            # Commit the changes
+            db.commit()
+            
+        # Catch and exceptions
+        except Exception as e:
+            db.rollback()
+            raise e
+        finally:
+            # Close the db connection
+            db.close()
 
     # Task functions
 
@@ -208,7 +203,7 @@ class UserRepository:
             # Create a cursor object
             cursor = db.cursor()
 
-            # Check for table called task and create if it does not exist
+            # Check for table called users and create if it does not exist
             cursor.execute(
                 """
                 CREATE TABLE IF NOT EXISTS
@@ -252,6 +247,8 @@ class UserRepository:
         finally:
             # Close the db connection
             db.close()
+
+    # User functions
 
     def add_user(self, username, password, email):
         try:

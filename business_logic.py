@@ -23,6 +23,9 @@ class TaskService:
     
     def completed_tasks(self):
         return self.task_repository.completed_tasks()
+    
+    def update_task(self, id, title, description, due_date, user):
+        self.task_repository.update_task(id, title, description, due_date, user)
 
 
 class Task:

@@ -250,6 +250,27 @@ class UserRepository:
 
     # User functions
 
+    def login(self, username, password):
+        db = sqlite3.connect("taskManager.db")
+        cursor = db.cursor()
+        cursor.execute(
+            '''
+            SELECT *
+            FROM users
+            WHERE username = ?
+            ''', (username,)
+        )
+
+        user = cursor.fetchone()
+
+        if user[2] == password and user[4] == True:
+            return "admin"
+        elif user[2] == password:
+            return "user"
+        else:
+            return False
+        
+
     def add_user(self, username, password, email):
         try:
             db = sqlite3.connect("taskManager.db")

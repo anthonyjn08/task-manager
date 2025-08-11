@@ -20,11 +20,27 @@ def start_application():
     task_service = TaskService()
     user_service = UserService()
 
-    role = login()
+    role = login(user_service)
 
-    if login == "admin":
-        # admin menu
-    elif login == "user":
-        # user menu
-    elif login == False:
-        # try again logic
+    print("Task magaement Application")
+    print("Please select one of the following options:")
+
+    print("1. Add task")
+    print("2. Get task")
+    print("3. View all my tasks")
+    print("4. Update task")
+    print("5. Mark task complete")
+
+    if role == "admin":
+        print("***Admin Options***")
+        print("6. View all tasks")
+        print("7. Delete task")
+        print("8. View completed tasks")
+        print("9. Add user")
+        print("10. Update user")
+        print("11. Make user an Admin")
+        print("12. Delete user")
+
+    print("0. Exit program")
+        
+    

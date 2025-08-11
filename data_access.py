@@ -212,13 +212,12 @@ class UserRepository:
                 """
             )
 
-
             # Check count of users and if 0 add admin user
             cursor.execute(
-            '''
-            SELECT COUNT(*)
-            FROM users
-            '''
+                '''
+                SELECT COUNT(*)
+                FROM users
+                '''
             )
             user_count = cursor.fetchone()
             
@@ -234,7 +233,7 @@ class UserRepository:
                     '''
                     INSERT INTO users(username, password, email, isAdmin)
                     VALUES(?, ?, ?, ?)
-                ''', (username, password, email, isAdmin)
+                    ''', (username, password, email, isAdmin)
                 )
 
             # Commit the changes

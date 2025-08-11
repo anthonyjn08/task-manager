@@ -54,6 +54,9 @@ class UserService:
     def add_user(self, username, password, email):
         self.user_repository.add_user(username, password, email)
 
+    def update_user(self, id, username, password, email):
+        self.user_repository.update_user(id, username, password, email)
+
 
 class User:
     def __init__(self, username, password, email, is_admin):

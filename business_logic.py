@@ -20,6 +20,9 @@ class TaskService:
     
     def view_all_tasks(self):
         return self.task_repository.view_all_tasks()
+    
+    def completed_tasks(self):
+        return self.task_repository.completed_tasks()
 
 
 class Task:

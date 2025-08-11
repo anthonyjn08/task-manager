@@ -60,6 +60,9 @@ class UserService:
     def make_admin(self, id):
         self.user_repository.make_admin(id)
 
+    def delete_user(self, id):
+        self.user_repository.delete_user(id)
+
 
 class User:
     def __init__(self, username, password, email, is_admin):

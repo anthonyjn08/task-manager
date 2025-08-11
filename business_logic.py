@@ -51,6 +51,9 @@ class UserService:
         """Initialise the TaskService with a TaskRepository"""
         self.user_repository = UserRepository()
 
+    def login(self, username, password):
+        return self.user_repository.login(username, password)
+
     def add_user(self, username, password, email):
         self.user_repository.add_user(username, password, email)
 

@@ -1,4 +1,4 @@
-from data_access import TaskRepository
+from data_access import TaskRepository, UserRepository
 
 
 class TaskService:
@@ -43,6 +43,12 @@ class Task:
         self.assigned_date = assigned_date
         self.due_date = due_date
         self.user = user
+
+
+class UserService:
+    def __init__(self):
+        """Initialise the TaskService with a TaskRepository"""
+        self.user_repository = UserRepository()
 
 
 class User:

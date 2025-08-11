@@ -17,6 +17,9 @@ class TaskService:
     
     def get_my_tasks(self, user):
         return self.task_repository.get_my_tasks(user)
+    
+    def view_all_tasks(self):
+        return self.task_repository.view_all_tasks()
 
 
 class Task:

@@ -263,13 +263,13 @@ class UserRepository:
 
         user = cursor.fetchone()
 
-        if user[2] == password and user[4] == True:
+        if user is None:
+            return False
+
+        if user[2] == password and user[4] == 1:
             return "admin"
         elif user[2] == password:
             return "user"
-        else:
-            return False
-        
 
     def add_user(self, username, password, email):
         try:

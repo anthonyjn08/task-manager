@@ -29,29 +29,6 @@ class TaskRepository:
             """
         )
 
-        # Check count of users and if 0 add admin user
-        cursor.execute(
-        '''
-        SELECT COUNT(*)
-        FROM users
-        '''
-        )
-        user_count = cursor.fetchone()
-        
-        # Admin variables
-        username = "admin"
-        password = "admin"
-        email = "test@test.com"
-        isAdmin = True
-
-        if user_count[0] == 0:
-            cursor.executemany(
-                '''
-                INSERT INTO users(username, password, email, isAdmin)
-                VALUES(?, ?, ?, ?)
-            ''', (username, password, email, isAdmin)
-            )
-
         # Commit the changes
         db.commit()
         
@@ -219,6 +196,62 @@ class TaskRepository:
 
 
 class UserRepository:
+
+    def __init__(self):
+        self._create_table()
+
+    def _create_table(self):
+        try:
+            # Create database called tasks
+            db = sqlite3.connect("taskManager.db")
+
+            # Create a cursor object
+            cursor = db.cursor()
+
+            # Check for table called task and create if it does not exist
+            cursor.execute(
+                """
+                CREATE TABLE IF NOT EXISTS
+                user(id INTEGER PRIMARY KEY, username TEXT UNIQUE, password TEXT,
+                email TEXT, isAdmin TEXT)
+                """
+            )
+
+
+            # Check count of users and if 0 add admin user
+            cursor.execute(
+            '''
+            SELECT COUNT(*)
+            FROM users
+            '''
+            )
+            user_count = cursor.fetchone()
+            
+            if user_count[0] == 0:
+
+                # Admin variables
+                username = "admin"
+                password = "admin"
+                email = "test@test.com"
+                isAdmin = True
+
+                cursor.executemany(
+                    '''
+                    INSERT INTO users(username, password, email, isAdmin)
+                    VALUES(?, ?, ?, ?)
+                ''', (username, password, email, isAdmin)
+                )
+
+            # Commit the changes
+            db.commit()
+            
+        # Catch and exceptions
+        except Exception as e:
+            db.rollback()
+            raise e
+        finally:
+            # Close the db connection
+            db.close()
 
     def add_user(self, username, password, email):
         try:

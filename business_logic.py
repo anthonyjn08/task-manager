@@ -31,6 +31,9 @@ class TaskService:
     def mark_complete(self, id):
         self.task_repository.mark_complete(id)
 
+    def delete_task(self, id):
+        self.task_repository.delete_task(id)
+
 
 class Task:
     def __init__(self, title, description, assigned_date, due_date, user):

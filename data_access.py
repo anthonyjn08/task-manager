@@ -217,7 +217,8 @@ class TaskRepository:
             # Close the db connection
             db.close()
 
-    # User Functions
+
+class UserRepository:
 
     def add_user(self, username, password, email):
         try:

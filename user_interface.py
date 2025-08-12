@@ -1,4 +1,7 @@
+import sys
+import datetime
 from business_logic import TaskService, UserService
+from utilities import date_validation
 
 
 def login(user_service):
@@ -47,7 +50,13 @@ def start_application():
         choice = int(input("Enter your choice: "))
 
         if choice == 1:
-            # logic
+            print("\nAdd new task\n")
+            title = input("Task Title: ")
+            description = input("Tasks Description: ")
+            assigned_date = datetime.date.today().strftime("%d %b %Y")
+            due_date = date_validation("Task due date (e.g., 01 Jan 2000): ")
+            user = input("Assigned to: ")
+            task_service.add_task(title, description, assigned_date, due_date, user)
         elif choice == 2:
             # logic
         elif choice == 3:
@@ -73,4 +82,4 @@ def start_application():
         elif choice == 12:
             # logic
         elif choice == 0:
-            # logic
+            sys.exit()

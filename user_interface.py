@@ -22,25 +22,55 @@ def start_application():
 
     role = login(user_service)
 
-    print("Task magaement Application")
-    print("Please select one of the following options:")
+    while True:
+        print("Task magaement Application")
+        print("Please select one of the following options:")
 
-    print("1. Add task")
-    print("2. Get task")
-    print("3. View all my tasks")
-    print("4. Update task")
-    print("5. Mark task complete")
+        print("1. Add task")
+        print("2. Get task")
+        print("3. View all my tasks")
+        print("4. Update task")
+        print("5. Mark task complete")
 
-    if role == "admin":
-        print("***Admin Options***")
-        print("6. View all tasks")
-        print("7. Delete task")
-        print("8. View completed tasks")
-        print("9. Add user")
-        print("10. Update user")
-        print("11. Make user an Admin")
-        print("12. Delete user")
+        if role == "admin":
+            print("\n***Admin Options***\n")
+            print("6. View all tasks")
+            print("7. Delete task")
+            print("8. View completed tasks")
+            print("9. Add user")
+            print("10. Update user")
+            print("11. Make user an Admin")
+            print("12. Delete user")
 
-    print("0. Exit program")
-        
-    
+        print("0. Exit program")
+
+        choice = int(input("Enter your choice: "))
+
+        if choice == 1:
+            # logic
+        elif choice == 2:
+            # logic
+        elif choice == 3:
+            # logic
+        elif choice == 4:
+            # logic
+        elif choice == 5:
+            # logic
+        elif choice == 6:
+            # logic
+        elif choice == 7:
+            # logic
+        elif choice == 8:
+            # logic
+        elif choice == 2:
+            # logic
+        elif choice == 9:
+            # logic
+        elif choice == 10:
+            # logic
+        elif choice == 11:
+            # logic
+        elif choice == 12:
+            # logic
+        elif choice == 0:
+            # logic

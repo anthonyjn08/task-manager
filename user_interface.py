@@ -50,6 +50,7 @@ def start_application():
         choice = int(input("Enter your choice: "))
 
         if choice == 1:
+            # Add Task
             print("\nAdd new task\n")
             title = input("Task Title: ")
             description = input("Tasks Description: ")
@@ -58,7 +59,11 @@ def start_application():
             user = input("Assigned to: ")
             task_service.add_task(title, description, assigned_date, due_date, user)
         elif choice == 2:
-            # logic
+            # Get task
+            print("\nGet task\n")
+            task_id = int(input("Please enter the task number: "))
+            task = task_service.get_task(task_id)
+            print({task})
         elif choice == 3:
             # logic
         elif choice == 4:

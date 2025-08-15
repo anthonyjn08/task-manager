@@ -227,7 +227,7 @@ class UserRepository:
                 username = "admin"
                 password = "admin"
                 email = "test@test.com"
-                isAdmin = True
+                isAdmin = 1
 
                 cursor.executemany(
                     '''
@@ -311,7 +311,7 @@ class UserRepository:
 
     def make_admin(self, id):
         try:
-            is_admin = True
+            is_admin = 1
             db = sqlite3.connect("taskManager.db")
             cursor = db.cursor()
             cursor.execute(

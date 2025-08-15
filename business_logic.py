@@ -14,20 +14,20 @@ class TaskService:
 
     def get_task(self, task_id):
         return self.task_repository.get_task(task_id)
-    
+
     def get_my_tasks(self, user):
         return self.task_repository.get_my_tasks(user)
-    
+
     def view_all_tasks(self):
         return self.task_repository.view_all_tasks()
-    
+
     def completed_tasks(self):
         return self.task_repository.completed_tasks()
-    
+
     def update_task(self, id, title, description, due_date, user):
         self.task_repository.update_task(id, title, description, due_date,
                                          user)
-        
+
     def mark_complete(self, id):
         self.task_repository.mark_complete(id)
 

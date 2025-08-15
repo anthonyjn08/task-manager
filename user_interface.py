@@ -26,7 +26,7 @@ def start_application():
     role, username = login(user_service)
 
     while True:
-        print("Task magaement Application")
+        print("Task Management System")
         print("Please select one of the following options:")
 
         print("1. Add task")
@@ -63,11 +63,13 @@ def start_application():
             print("\nGet task\n")
             task_id = int(input("Please enter the task number: "))
             task = task_service.get_task(task_id)
-            print(f"Task Number:    {task[0]}   Task Assignee:  {task[5]}")
-            print(f"Assigned date:  {task[3]}   Due date:       {task[4]}")
-            print(f"Task Title:     {task[1]}")
-            print(f"Task Description:")
-            print(f"{task[2]}")
+            if task:
+                task_id, title, description, assigned_date, due_date, user = task
+                print(f"Task Number: {task_id}              Task Assignee: {user}")
+                print(f"Assigned date: {assigned_date}      Due date: {due_date}")
+                print(f"Task Title: {title}")
+                print(f"Task Description:")
+                print(f"{description}")
         elif choice == 3:
             # View my tasks
             print("\nView my tasks\n")
@@ -80,7 +82,7 @@ def start_application():
                 print(f"Task Description:")
                 print(f"{task[2]}")
         elif choice == 4:
-            # logic
+            # Update task
         elif choice == 5:
             # logic
         elif choice == 6:

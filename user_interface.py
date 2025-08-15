@@ -97,7 +97,7 @@ def start_application():
             task_id = int(input("Please enter the task number: "))
             task = task_service.get_task(task_id)
             if task:
-                # Title update
+                # TITLE update
                 print(f"Title: {task["title"]}\n")
                 while True:
                     update_title = input("Would you like to update the title (y/n): ").lower()
@@ -109,7 +109,7 @@ def start_application():
                     else:
                         print("Invalid option. Try again")
                 
-                # Description update
+                # DESCRIPTION update
                 print(f"Description: {task["description"]}\n")
                 while True:
                     update_desc = input("Would you like to update the description (y/n): ").lower()
@@ -121,7 +121,7 @@ def start_application():
                     else:
                         print("Invalid option. Try again")
 
-                # Due date update
+                # DUE DATE update
                 print(f"Due date: {task["due_date"]}\n")
                 while True:
                     update_date = input("Would you like to update the due date (y/n): ").lower()
@@ -133,7 +133,7 @@ def start_application():
                     else:
                         print("Invalid option. Try again")
 
-                # User update
+                # USER update
                 print(f"Assigned to: {task["user"]}\n")
                 while True:
                     update_user = input("Would you like to update the assigned (y/n): ").lower()
@@ -153,7 +153,24 @@ def start_application():
             else:
                 print("Task not found.")
         elif choice == 5:
-            # logic
+            # Mark task complete
+            print("\Mark task complete\n")
+            task_id = int(input("Please enter the task number: "))
+            task = task_service.get_task(task_id)
+            if task:
+                # Mark Complete
+                print(f"Task ID: {task["id"]}       Task Title: {task["title"]}\n")
+                while True:
+                    complete = input("Mark this task as complete? (y/n): ").lower()
+                    if complete == "y":
+                        task_service.mark_complete({task_id})
+                        break
+                    elif complete == "n":
+                        break
+                    else:
+                        print("Invalid option! Try again.")
+            else:
+                print("Task not found.")
         elif choice == 6:
             # logic
         elif choice == 7:

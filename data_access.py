@@ -159,7 +159,7 @@ class TaskRepository:
 
     def mark_complete(self, id):
         try:
-            is_complete = True
+            is_complete = 1
             db = sqlite3.connect("taskManager.db")
             cursor = db.cursor()
             cursor.execute(

@@ -64,12 +64,21 @@ def start_application():
             task_id = int(input("Please enter the task number: "))
             task = task_service.get_task(task_id)
             if task:
-                task_id, title, description, assigned_date, due_date, user = task
+                task_id, title, description, assigned_date, due_date, is_complete, user = task
+
+                # Check if complete or not.
+                if is_complete == 1:
+                    complete_bool = "Yes"
+                else:
+                    complete_bool == "No"
+                print("Task\n")
                 print(f"Task Number: {task_id}              Task Assignee: {user}")
                 print(f"Assigned date: {assigned_date}      Due date: {due_date}")
-                print(f"Task Title: {title}")
+                print(f"Task Title: {title}                 Is Completed: {complete_bool}")
                 print(f"Task Description:")
-                print(f"{description}")
+                print(f"{description}\n")
+            else:
+                print("Task not found.")
         elif choice == 3:
             # View my tasks
             print("\nView my tasks\n")
@@ -83,6 +92,62 @@ def start_application():
                 print(f"{task[2]}")
         elif choice == 4:
             # Update task
+            print("\Update task\n")
+            task_id = int(input("Please enter the task number: "))
+            task = task_service.get_task(task_id)
+            if task:
+                task_id, title, description, due_date, user = task
+                # Title update
+                print(f"Title: {title}\n")
+                update_title = input("Would you like to update the title (y/n): ").lower()
+                while True:
+                    if update_title == "y":
+                        title = input("Enter new title: ")
+                        break
+                    elif update_title == "n":
+                        title = title
+                        break
+                    else:
+                        print("Invalid option. Try again")
+                # Description update
+                print(f"Description: {description}\n")
+                update_desc = input("Would you like to update the description (y/n): ").lower()
+                while True:
+                    if update_desc == "y":
+                        description = input("Enter new description: ")
+                        break
+                    elif update_desc == "n":
+                        description = description
+                        break
+                    else:
+                        print("Invalid option. Try again")
+                # Due date update
+                print(f"Due date: {due_date}\n")
+                update_date = input("Would you like to update the due date (y/n): ").lower()
+                while True:
+                    if update_date == "y":
+                        due_date = date_validation("Enter new due date: ")
+                        break
+                    elif update_desc == "n":
+                        due_date = due_date
+                        break
+                    else:
+                        print("Invalid option. Try again")
+                # user update
+                print(f"User: {user}\n")
+                update_user = input("Would you like to update the user (y/n): ").lower()
+                while True:
+                    if update_date == "y":
+                        due_date = input("Enter new due date: ")
+                        break
+                    elif update_desc == "n":
+                        due_date = due_date
+                        break
+                    else:
+                        print("Invalid option. Try again")
+                task_service.update_task(task_id, title, description, due_date, user)
+            else:
+                print("Task not found.")
         elif choice == 5:
             # logic
         elif choice == 6:

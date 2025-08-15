@@ -135,7 +135,7 @@ class TaskRepository:
 
         return completed_tasks
 
-    def update_task(self, id, title, description, due_date, user):
+    def update_task(self, task_id, title, description, due_date, user):
         try:
             db = sqlite3.connect("taskManager.db")
             cursor = db.cursor()
@@ -144,7 +144,7 @@ class TaskRepository:
                 UPDATE tasks
                 SET title = ?, description = ?, dueDate = ?, user = ?
                 WHERE id = ?''',
-                (title, description, due_date, user, id)
+                (title, description, due_date, user, task_id)
             )
             # Commit the changes
             db.commit()

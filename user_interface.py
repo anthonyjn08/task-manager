@@ -64,88 +64,92 @@ def start_application():
             task_id = int(input("Please enter the task number: "))
             task = task_service.get_task(task_id)
             if task:
-                task_id, title, description, assigned_date, due_date, is_complete, user = task
-
                 # Check if complete or not.
-                if is_complete == 1:
-                    complete_bool = "Yes"
+                if task["is_complete"] == 1:
+                    status = "Yes"
                 else:
-                    complete_bool == "No"
+                    status == "No"
+                
+                # Print task
                 print("Task\n")
-                print(f"Task Number: {task_id}              Task Assignee: {user}")
-                print(f"Assigned date: {assigned_date}      Due date: {due_date}")
-                print(f"Task Title: {title}                 Is Completed: {complete_bool}")
+                print(f"Task Number: {task["id"]}               Task Assignee: {task["user"]}")
+                print(f"Assigned date: {task["assigned_date"]}  Due date: {task["due_date"]}")
+                print(f"Task Title: {task["title"]}             Completed: {status}")
                 print(f"Task Description:")
-                print(f"{description}\n")
+                print(f"{task["description"]}\n")
             else:
                 print("Task not found.")
         elif choice == 3:
             # View my tasks
             print("\nView my tasks\n")
             tasks = task_service.get_my_tasks(username)
-            for task in tasks:
-                print("_" * 80)
-                print(f"Task Number:    {task[0]}   Task Assignee:  {task[5]}")
-                print(f"Assigned date:  {task[3]}   Due date:       {task[4]}")
-                print(f"Task Title:     {task[1]}")
-                print(f"Task Description:")
-                print(f"{task[2]}")
+            if tasks:
+                for task in tasks:
+                    print("_" * 80)
+                    print(f"Task Number: {task[0]}      Task Assignee: {task[6]}")
+                    print(f"Assigned date: {task[3]}    Due date: {task[4]}")
+                    print(f"Task Title: {task[1]}       Completed: {task[5]}")
+                    print(f"Task Description:")
+                    print(f"{task[2]}")
         elif choice == 4:
             # Update task
-            print("\Update task\n")
+            print("\nUpdate task\n")
             task_id = int(input("Please enter the task number: "))
             task = task_service.get_task(task_id)
             if task:
-                task_id, title, description, due_date, user = task
                 # Title update
-                print(f"Title: {title}\n")
-                update_title = input("Would you like to update the title (y/n): ").lower()
+                print(f"Title: {task["title"]}\n")
                 while True:
+                    update_title = input("Would you like to update the title (y/n): ").lower()
                     if update_title == "y":
-                        title = input("Enter new title: ")
+                        task["title"] = input("Enter new title: ")
                         break
                     elif update_title == "n":
-                        title = title
                         break
                     else:
                         print("Invalid option. Try again")
+                
                 # Description update
-                print(f"Description: {description}\n")
-                update_desc = input("Would you like to update the description (y/n): ").lower()
+                print(f"Description: {task["description"]}\n")
                 while True:
+                    update_desc = input("Would you like to update the description (y/n): ").lower()
                     if update_desc == "y":
-                        description = input("Enter new description: ")
+                        task["description"] = input("Enter new description: ")
                         break
                     elif update_desc == "n":
-                        description = description
                         break
                     else:
                         print("Invalid option. Try again")
+
                 # Due date update
-                print(f"Due date: {due_date}\n")
-                update_date = input("Would you like to update the due date (y/n): ").lower()
+                print(f"Due date: {task["due_date"]}\n")
                 while True:
+                    update_date = input("Would you like to update the due date (y/n): ").lower()
                     if update_date == "y":
-                        due_date = date_validation("Enter new due date: ")
+                        task["due_date"] = date_validation("Enter new due date: ")
                         break
-                    elif update_desc == "n":
-                        due_date = due_date
+                    elif update_date == "n":
                         break
                     else:
                         print("Invalid option. Try again")
-                # user update
-                print(f"User: {user}\n")
-                update_user = input("Would you like to update the user (y/n): ").lower()
+
+                # User update
+                print(f"Assigned to: {task["user"]}\n")
                 while True:
-                    if update_date == "y":
-                        due_date = input("Enter new due date: ")
+                    update_user = input("Would you like to update the assigned (y/n): ").lower()
+                    if update_user == "y":
+                        task["user"] = input("Enter new assignee: ")
                         break
-                    elif update_desc == "n":
-                        due_date = due_date
+                    elif update_user == "n":
                         break
                     else:
                         print("Invalid option. Try again")
-                task_service.update_task(task_id, title, description, due_date, user)
+                task_service.update_task(
+                    task["id"],
+                    task["title"],
+                    task["description"],
+                    task["due_date"],
+                    task["user"])
             else:
                 print("Task not found.")
         elif choice == 5:

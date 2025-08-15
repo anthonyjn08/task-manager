@@ -23,7 +23,7 @@ def start_application():
     task_service = TaskService()
     user_service = UserService()
 
-    role = login(user_service)
+    role, username = login(user_service)
 
     while True:
         print("Task magaement Application")
@@ -63,9 +63,22 @@ def start_application():
             print("\nGet task\n")
             task_id = int(input("Please enter the task number: "))
             task = task_service.get_task(task_id)
-            print({task})
+            print(f"Task Number:    {task[0]}   Task Assignee:  {task[5]}")
+            print(f"Assigned date:  {task[3]}   Due date:       {task[4]}")
+            print(f"Task Title:     {task[1]}")
+            print(f"Task Description:")
+            print(f"{task[2]}")
         elif choice == 3:
-            # logic
+            # View my tasks
+            print("\nView my tasks\n")
+            tasks = task_service.get_my_tasks(username)
+            for task in tasks:
+                print("_" * 80)
+                print(f"Task Number:    {task[0]}   Task Assignee:  {task[5]}")
+                print(f"Assigned date:  {task[3]}   Due date:       {task[4]}")
+                print(f"Task Title:     {task[1]}")
+                print(f"Task Description:")
+                print(f"{task[2]}")
         elif choice == 4:
             # logic
         elif choice == 5:

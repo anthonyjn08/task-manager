@@ -70,18 +70,20 @@ class TaskRepository:
             (task_id,),
         )
         task = cursor.fetchone()
+        db.close()
 
         if task is None:
             print("\nTask not found\n")
         
-        task_id = task[0]
-        title = task[1]
-        description = task[2]
-        assigned_date = task[3]
-        due_date = task[4]
-        user = task[6]
-
-        return task_id, title, description, assigned_date, due_date, user
+        return {
+            "id": task[0],
+            "title": task[1],
+            "description": task[2],
+            "assigned_date": task[3],
+            "due_date": task[4],
+            "is_complete": task[5],
+            "user": task[6],
+        }
     
     def get_my_tasks(self, user):
         db = sqlite3.connect("taskManager.db")

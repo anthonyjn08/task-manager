@@ -112,12 +112,12 @@ class TaskRepository:
             FROM tasks
             """
         )
-        all_tasks = cursor.fetchall()
+        tasks = cursor.fetchall()
 
-        if all_tasks is None:
+        if tasks is None:
             print("\nThere are currently no tasks!\n")
 
-        return all_tasks
+        return tasks
     
     def completed_tasks(self):
         is_complete = True

@@ -291,6 +291,7 @@ class UserRepository:
             )
             # Commit the changes
             db.commit()
+            print("User successfully added.")
         except Exception as e:
             db.rollback()
             raise e

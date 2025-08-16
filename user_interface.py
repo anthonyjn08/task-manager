@@ -218,15 +218,27 @@ def start_application():
                 else:
                     print("Invalid option! Try again.")
         elif choice == 8:
-            # logic
-        elif choice == 2:
-            # logic
+            # View completed tasks
+            print("\nView completed tasks\n")
+            tasks = task_service.completed_tasks()
+            if tasks:
+                for task in tasks:
+                    print("_" * 80)
+                    print(f"Task Number: {task[0]}      Task Assignee: {task[6]}")
+                    print(f"Assigned date: {task[3]}    Due date: {task[4]}")
+                    print(f"Task Title: {task[1]}       Completed: {task[5]}")
+                    print(f"Task Description:")
+                    print(f"{task[2]}")
+            else:
+                print("There are no completed tasks!")
         elif choice == 9:
-            # logic
+            # Add user
         elif choice == 10:
-            # logic
+            # Update user
         elif choice == 11:
-            # logic
+            # Make user Admin
+        elif choice == 12:
+            # Delete User
         elif choice == 12:
             # logic
         elif choice == 0:

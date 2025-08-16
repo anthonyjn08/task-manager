@@ -120,7 +120,7 @@ class TaskRepository:
         return tasks
     
     def completed_tasks(self):
-        is_complete = True
+        is_complete = 1
         db = sqlite3.connect("taskManager.db")
         cursor = db.cursor()
         cursor.execute(

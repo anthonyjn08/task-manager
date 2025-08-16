@@ -172,9 +172,51 @@ def start_application():
             else:
                 print("Task not found.")
         elif choice == 6:
-            # logic
+            # View all tasks
+            print("\nView all tasks\n")
+            tasks = task_service.view_all_tasks()
+            if tasks:
+                for task in tasks:
+                    print("_" * 80)
+                    print(f"Task Number: {task[0]}      Task Assignee: {task[6]}")
+                    print(f"Assigned date: {task[3]}    Due date: {task[4]}")
+                    print(f"Task Title: {task[1]}       Completed: {task[5]}")
+                    print(f"Task Description:")
+                    print(f"{task[2]}")
+            else:
+                print("There are no tasks!")
         elif choice == 7:
-            # logic
+            # Delete task
+            print("\nDelete Task\n")
+            task_id = int(input("Please enter the task number: "))
+            task = task_service.get_task(task_id)
+            if task:
+                # Check if complete or not.
+                if task["is_complete"] == 1:
+                    status = "Yes"
+                else:
+                    status == "No"
+                # Print task
+                print("Task\n")
+                print(f"Task Number: {task["id"]}               Task Assignee: {task["user"]}")
+                print(f"Assigned date: {task["assigned_date"]}  Due date: {task["due_date"]}")
+                print(f"Task Title: {task["title"]}             Completed: {status}")
+                print(f"Task Description:")
+                print(f"{task["description"]}\n")
+            else:
+                print("Task not found.")
+            print("***WARNING***")
+            print("Deleting a task can not be undone!")
+            while True:
+                confirmation = input(f"Do you want to delete task {task_id}? (y/n): ").lower()
+                if confirmation == "y":
+                    task_service.delete_task(task_id)
+                    print("Task deleted")
+                    break
+                elif confirmation == "n":
+                    break
+                else:
+                    print("Invalid option! Try again.")
         elif choice == 8:
             # logic
         elif choice == 2:

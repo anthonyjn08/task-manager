@@ -144,12 +144,12 @@ def start_application():
                         break
                     else:
                         print("Invalid option. Try again")
-                task_service.update_task(
-                    task["id"],
-                    task["title"],
-                    task["description"],
-                    task["due_date"],
-                    task["user"])
+                id = task["id"],
+                title = task["title"],
+                description = task["description"],
+                due_date = task["due_date"],
+                user = task["user"]
+                task_service.update_task(id, title, description, due_date, user)
             else:
                 print("Task not found.")
         elif choice == 5:

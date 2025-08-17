@@ -97,6 +97,7 @@ class TaskRepository:
             (user,),
         )
         tasks = cursor.fetchall()
+        db.close()
 
         if tasks is None:
             print("\nYou have no tasks!\n")
@@ -113,6 +114,7 @@ class TaskRepository:
             """
         )
         tasks = cursor.fetchall()
+        db.close()
 
         if tasks is None:
             print("\nThere are currently no tasks!\n")
@@ -131,6 +133,7 @@ class TaskRepository:
             """, (is_complete,)
         )
         completed_tasks = cursor.fetchall()
+        db.close()
 
         if completed_tasks is None:
             print("\nThere are currently no completed tasks!\n")
@@ -236,17 +239,17 @@ class UserRepository:
                 username = "admin"
                 password = "admin"
                 email = "test@test.com"
-                isAdmin = 1
+                is_admin = 1
 
                 cursor.executemany(
                     '''
                     INSERT INTO users(username, password, email, isAdmin)
                     VALUES(?, ?, ?, ?)
-                    ''', (username, password, email, isAdmin)
+                    ''', (username, password, email, is_admin)
                 )
 
-            # Commit the changes
-            db.commit()
+                # Commit the changes
+                db.commit()
             
         # Catch and exceptions
         except Exception as e:
@@ -270,6 +273,7 @@ class UserRepository:
         )
 
         user = cursor.fetchone()
+        db.close()
 
         if user is None:
             return False
@@ -298,6 +302,24 @@ class UserRepository:
         finally:
             # Close the db connection
             db.close()
+
+    def get_user(self, id):
+        db = sqlite3.connect("taskManager.db")
+        cursor = db.cursor()
+        cursor.execute(
+            '''
+            SELECT *
+            FROM users
+            WHERE id = ?
+            ''', (id,)
+        )
+        user = cursor.fetchone()
+        db.close()
+
+        if user == None:
+            return None
+        else:
+            return user
 
     def update_user(self, id, username, password, email):
         try:

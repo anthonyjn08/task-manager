@@ -319,7 +319,13 @@ class UserRepository:
         if user == None:
             return None
         else:
-            return user
+            return {
+                "id": user[0],
+                "username": user[1],
+                "password": user[2],
+                "email": user[3],
+                "admin": user[4]
+            }
 
     def update_user(self, id, username, password, email):
         try:

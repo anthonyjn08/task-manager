@@ -245,6 +245,52 @@ def start_application():
             user_service.add_user(username, password, email)
         elif choice == 10:
             # Update user
+            print("\nUpdate user\n")
+            user_id = int(input("Enter user ID: "))
+            user = user_service.get_user(user_id)
+            if user:
+                # USERNAME update
+                print(f"Username: {user["username"]}")
+                while True:
+                    update_username = input("Update username (y/n): ").lower()
+                    if update_username == "y":
+                        user["username"] = input("Enter new username: ")
+                        break
+                    elif update_username == "n":
+                        break
+                    else:
+                        print("Invalid option. Try again.")
+                # PASSWORD update
+                print(f"\nPassword: {user["password"]}")
+                while True:
+                    update_pwd = input("Update password (y/n): ").lower()
+                    if update_pwd == "y":
+                        user["password"] = input("Enter new password: ")
+                        break
+                    elif update_pwd == "n":
+                        break
+                    else:
+                        print("Invalid option. Try again.")
+
+                # EMAIL update
+                print(f"Email: {user["email"]}")
+                while True:
+                    update_email = input("Update email (y/n)").lower()
+                    if update_email == "y":
+                        user["email"] = input("Enter new email address: ")
+                        break
+                    elif update_email == "n":
+                        break
+                    else:
+                        print("Invalid option. Try again")
+            else:
+                print("User not founc.")
+
+            id = user_id
+            username = user["username"]
+            password = user["password"]
+            email = user["email"]
+            user_service.update_user(id, username, password, email)
         elif choice == 11:
             # Make user Admin
         elif choice == 12:

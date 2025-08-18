@@ -297,7 +297,7 @@ class UserRepository:
             cursor.execute(
                 '''
                 INSERT INTO user(username, password, email)
-                VAULEs(?, ?, ?)
+                VALUES(?, ?, ?)
                 ''', (username, password, email)
             )
             # Commit the changes
@@ -309,6 +309,25 @@ class UserRepository:
         finally:
             # Close the db connection
             db.close()
+
+    def validate_username(self, prompt):
+        username = input(prompt)
+        db = sqlite3.connect("taskManager.db")
+        cursor = db.cursor()
+        cursor.execute(
+            '''
+            SELECT *
+            FROM user
+            '''
+        )
+        users = cursor.fetchall()
+        for user in users:
+            if user[1] == username:
+                print("Username already exists. Please choose again")
+                username = input("Enter the username: ")
+            else:
+                break
+
 
     def get_user(self, id):
         db = sqlite3.connect("taskManager.db")

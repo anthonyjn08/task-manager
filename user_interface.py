@@ -23,6 +23,7 @@ def start_application():
     task_service = TaskService()
     user_service = UserService()
 
+    print("Task Management System")
     username = input("Username: ")
     password = input("Password: ")
 
@@ -40,7 +41,6 @@ def start_application():
         print(f"Welcome {username}")
 
     while True:
-        print("Task Management System")
         print("Please select one of the following options:")
 
         print("1. Add task")

@@ -1,4 +1,17 @@
+import re
 from datetime import datetime
+
+
+def validate_email(prompt):
+    while True:
+        email = input(prompt)
+
+        # Validate email
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+            print("Invalid email format. Try again")
+            continue
+
+        return email
 
 
 def date_validation(prompt):

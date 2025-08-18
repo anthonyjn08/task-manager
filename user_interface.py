@@ -1,7 +1,7 @@
 import sys
 import datetime
 from business_logic import TaskService, UserService
-from utilities import date_validation
+from utilities import validate_email, date_validation
 
 
 # def login(user_service):
@@ -263,7 +263,7 @@ def start_application():
                 while True:
                     update_username = input("Update username (y/n): ").lower()
                     if update_username == "y":
-                        user["username"] = input("Enter new username: ")
+                        user["username"] = user_service.validate_user("Enter new username: ")
                         break
                     elif update_username == "n":
                         break

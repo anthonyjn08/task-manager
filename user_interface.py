@@ -154,7 +154,7 @@ def start_application():
                 print("Task not found.")
         elif choice == 5:
             # Mark task complete
-            print("\Mark task complete\n")
+            print("\nMark task complete\n")
             task_id = int(input("Please enter the task number: "))
             task = task_service.get_task(task_id)
             if task:
@@ -195,7 +195,7 @@ def start_application():
                 if task["is_complete"] == 1:
                     status = "Yes"
                 else:
-                    status == "No"
+                    status = "No"
                 # Print task
                 print("Task\n")
                 print(f"Task Number: {task["id"]}               Task Assignee: {task["user"]}")
@@ -298,7 +298,8 @@ def start_application():
             user = user_service.get_user(user_id)
             if user:
                 while True:
-                    confirm = input(f"Make user {user["username"]} a system admin? (y/n): ").lower()
+                    confirm = input(f"Make user {user["username"]} a system"
+                                    f" admin? (y/n): ").lower()
                     if confirm == "y":
                         user_service.make_admin(user_id)
                         break
@@ -316,7 +317,8 @@ def start_application():
             if user:
                 while True:
                     print("WARNING. This can not be undone!")
-                    confirm = input(f"Delete user {user["username"]} from system? (y/n): ").lower()
+                    confirm = input(f"Delete user {user["username"]} from"
+                                    f" system? (y/n): ").lower()
                     if confirm == "y":
                         user_service.make_admin(user_id)
                         break
@@ -328,5 +330,8 @@ def start_application():
                 print("User not found")
         elif choice == 12:
             # logic
+            print("Currently unused.")
         elif choice == 0:
             sys.exit()
+        else:
+            print("invalid option")

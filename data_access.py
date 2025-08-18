@@ -243,7 +243,7 @@ class UserRepository:
 
                 cursor.executemany(
                     '''
-                    INSERT INTO users(username, password, email, isAdmin)
+                    INSERT INTO user(username, password, email, isAdmin)
                     VALUES(?, ?, ?, ?)
                     ''', (username, password, email, is_admin)
                 )
@@ -267,7 +267,7 @@ class UserRepository:
         cursor.execute(
             '''
             SELECT *
-            FROM users
+            FROM user
             WHERE username = ?
             ''', (username,)
         )
@@ -289,7 +289,7 @@ class UserRepository:
             cursor = db.cursor()
             cursor.execute(
                 '''
-                INSERT INTO users(username, password, email)
+                INSERT INTO user(username, password, email)
                 VAULEs(?, ?, ?)
                 ''', (username, password, email)
             )
@@ -309,7 +309,7 @@ class UserRepository:
         cursor.execute(
             '''
             SELECT *
-            FROM users
+            FROM user
             WHERE id = ?
             ''', (id,)
         )
@@ -333,7 +333,7 @@ class UserRepository:
             cursor = db.cursor()
             cursor.execute(
                 '''
-                UPDATE users
+                UPDATE user
                 SET username = ?, password = ?, email = ?
                 WHERE id = ?
                 ''', (username, password, email, id)
@@ -354,7 +354,7 @@ class UserRepository:
             cursor = db.cursor()
             cursor.execute(
                 '''
-                UPDATE users
+                UPDATE user
                 SET isAdmin = ?
                 WHERE id = ?
                 ''', (is_admin, id)
@@ -374,7 +374,7 @@ class UserRepository:
             cursor = db.cursor()
             cursor.execute(
                 '''
-                DELETE FROM users
+                DELETE FROM user
                 WHERE id = ?
                 ''', (id,)
             )

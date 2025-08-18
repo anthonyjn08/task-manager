@@ -293,8 +293,24 @@ def start_application():
             user_service.update_user(id, username, password, email)
         elif choice == 11:
             # Make user Admin
+            print("Make user admnin")
+            user_id = user_id = int(input("Enter user ID: "))
+            user = user_service.get_user(user_id)
+            if user:
+                while True:
+                    confirm = input(f"Make user {user["username"]} a system admin? (y/n): ").lower()
+                    if confirm == "y":
+                        user_service.make_admin(user_id)
+                        break
+                    elif confirm == "n":
+                        break
+                    else:
+                        print("Invalid Option")
+            else:
+                print("User not found.")
         elif choice == 12:
             # Delete User
+            
         elif choice == 12:
             # logic
         elif choice == 0:

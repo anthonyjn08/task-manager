@@ -245,12 +245,8 @@ def start_application():
             print("\nAdd user\n")
             username = user_service.validate_user("Enter the username: ")
             password = input("Enter the upassword: ")
-            while True:
-                email = input("Enter the email address: ")
-                if "@" not in email:
-                    print("Please enter valid email address.")
-                else:
-                    break
+            email = validate_email("Enter the email address: ")
+                
             user_service.add_user(username, password, email)
         elif choice == 10:
             # Update user
@@ -286,7 +282,7 @@ def start_application():
                 while True:
                     update_email = input("Update email (y/n)").lower()
                     if update_email == "y":
-                        user["email"] = input("Enter new email address: ")
+                        user["email"] = validate_email("Enter new email address: ")
                         break
                     elif update_email == "n":
                         break

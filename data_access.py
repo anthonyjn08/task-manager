@@ -220,7 +220,7 @@ class UserRepository:
                 """
                 CREATE TABLE IF NOT EXISTS
                 user(id INTEGER PRIMARY KEY, username TEXT UNIQUE, password TEXT,
-                email TEXT, isAdmin TEXT)
+                email TEXT, isAdmin BOOLEAN DEFAULT 0)
                 """
             )
 
@@ -228,7 +228,7 @@ class UserRepository:
             cursor.execute(
                 '''
                 SELECT COUNT(*)
-                FROM users
+                FROM user
                 '''
             )
             user_count = cursor.fetchone()
@@ -241,7 +241,7 @@ class UserRepository:
                 email = "test@test.com"
                 is_admin = 1
 
-                cursor.executemany(
+                cursor.execute(
                     '''
                     INSERT INTO user(username, password, email, isAdmin)
                     VALUES(?, ?, ?, ?)
@@ -276,12 +276,12 @@ class UserRepository:
         db.close()
 
         if user is None:
-            return False
+            return None
 
         if user[2] == password and user[4] == 1:
-            return "admin"
+            return "admin", user[1]
         elif user[2] == password:
-            return "user"
+            return "user", user[1]
 
     def add_user(self, username, password, email):
         try:

@@ -4,26 +4,38 @@ from business_logic import TaskService, UserService
 from utilities import date_validation
 
 
-def login(user_service):
-    while True:
-        username = input("Username: ")
-        password = input("Password: ")
-        result = user_service.login(username, password)
+# def login(user_service):
+#     while True:
+#         username = input("Username: ")
+#         password = input("Password: ")
+#         result = user_service.login(username, password)
 
-        if result == "admin":
-            print(f"\n{username} logged in as an admin!\n")
-            return "admin"
-        elif result == "user":
-            print(f"Logged in as {username}.")
-            return "user"
-        else:
-            print("\nIncorrect login. Please try again!\n")
+#         if result == "admin":
+#             print(f"\n{username} logged in as an admin!\n")
+#             return "admin"
+#         elif result == "user":
+#             print(f"Logged in as {username}.")
+#             return "user"
+#         else:
+#             print("\nIncorrect login. Please try again!\n")
 
 def start_application():
     task_service = TaskService()
     user_service = UserService()
 
-    role, username = login(user_service)
+    username = input("Username: ")
+    password = input("Password: ")
+
+    user_login = user_service.login(username, password)
+
+    if user_login is None:
+        print("Invalid login. Please try again.")
+    else:
+        role, username = user_login
+        if role == "admin":
+            print(f"Welcome {username}. You're logged in as an admin")
+        else:
+            print(f"Welcome {username}")
 
     while True:
         print("Task Management System")
@@ -36,7 +48,7 @@ def start_application():
         print("5. Mark task complete")
 
         if role == "admin":
-            print("\n***Admin Options***\n")
+            print("\n***Admin Options***")
             print("6. View all tasks")
             print("7. Delete task")
             print("8. View completed tasks")
@@ -227,7 +239,7 @@ def start_application():
                     print(f"Task Number: {task[0]}      Task Assignee: {task[6]}")
                     print(f"Assigned date: {task[3]}    Due date: {task[4]}")
                     print(f"Task Title: {task[1]}       Completed: {task[5]}")
-                    print(f"Task Description:")
+                    print("Task Description:")
                     print(f"{task[2]}")
             else:
                 print("There are no completed tasks!")
@@ -328,7 +340,7 @@ def start_application():
                         print("Invalid option. Try again.")
             else:
                 print("User not found")
-        elif choice == 12:
+        elif choice == 13:
             # logic
             print("Currently unused.")
         elif choice == 0:

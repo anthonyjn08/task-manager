@@ -28,14 +28,16 @@ def start_application():
 
     user_login = user_service.login(username, password)
 
-    if user_login is None:
+    if not user_login:
         print("Invalid login. Please try again.")
-    else:
-        role, username = user_login
-        if role == "admin":
-            print(f"Welcome {username}. You're logged in as an admin")
-        else:
-            print(f"Welcome {username}")
+        return
+
+    role, username = user_login
+
+    if role == "admin":
+        print(f"Welcome {username}. You're logged in as an admin")
+    elif role == "user":
+        print(f"Welcome {username}")
 
     while True:
         print("Task Management System")
@@ -56,6 +58,7 @@ def start_application():
             print("10. Update user")
             print("11. Make user an Admin")
             print("12. Delete user")
+            print("13. Unused")
 
         print("0. Exit program")
 

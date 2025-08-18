@@ -220,7 +220,7 @@ class UserRepository:
                 """
                 CREATE TABLE IF NOT EXISTS
                 user(id INTEGER PRIMARY KEY, username TEXT UNIQUE, password TEXT,
-                email TEXT, isAdmin BOOLEAN DEFAULT 0)
+                email TEXT, isAdmin TEXT DEFAULT "No")
                 """
             )
 
@@ -239,7 +239,7 @@ class UserRepository:
                 username = "admin"
                 password = "admin"
                 email = "test@test.com"
-                is_admin = 1
+                is_admin = "Yes"
 
                 cursor.execute(
                     '''
@@ -278,10 +278,17 @@ class UserRepository:
         if user is None:
             return None
 
-        if user[2] == password and user[4] == 1:
-            return "admin", user[1]
-        elif user[2] == password:
-            return "user", user[1]
+        print(type(user[4]))
+        is_admin = user[4]
+        stored_password = user[2]
+        if stored_password == password and is_admin == "Yes":
+            role = "admin"
+            return role, password
+        elif stored_password == password:
+            role = "user"
+            return role, password
+        else:
+            print("Incorrect password.")
 
     def add_user(self, username, password, email):
         try:
@@ -349,7 +356,7 @@ class UserRepository:
 
     def make_admin(self, id):
         try:
-            is_admin = 1
+            is_admin = "Yes"
             db = sqlite3.connect("taskManager.db")
             cursor = db.cursor()
             cursor.execute(

@@ -311,22 +311,23 @@ class UserRepository:
             db.close()
 
     def validate_username(self, prompt):
-        username = input(prompt)
-        db = sqlite3.connect("taskManager.db")
-        cursor = db.cursor()
-        cursor.execute(
-            '''
-            SELECT *
-            FROM user
-            '''
-        )
-        users = cursor.fetchall()
-        for user in users:
-            if user[1] == username:
+        while True:
+            username = input(prompt)
+            db = sqlite3.connect("taskManager.db")
+            cursor = db.cursor()
+            cursor.execute(
+                '''
+                SELECT *
+                FROM user
+                WHERE username = ?
+                ''', (username,)
+            )
+            user = cursor.fetchone()
+            db.close()
+            if user:
                 print("Username already exists. Please choose again")
-                username = input("Enter the username: ")
-            else:
-                break
+                continue
+            return username
 
     def get_user(self, id):
         db = sqlite3.connect("taskManager.db")

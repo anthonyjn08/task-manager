@@ -242,8 +242,8 @@ def start_application():
                 print("There are no completed tasks!")
         elif choice == 9:
             # Add user
-            print("Add user")
-            username = input("Enter the username: ")
+            print("\nAdd user\n")
+            username = user_service.validate_user("Enter the username: ")
             password = input("Enter the upassword: ")
             while True:
                 email = input("Enter the email address: ")

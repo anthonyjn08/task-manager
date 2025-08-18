@@ -58,7 +58,7 @@ class UserService:
         self.user_repository.add_user(username, password, email)
 
     def validate_user(self, prompt):
-        self.user_repository.validate_username(prompt)
+        return self.user_repository.validate_username(prompt)
 
     def get_user(self, id):
         return self.user_repository.get_user(id)

@@ -328,7 +328,6 @@ class UserRepository:
             else:
                 break
 
-
     def get_user(self, id):
         db = sqlite3.connect("taskManager.db")
         cursor = db.cursor()

@@ -293,8 +293,8 @@ def start_application():
             user_service.update_user(id, username, password, email)
         elif choice == 11:
             # Make user Admin
-            print("Make user admnin")
-            user_id = user_id = int(input("Enter user ID: "))
+            print("\nMake user admnin\n")
+            user_id = int(input("Enter user ID: "))
             user = user_service.get_user(user_id)
             if user:
                 while True:
@@ -310,7 +310,22 @@ def start_application():
                 print("User not found.")
         elif choice == 12:
             # Delete User
-            
+            print("\n Delete user\n")
+            user_id = int(input("Enter user ID: "))
+            user = user_service.get_user(user_id)
+            if user:
+                while True:
+                    print("WARNING. This can not be undone!")
+                    confirm = input(f"Delete user {user["username"]} from system? (y/n): ").lower()
+                    if confirm == "y":
+                        user_service.make_admin(user_id)
+                        break
+                    elif confirm == "n":
+                        break
+                    else:
+                        print("Invalid option. Try again.")
+            else:
+                print("User not found")
         elif choice == 12:
             # logic
         elif choice == 0:

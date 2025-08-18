@@ -19,7 +19,7 @@ class TaskRepository:
                 """
                 CREATE TABLE IF NOT EXISTS
                 tasks(id INTEGER PRIMARY KEY, title TEXT, description TEXT,
-                assignedDate TEXT, dueDate TEXT, isComplete BOOLEAN DEFAULT 0,
+                assignedDate TEXT, dueDate TEXT, isComplete TEXt DEFAULT "No",
                 user TEXT)
                 """
             )
@@ -122,7 +122,7 @@ class TaskRepository:
         return tasks
     
     def completed_tasks(self):
-        is_complete = 1
+        is_complete = "Yes"
         db = sqlite3.connect("taskManager.db")
         cursor = db.cursor()
         cursor.execute(
@@ -162,7 +162,7 @@ class TaskRepository:
 
     def mark_complete(self, id):
         try:
-            is_complete = 1
+            is_complete = "Yes"
             db = sqlite3.connect("taskManager.db")
             cursor = db.cursor()
             cursor.execute(

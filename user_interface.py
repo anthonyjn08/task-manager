@@ -72,24 +72,18 @@ def start_application():
             assigned_date = datetime.date.today().strftime("%d %b %Y")
             due_date = date_validation("Task due date (e.g., 01 Jan 2000): ")
             user = input("Assigned to: ")
-            task_service.add_task(title, description, assigned_date, due_date, user)
+            task_service.add_task(title, description, due_date, assigned_date, user)
         elif choice == 2:
             # Get task
             print("\nGet task\n")
             task_id = int(input("Please enter the task number: "))
             task = task_service.get_task(task_id)
             if task:
-                # Check if complete or not.
-                if task["is_complete"] == 1:
-                    status = "Yes"
-                else:
-                    status == "No"
-                
                 # Print task
                 print("Task\n")
                 print(f"Task Number: {task["id"]}               Task Assignee: {task["user"]}")
                 print(f"Assigned date: {task["assigned_date"]}  Due date: {task["due_date"]}")
-                print(f"Task Title: {task["title"]}             Completed: {status}")
+                print(f"Task Title: {task["title"]}             Completed: {task["is_complete"]}")
                 print(f"Task Description:")
                 print(f"{task["description"]}\n")
             else:

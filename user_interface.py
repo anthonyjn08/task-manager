@@ -52,11 +52,16 @@ def start_application():
         if choice == 1:
             # Add Task
             print("\nAdd new task\n")
+            user = user_service.assignee_exists("Assigned to: ")
+
+            # If no user, then exit the add task process
+            if not user:
+                continue
+            
             title = input("Task Title: ")
             description = input("Tasks Description: ")
             assigned_date = datetime.date.today().strftime("%d %b %Y")
             due_date = date_validation("Task due date (e.g., 01 Jan 2000): ")
-            user = input("Assigned to: ")
             task_service.add_task(title, description, due_date, assigned_date, user)
         elif choice == 2:
             # Get task

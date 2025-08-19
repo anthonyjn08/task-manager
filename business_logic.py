@@ -59,6 +59,9 @@ class UserService:
 
     def validate_user(self, prompt):
         return self.user_repository.validate_username(prompt)
+    
+    def assignee_exists(self, prompt):
+        return self.user_repository.assignee_exists(prompt)
 
     def get_user(self, id):
         return self.user_repository.get_user(id)

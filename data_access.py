@@ -330,6 +330,25 @@ class UserRepository:
                 continue
             return username
 
+    def assignee_exists(self, prompt):
+        while True:
+            username = input(prompt)
+            db = sqlite3.connect("taskManager.db")
+            cursor = db.cursor()
+            cursor.execute(
+                '''
+                SELECT *
+                FROM user
+                WHERE username = ?
+                ''', (username,)
+            )
+            user = cursor.fetchone()
+            db.close()
+            if not user:
+                print("Assignee does not exist. Please create the assignee then try again.")
+                return None
+            return username
+
     def get_user(self, id):
         db = sqlite3.connect("taskManager.db")
         cursor = db.cursor()

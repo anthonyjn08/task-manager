@@ -71,9 +71,12 @@ def start_application():
             if task:
                 # Print task
                 print("Task\n")
-                print(f"Task Number: {task["id"]}               Task Assignee: {task["user"]}")
-                print(f"Assigned date: {task["assigned_date"]}  Due date: {task["due_date"]}")
-                print(f"Task Title: {task["title"]}             Completed: {task["is_complete"]}")
+                print(f"Task Number: {task["id"]}")
+                print(f"Task Assignee: {task["user"]}")
+                print(f"Assigned date: {task["assigned_date"]}")
+                print(f"Due date: {task["due_date"]}")
+                print(f"Task Title: {task["title"]}")
+                print(f"Completed: {task["is_complete"]}")
                 print(f"Task Description:")
                 print(f"{task["description"]}\n")
             else:
@@ -84,12 +87,17 @@ def start_application():
             tasks = task_service.get_my_tasks(username)
             if tasks:
                 for task in tasks:
-                    print("_" * 80)
-                    print(f"Task Number: {task[0]}      Task Assignee: {task[6]}")
-                    print(f"Assigned date: {task[3]}    Due date: {task[4]}")
-                    print(f"Task Title: {task[1]}       Completed: {task[5]}")
+                    print("-" * 80)
+                    print(f"Task Number: {task[0]}")
+                    print(f"Task Assignee: {task[6]}")
+                    print(f"Assigned date: {task[3]}")
+                    print(f"Due date: {task[4]}")
+                    print(f"Task Title: {task[1]}")
+                    print(f"Completed: {task[5]}")
                     print(f"Task Description:")
-                    print(f"{task[2]}")
+                    print(f"{task[2]}\n")
+            
+            print("-" * 80 + "\n")
         elif choice == 4:
             # Update task
             print("\nUpdate task\n")
@@ -243,6 +251,11 @@ def start_application():
             print("\nUpdate user\n")
             user_id = int(input("Enter user ID: "))
             user = user_service.get_user(user_id)
+
+            if user is None:
+                print("\nUser does not exist.\n")
+                continue
+
             if user:
                 # USERNAME update
                 print(f"Username: {user["username"]}")

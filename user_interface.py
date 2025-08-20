@@ -26,7 +26,8 @@ def start_application():
         print(f"Welcome {username}")
 
     while True:
-        print("Please select one of the following options:")
+        print("\n*** Main Menu ***")
+        print("Please select one of the following options:\n")
 
         print("1. Add task")
         print("2. Get task")
@@ -35,7 +36,7 @@ def start_application():
         print("5. Mark task complete")
 
         if role == "admin":
-            print("\n***Admin Options***")
+            print("\n*** Admin Options ***")
             print("6. View all tasks")
             print("7. Delete task")
             print("8. View completed tasks")
@@ -66,21 +67,34 @@ def start_application():
         elif choice == 2:
             # Get task
             print("\nGet task\n")
-            task_id = int(input("Please enter the task number: "))
-            task = task_service.get_task(task_id)
-            if task:
-                # Print task
-                print("Task\n")
-                print(f"Task Number: {task["id"]}")
-                print(f"Task Assignee: {task["user"]}")
-                print(f"Assigned date: {task["assigned_date"]}")
-                print(f"Due date: {task["due_date"]}")
-                print(f"Task Title: {task["title"]}")
-                print(f"Completed: {task["is_complete"]}")
-                print(f"Task Description:")
-                print(f"{task["description"]}\n")
-            else:
-                print("Task not found.")
+            while True:
+                try:
+                    task_id = int(input("Please enter the task number or -1 for main menu: "))
+
+                    # Return to main menu if user enters -1
+                    if task_id == -1:
+                        break
+
+                    task = task_service.get_task(task_id)
+                    
+                    if task:
+                        # Print task
+                        print("\n" + "-" * 80)
+                        print(f"Task Number: {task["id"]}")
+                        print(f"Task Assignee: {task["user"]}")
+                        print(f"Assigned date: {task["assigned_date"]}")
+                        print(f"Due date: {task["due_date"]}")
+                        print(f"Task Title: {task["title"]}")
+                        print(f"Completed: {task["is_complete"]}")
+                        print(f"Task Description:")
+                        print(f"{task["description"]}")
+                        print("-" * 80 + "\n")
+                        break
+                    else:
+                        print("That task doesn't exist.")
+                        
+                except ValueError:
+                    print("\nPlease enter an integer!\n")
         elif choice == 3:
             # View my tasks
             print("\nView my tasks\n")

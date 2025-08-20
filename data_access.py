@@ -75,6 +75,7 @@ class TaskRepository:
 
         if task is None:
             print("\nTask not found\n")
+            return None
         
         return {
             "id": task[0],

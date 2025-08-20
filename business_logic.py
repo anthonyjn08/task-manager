@@ -9,7 +9,7 @@ class TaskService:
     def add_task(self, title, description, due_date, assigned_date,
                  user):
         "Add new task in database"
-        self.task_repository.add_task(title, description, assigned_date,
+        return self.task_repository.add_task(title, description, assigned_date,
                                       due_date, user)
 
     def get_task(self, task_id):

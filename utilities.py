@@ -31,8 +31,8 @@ def date_validation(prompt):
         date_input = input(prompt)
 
         try:
-            date_obj = datetime.strptime(date_input.strip(), "%d %b %Y")
+            date_obj = datetime.strptime(date_input.strip(), "%d/%m/%Y")
             return date_obj
 
         except ValueError:
-            print("\nPlease enter a date in following format: 'DD Mon YYYY'.\n")
+            print("\nPlease enter a date in following format: 'DD/MM/YYYY'.\n")

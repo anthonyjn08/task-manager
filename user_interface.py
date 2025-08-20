@@ -59,11 +59,16 @@ def start_application():
             if not user:
                 continue
             
+            # Task inputs
             title = input("Task Title: ")
             description = input("Tasks Description: ")
-            assigned_date = datetime.date.today().strftime("%d %b %Y")
-            due_date = date_validation("Task due date (e.g., 01 Jan 2000): ")
-            task_service.add_task(title, description, due_date, assigned_date, user)
+            assigned_date = datetime.date.today().strftime("%d/%m/%Y")
+            due_date_input = date_validation("Task due date (e.g., 01/01/2000): ")
+            due_date = due_date_input.strftime("%d/%m/%Y")
+            task_id = task_service.add_task(title, description, due_date, assigned_date, user)
+
+            # Confirm task added and provide task number and title
+            print(f"Task {task_id}: {title} added to the database.")
         elif choice == 2:
             # Get task
             print("\nGet task\n")
@@ -99,6 +104,7 @@ def start_application():
             # View my tasks
             print("\nView my tasks\n")
             tasks = task_service.get_my_tasks(username)
+
             if tasks:
                 for task in tasks:
                     print("-" * 80)
@@ -110,8 +116,9 @@ def start_application():
                     print(f"Completed: {task[5]}")
                     print(f"Task Description:")
                     print(f"{task[2]}\n")
-            
-            print("-" * 80 + "\n")
+                print("-" * 80 + "\n")
+            else:
+                print("You have no tasks.")
         elif choice == 4:
             # Update task
             print("\nUpdate task\n")

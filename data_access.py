@@ -1,4 +1,3 @@
-import re
 import sqlite3
 
 
@@ -27,7 +26,7 @@ class TaskRepository:
 
             # Commit the changes
             db.commit()
-            
+
         # Catch and exceptions
         except Exception as e:
             db.rollback()
@@ -52,6 +51,8 @@ class TaskRepository:
             )
             # Commit the changes
             db.commit()
+            task_no = cursor.lastrowid
+            return task_no
         except Exception as e:
             db.rollback()
             raise e
@@ -76,7 +77,7 @@ class TaskRepository:
         if task is None:
             print("\nTask not found\n")
             return None
-        
+
         return {
             "id": task[0],
             "title": task[1],
@@ -86,7 +87,7 @@ class TaskRepository:
             "is_complete": task[5],
             "user": task[6],
         }
-    
+
     def get_my_tasks(self, user):
         db = sqlite3.connect("taskManager.db")
         cursor = db.cursor()
@@ -122,7 +123,7 @@ class TaskRepository:
             print("\nThere are currently no tasks!\n")
 
         return tasks
-    
+
     def completed_tasks(self):
         is_complete = "Yes"
         db = sqlite3.connect("taskManager.db")
@@ -221,7 +222,8 @@ class UserRepository:
             cursor.execute(
                 """
                 CREATE TABLE IF NOT EXISTS
-                user(id INTEGER PRIMARY KEY, username TEXT UNIQUE, password TEXT,
+                user(id INTEGER PRIMARY KEY, username TEXT UNIQUE,
+                password TEXT,
                 email TEXT, isAdmin TEXT DEFAULT "No")
                 """
             )
@@ -234,7 +236,7 @@ class UserRepository:
                 '''
             )
             user_count = cursor.fetchone()
-            
+
             if user_count[0] == 0:
 
                 # Admin variables
@@ -252,7 +254,7 @@ class UserRepository:
 
                 # Commit the changes
                 db.commit()
-            
+
         # Catch and exceptions
         except Exception as e:
             db.rollback()
@@ -280,7 +282,6 @@ class UserRepository:
         if user is None:
             return None
 
-        print(type(user[4]))
         is_admin = user[4]
         stored_password = user[2]
         if stored_password == password and is_admin == "Yes":
@@ -346,7 +347,8 @@ class UserRepository:
         user = cursor.fetchone()
         db.close()
         if not user:
-            print("Assignee does not exist. Please create the assignee then try again.")
+            print("Assignee does not exist. Please create the assignee then"
+                  " try again.")
             return None
         return username
 
@@ -363,7 +365,7 @@ class UserRepository:
         user = cursor.fetchone()
         db.close()
 
-        if user == None:
+        if user is None:
             return None
         else:
             return {

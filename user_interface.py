@@ -122,64 +122,93 @@ def start_application():
         elif choice == 4:
             # Update task
             print("\nUpdate task\n")
-            task_id = int(input("Please enter the task number: "))
-            task = task_service.get_task(task_id)
-            if task:
-                # TITLE update
-                print(f"Title: {task["title"]}\n")
-                while True:
-                    update_title = input("Would you like to update the title (y/n): ").lower()
-                    if update_title == "y":
-                        task["title"] = input("Enter new title: ")
-                        break
-                    elif update_title == "n":
-                        break
-                    else:
-                        print("Invalid option. Try again")
-                
-                # DESCRIPTION update
-                print(f"Description: {task["description"]}\n")
-                while True:
-                    update_desc = input("Would you like to update the description (y/n): ").lower()
-                    if update_desc == "y":
-                        task["description"] = input("Enter new description: ")
-                        break
-                    elif update_desc == "n":
-                        break
-                    else:
-                        print("Invalid option. Try again")
+            while True:
+                try:
+                    get_task_id = int(input("Please enter the task number or -1 for main menu: "))
 
-                # DUE DATE update
-                print(f"Due date: {task["due_date"]}\n")
-                while True:
-                    update_date = input("Would you like to update the due date (y/n): ").lower()
-                    if update_date == "y":
-                        task["due_date"] = date_validation("Enter new due date: ")
+                    # Return to main menu if user enters -1
+                    if get_task_id == -1:
                         break
-                    elif update_date == "n":
-                        break
-                    else:
-                        print("Invalid option. Try again")
+                    
+                    task = task_service.get_task(get_task_id)
 
-                # USER update
-                print(f"Assigned to: {task["user"]}\n")
-                while True:
-                    update_user = input("Would you like to update the assigned (y/n): ").lower()
-                    if update_user == "y":
-                        task["user"] = input("Enter new assignee: ")
-                        break
-                    elif update_user == "n":
-                        break
-                    else:
-                        print("Invalid option. Try again")
-                id = task["id"],
-                title = task["title"],
-                description = task["description"],
-                due_date = task["due_date"],
-                user = task["user"]
-                task_service.update_task(id, title, description, due_date, user)
-            else:
-                print("Task not found.")
+                    if not task:
+                        continue
+
+                    if task:
+
+                        task_id = task["id"]
+                        title = task["title"]
+                        description = task["description"]
+                        due_date = task["due_date"]
+                        user = task["user"]
+
+                        # TITLE update
+                        print(f"\nTitle: {title}")
+                        while True:
+                            update_title = input("Would you like to update the title (y/n): ").lower()
+                            if update_title == "y":
+                                title = input("Enter new title: ")
+                                break
+                            elif update_title == "n":
+                                break
+                            else:
+                                print("Invalid option. Try again")
+                        # print(f"Title: {title}")
+                        # DESCRIPTION update
+                        print(f"\nDescription: {description}")
+                        while True:
+                            update_desc = input("Would you like to update the description (y/n): ").lower()
+                            if update_desc == "y":
+                                description = input("Enter new description: ")
+                                break
+                            elif update_desc == "n":
+                                break
+                            else:
+                                print("Invalid option. Try again")
+
+                        # DUE DATE update
+                        print(f"\nDue date: {due_date}")
+                        while True:
+                            update_date = input("Would you like to update the due date (y/n): ").lower()
+                            if update_date == "y":
+                                due_date = date_validation("Enter new due date: ")
+                                break
+                            elif update_date == "n":
+                                break
+                            else:
+                                print("Invalid option. Try again")
+
+                        # USER update
+                        print(f"\nAssigned to: {user}")
+                        while True:
+                            update_user = input("Would you like to update the assigned (y/n): ").lower()
+                            if update_user == "y":
+                                while True:
+                                    # Check user exists
+                                    user = user_service.assignee_exists("Enter new assignee: ")
+                                    # Continue if they do.
+                                    if user:
+                                        break
+                                    else:
+                                        retry = input("Try again? (y/n): ").lower()
+                                        # If retry is no then reassigned original assignee.
+                                        if retry == "n":
+                                            user = task["user"]
+                                            break
+                                break
+                            elif update_user == "n":
+                                break
+                            else:
+                                print("Invalid option. Try again")
+                                
+                        task_service.update_task(title, description, due_date, user, task_id)
+
+                    print(f"\nTask {task_id}: {title} updated.\n")
+                        
+                except ValueError:
+                    print("\nPlease enter an integer!\n")
+
         elif choice == 5:
             # Mark task complete
             print("\nMark task complete\n")

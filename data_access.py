@@ -143,7 +143,7 @@ class TaskRepository:
 
         return completed_tasks
 
-    def update_task(self, task_id, title, description, due_date, user):
+    def update_task(self, title, description, due_date, user, task_id):
         try:
             db = sqlite3.connect("taskManager.db")
             cursor = db.cursor()
@@ -156,6 +156,7 @@ class TaskRepository:
             )
             # Commit the changes
             db.commit()
+            return task_id
         except Exception as e:
             db.rollback()
             raise e

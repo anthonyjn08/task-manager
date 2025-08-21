@@ -18,12 +18,12 @@ def start_application():
         print("Invalid login. Please try again.")
         return
 
-    role, username = user_login
+    role, logged_in_user = user_login
 
     if role == "admin":
-        print(f"Welcome {username}. You're logged in as an admin")
+        print(f"Welcome {logged_in_user}. You're logged in as an admin")
     elif role == "user":
-        print(f"Welcome {username}")
+        print(f"Welcome {logged_in_user}")
 
     while True:
         print("\n*** Main Menu ***")
@@ -132,16 +132,22 @@ def start_application():
                     
                     task = task_service.get_task(get_task_id)
 
+                    
+                            
                     if not task:
                         continue
 
                     if task:
-
                         task_id = task["id"]
                         title = task["title"]
                         description = task["description"]
                         due_date = task["due_date"]
                         user = task["user"]
+
+                        if role == "user":
+                            if logged_in_user != user:
+                                print("\nUsers only allowed to edit own tasks!\n")
+                            continue
 
                         # TITLE update
                         print(f"\nTitle: {title}")

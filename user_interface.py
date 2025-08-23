@@ -147,7 +147,7 @@ def start_application():
                         if role == "user":
                             if logged_in_user != user:
                                 print("\nUsers only allowed to edit own tasks!\n")
-                            continue
+                                continue
 
                         # TITLE update
                         print(f"\nTitle: {title}")
@@ -218,22 +218,51 @@ def start_application():
         elif choice == 5:
             # Mark task complete
             print("\nMark task complete\n")
-            task_id = int(input("Please enter the task number: "))
-            task = task_service.get_task(task_id)
-            if task:
-                # Mark Complete
-                print(f"Task ID: {task["id"]}       Task Title: {task["title"]}\n")
-                while True:
-                    complete = input("Mark this task as complete? (y/n): ").lower()
-                    if complete == "y":
-                        task_service.mark_complete({task_id})
+            while True:
+                try:
+                    task_id = int(input("Please enter the task number or -1 for main menu: "))
+
+                    # Return to main menu if user enter -1
+                    if task_id == -1:
                         break
-                    elif complete == "n":
-                        break
+
+                    task = task_service.get_task(task_id)
+                    # print(task["user"])
+                    # print(logged_in_user)
+                    # print(role)
+
+                    # Exit if task doeesnt exist
+                    if not task:
+                        continue
+
+                    if task:
+                        # Make sure user it editing their own task
+                        if role == "user":
+                            if logged_in_user != task["user"]:
+                                print("\nUsers only allowed to edit own tasks!\n")
+                                continue
+
+                        # If task completed already return to task number entry
+                        if task["is_complete"] == "Yes":
+                            print(f"\nTask {task_id} already completed.\n")
+                            continue
+                        
+                        # Mark Complete
+                        print(f"Task ID: {task["id"]}       Task Title: {task["title"]}\n")
+                        while True:
+                            complete = input("Mark this task as complete? (y/n): ").lower()
+                            if complete == "y":
+                                task_service.mark_complete(task_id)
+                                break
+                            elif complete == "n":
+                                break
+                            else:
+                                print("Invalid option! Try again.")
                     else:
-                        print("Invalid option! Try again.")
-            else:
-                print("Task not found.")
+                        print("Task not found.")
+                except ValueError:
+                    print("\nPlease enter an integer!\n")
+
         elif choice == 6:
             # View all tasks
             print("\nView all tasks\n")

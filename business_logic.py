@@ -28,8 +28,8 @@ class TaskService:
         return self.task_repository.update_task(title, description, due_date,
                                          user, task_id)
 
-    def mark_complete(self, id):
-        self.task_repository.mark_complete(id)
+    def mark_complete(self, task_id):
+        self.task_repository.mark_complete(task_id)
 
     def delete_task(self, id):
         self.task_repository.delete_task(id)

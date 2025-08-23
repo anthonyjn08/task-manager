@@ -164,7 +164,7 @@ class TaskRepository:
             # Close the db connection
             db.close()
 
-    def mark_complete(self, id):
+    def mark_complete(self, task_id):
         try:
             is_complete = "Yes"
             db = sqlite3.connect("taskManager.db")
@@ -175,10 +175,11 @@ class TaskRepository:
                 SET isComplete = ?
                 WHERE id = ?
                 ''',
-                (is_complete, id)
+                (is_complete, task_id)
             )
             # Commit the changes
             db.commit()
+            print(f"Task {task_id} marked as complete.")
         except Exception as e:
             db.rollback()
             raise e

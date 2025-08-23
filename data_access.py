@@ -1,4 +1,5 @@
 import sqlite3
+from datetime import datetime
 
 
 class TaskRepository:
@@ -186,6 +187,21 @@ class TaskRepository:
         finally:
             # Close the db connection
             db.close()
+
+    def overdue_tasks(self):
+        date_now = datetime.now()
+        db = sqlite3.connect("taskManager.db")
+        cursor = db.cursor()
+        cursor.execute(
+            '''
+            SELECT * FROM tasks
+            WHERE dueDate < ?
+            '''(date_now)
+        )
+        tasks = cursor.fetchall()
+        db.close()
+
+        return tasks
 
     def delete_task(self, id):
         try:

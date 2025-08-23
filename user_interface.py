@@ -50,6 +50,11 @@ def start_application():
 
         choice = int(input("Enter your choice: "))
 
+        # Return user to main menu if role is "user"
+        if role == "user" and choice > 5:
+            print("\nInvalid option, try again.\n")
+            continue
+
         if choice == 1:
             # Add Task
             print("\nAdd new task\n")

@@ -189,19 +189,26 @@ class TaskRepository:
             db.close()
 
     def overdue_tasks(self):
-        date_now = datetime.now()
-        db = sqlite3.connect("taskManager.db")
-        cursor = db.cursor()
-        cursor.execute(
-            '''
-            SELECT * FROM tasks
-            WHERE dueDate < ?
-            '''(date_now)
-        )
-        tasks = cursor.fetchall()
-        db.close()
+        try:
+            db = sqlite3.connect("taskManager.db")
+            cursor = db.cursor()
+            cursor.execute(
+                """
+                SELECT *
+                FROM tasks
+                WHERE dueDate < DATE("now") AND isComplete = "No"
+                """
+            )
+            tasks = cursor.fetchall()
+            db.close()
 
-        return tasks
+            if tasks is None:
+                print("No overdue tasks.")
+                return None
+
+            return tasks
+        except Exception as e:
+            raise e
 
     def delete_task(self, id):
         try:

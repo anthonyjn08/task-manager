@@ -44,7 +44,7 @@ def start_application():
             print("10. Update user")
             print("11. Make user an Admin")
             print("12. Delete user")
-            print("13. Unused")
+            print("13. Overdue Tasks")
 
         print("0. Exit program")
 
@@ -246,7 +246,7 @@ def start_application():
                         if task["is_complete"] == "Yes":
                             print(f"\nTask {task_id} already completed.\n")
                             continue
-                        
+
                         # Mark Complete
                         print(f"Task ID: {task["id"]}       Task Title: {task["title"]}\n")
                         while True:
@@ -423,6 +423,15 @@ def start_application():
                 print("User not found")
         elif choice == 13:
             # logic
+            tasks = task_service.overdue_tasks()
+            if tasks:
+                for task in tasks:
+                    print("_" * 80)
+                    print(f"Task Number: {task[0]}      Task Assignee: {task[6]}")
+                    print(f"Assigned date: {task[3]}    Due date: {task[4]}")
+                    print(f"Task Title: {task[1]}       Completed: {task[5]}")
+                    print("Task Description:")
+                    print(f"{task[2]}")
             print("Currently unused.")
         elif choice == 0:
             sys.exit()

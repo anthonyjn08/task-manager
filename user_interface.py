@@ -330,6 +330,25 @@ def start_application():
                 print("There are no completed tasks!")
 
         elif choice == 9:
+            # View all users
+            print("\nView all userss\n")
+            users = user_service.view_all_users()
+
+            for user in users:
+                user_id = user[0]
+                username = user[1]
+                email = user[3]
+                admin = user[4]
+
+                print("\n" + "-" * 90)
+                print(f"User ID: {user_id}")
+                print(f"Username: {username}")
+                print(f"User Email: {email}")
+                print(f"Admin User: {admin}")
+
+        
+            
+        elif choice == 10:
             # Add user
             print("\nAdd user\n")
             username = user_service.validate_user("Enter the username: ")
@@ -337,7 +356,7 @@ def start_application():
             email = validate_email("Enter the email address: ")
             user_service.add_user(username, password, email)
                 
-        elif choice == 10:
+        elif choice == 11:
             # Update user
             print("\nUpdate user\n")
             user_id = int(input("Enter user ID: "))
@@ -390,7 +409,8 @@ def start_application():
             password = user["password"]
             email = user["email"]
             user_service.update_user(id, username, password, email)
-        elif choice == 11:
+
+        elif choice == 12:
             # Make user Admin
             print("\nMake user admnin\n")
             user_id = int(input("Enter user ID: "))
@@ -408,7 +428,8 @@ def start_application():
                         print("Invalid Option")
             else:
                 print("User not found.")
-        elif choice == 12:
+
+        elif choice == 13:
             # Delete User
             print("\n Delete user\n")
             user_id = int(input("Enter user ID: "))
@@ -427,7 +448,8 @@ def start_application():
                         print("Invalid option. Try again.")
             else:
                 print("User not found")
-        elif choice == 13:
+
+        elif choice == 14:
             # logic
             tasks = task_service.overdue_tasks()
             if tasks:

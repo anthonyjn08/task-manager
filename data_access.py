@@ -330,6 +330,7 @@ class UserRepository:
         )
         users = cursor.fetchall()
         db.close()
+
         return users
 
     def add_user(self, username, password, email):

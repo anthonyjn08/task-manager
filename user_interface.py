@@ -328,14 +328,15 @@ def start_application():
                     print(f"{task[2]}")
             else:
                 print("There are no completed tasks!")
+
         elif choice == 9:
             # Add user
             print("\nAdd user\n")
             username = user_service.validate_user("Enter the username: ")
             password = input("Enter the upassword: ")
             email = validate_email("Enter the email address: ")
-                
             user_service.add_user(username, password, email)
+                
         elif choice == 10:
             # Update user
             print("\nUpdate user\n")

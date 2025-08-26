@@ -330,7 +330,8 @@ class UserRepository:
             )
             # Commit the changes
             db.commit()
-            print("User successfully added.")
+            user_id = cursor.lastrowid
+            print(f"\nUser {user_id}: {username} successfully added.\n")
         except Exception as e:
             db.rollback()
             raise e

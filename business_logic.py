@@ -56,6 +56,9 @@ class UserService:
 
     def login(self, username, password):
         return self.user_repository.login(username, password)
+    
+    def view_all_users(self):
+        return self.user_repository.view_all_users()
 
     def add_user(self, username, password, email):
         self.user_repository.add_user(username, password, email)

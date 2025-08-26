@@ -318,6 +318,20 @@ class UserRepository:
         else:
             print("Incorrect password.")
 
+    def view_all_users(self):
+        
+        db = sqlite3.connect("taskManager.db")
+        cursor = db.cursor()
+        cursor.execute(
+            '''
+            SELECT *
+            FROM user
+            '''
+        )
+        users = cursor.fetchall()
+        db.close()
+        return users
+
     def add_user(self, username, password, email):
         try:
             db = sqlite3.connect("taskManager.db")

@@ -345,9 +345,8 @@ def start_application():
                 print(f"Username: {username}")
                 print(f"User Email: {email}")
                 print(f"Admin User: {admin}")
+            print("-" * 90 + "\n")
 
-        
-            
         elif choice == 10:
             # Add user
             print("\nAdd user\n")

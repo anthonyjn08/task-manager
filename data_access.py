@@ -229,6 +229,59 @@ class TaskRepository:
             # Close the db connection
             db.close()
 
+    def import_tasks(self):
+        
+        db = sqlite3.connect("taskManager.db")
+        cursor = db.cursor()
+
+        with open("tasks.txt", "r", encoding="utf-8") as file:
+            for line in file:
+                if not line.strip():
+                    continue
+
+                try:
+                    id, title, description, assigned_date, due_date, is_complete, user = (
+                        line.strip().split(",")
+                    )
+                    try:
+                        assigned_date = datetime.strptime(assigned_date.strip(), "%d/%m,%Y").strftime("%d/%m/%Y")
+                        due_date = datetime.strptime(due_date.strip(), "%d/%m,%Y").strftime("%d/%m/%Y")
+                    except ValueError:
+                        print(f"Task {id} skipped: Incorrect date format")
+                        continue
+
+                    cursor.execute(
+                        '''
+                        SELECT id FROM user
+                        WHERE username = ?
+                        ''', (user.strip(), )
+                    )
+
+                    user_exist = cursor.fetchone()
+
+                    if not user_exist:
+                        print(f"Task {id} skipped: {user} does not exist.")
+                        continue
+
+                    cursor.execute(
+                        '''
+                        INSERT INTO tasks(id, title, description, assignedDate, dueDate, isComplete,
+                        user)
+                        VALUES (?, ?, ?, ?, ?, ?, ?)
+                        ON CONFLICT(id) DO NOTHING
+                        ''', (id, title, description, assigned_date, due_date, is_complete, user)
+                    )
+
+                    if cursor.rowcount == 0:
+                        print(f"Task {id} skipped. Use 'update task' option to edit existing tasks")
+                
+                    db.commit()
+                except ValueError:
+                    print(f"{line.strip()} skipped due to incorrect format.")
+                    continue
+
+                finally:
+                    db.close()
 
 class UserRepository:
 

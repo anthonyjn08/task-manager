@@ -38,13 +38,16 @@ def start_application():
         if role == "admin":
             print("\n*** Admin Options ***")
             print("6. View all tasks")
-            print("7. Delete task")
-            print("8. View completed tasks")
-            print("9. Add user")
-            print("10. Update user")
-            print("11. Make user an Admin")
-            print("12. Delete user")
-            print("13. Overdue Tasks")
+            print("7. Overdue tasks")
+            print("8. Completed Tasks")
+            print("9. Delete task")
+            print("10. Import tasks")
+            print("11. Export tasks")
+            print("12. View all users")
+            print("13. Add user")
+            print("14. Update user")
+            print("15. Make user an Admin")
+            print("16. Delete user")
 
         print("0. Exit program")
 
@@ -55,6 +58,7 @@ def start_application():
             print("\nInvalid option, try again.\n")
             continue
 
+        # ********** USER OPTIONS **********
         if choice == 1:
             # Add Task
             print("\nAdd new task\n")
@@ -74,6 +78,7 @@ def start_application():
 
             # Confirm task added and provide task number and title
             print(f"Task {task_id}: {title} added to the database.")
+
         elif choice == 2:
             # Get task
             print("\nGet task\n")
@@ -105,6 +110,7 @@ def start_application():
                         
                 except ValueError:
                     print("\nPlease enter an integer!\n")
+
         elif choice == 3:
             # View my tasks
             print("\nView my tasks\n")
@@ -124,6 +130,7 @@ def start_application():
                 print("-" * 80 + "\n")
             else:
                 print("You have no tasks.")
+
         elif choice == 4:
             # Update task
             print("\nUpdate task\n")
@@ -137,8 +144,6 @@ def start_application():
                     
                     task = task_service.get_task(get_task_id)
 
-                    
-                            
                     if not task:
                         continue
 
@@ -268,8 +273,9 @@ def start_application():
                 except ValueError:
                     print("\nPlease enter an integer!\n")
 
+        # ********** ADMIN OPTIONS **********
         elif choice == 6:
-            # View all tasks
+            # ***** View all tasks *****
             print("\nView all tasks\n")
             tasks = task_service.view_all_tasks()
             if tasks:
@@ -282,8 +288,36 @@ def start_application():
                     print(f"{task[2]}")
             else:
                 print("There are no tasks!")
+
         elif choice == 7:
-            # Delete task
+            # ***** Overdue tasks *****
+            tasks = task_service.overdue_tasks()
+            if tasks:
+                for task in tasks:
+                    print("_" * 80)
+                    print(f"Task Number: {task[0]}      Task Assignee: {task[6]}")
+                    print(f"Assigned date: {task[3]}    Due date: {task[4]}")
+                    print(f"Task Title: {task[1]}       Completed: {task[5]}")
+                    print("Task Description:")
+                    print(f"{task[2]}")
+
+        elif choice == 8:
+                # ***** View completed tasks *****
+                print("\nView completed tasks\n")
+                tasks = task_service.completed_tasks()
+                if tasks:
+                    for task in tasks:
+                        print("_" * 80)
+                        print(f"Task Number: {task[0]}      Task Assignee: {task[6]}")
+                        print(f"Assigned date: {task[3]}    Due date: {task[4]}")
+                        print(f"Task Title: {task[1]}       Completed: {task[5]}")
+                        print("Task Description:")
+                        print(f"{task[2]}")
+                else:
+                    print("There are no completed tasks!")
+
+        elif choice == 9:
+            # ***** Delete task *****
             print("\nDelete Task\n")
             task_id = int(input("Please enter the task number: "))
             task = task_service.get_task(task_id)
@@ -314,23 +348,19 @@ def start_application():
                     break
                 else:
                     print("Invalid option! Try again.")
-        elif choice == 8:
-            # View completed tasks
-            print("\nView completed tasks\n")
-            tasks = task_service.completed_tasks()
-            if tasks:
-                for task in tasks:
-                    print("_" * 80)
-                    print(f"Task Number: {task[0]}      Task Assignee: {task[6]}")
-                    print(f"Assigned date: {task[3]}    Due date: {task[4]}")
-                    print(f"Task Title: {task[1]}       Completed: {task[5]}")
-                    print("Task Description:")
-                    print(f"{task[2]}")
-            else:
-                print("There are no completed tasks!")
 
-        elif choice == 9:
-            # View all users
+        elif choice == 10:
+            # ***** Import tasks *****
+            print("\nImport Tasks\n")
+            task_service.import_tasks()
+
+        elif choice == 11:
+            # ***** Export tasks *****
+            print("\nExport tasks\n")
+            task_service.export_tasks()
+
+        elif choice == 12:
+            # ***** View all users *****
             print("\nView all userss\n")
             users = user_service.view_all_users()
 
@@ -347,16 +377,16 @@ def start_application():
                 print(f"Admin User: {admin}")
             print("-" * 90 + "\n")
 
-        elif choice == 10:
-            # Add user
+        elif choice == 13:
+            # ***** Add user *****
             print("\nAdd user\n")
             username = user_service.validate_user("Enter the username: ")
             password = input("Enter the upassword: ")
             email = validate_email("Enter the email address: ")
             user_service.add_user(username, password, email)
                 
-        elif choice == 11:
-            # Update user
+        elif choice == 14:
+            # ***** Update user *****
             print("\nUpdate user\n")
             user_id = int(input("Enter user ID: "))
             user = user_service.get_user(user_id)
@@ -409,8 +439,8 @@ def start_application():
             email = user["email"]
             user_service.update_user(id, username, password, email)
 
-        elif choice == 12:
-            # Make user Admin
+        elif choice == 15:
+            # ***** Make user Admin *****
             print("\nMake user admnin\n")
             user_id = int(input("Enter user ID: "))
             user = user_service.get_user(user_id)
@@ -428,8 +458,8 @@ def start_application():
             else:
                 print("User not found.")
 
-        elif choice == 13:
-            # Delete User
+        elif choice == 16:
+            # ***** Delete User *****
             print("\n Delete user\n")
             user_id = int(input("Enter user ID: "))
             user = user_service.get_user(user_id)
@@ -448,19 +478,9 @@ def start_application():
             else:
                 print("User not found")
 
-        elif choice == 14:
-            # logic
-            tasks = task_service.overdue_tasks()
-            if tasks:
-                for task in tasks:
-                    print("_" * 80)
-                    print(f"Task Number: {task[0]}      Task Assignee: {task[6]}")
-                    print(f"Assigned date: {task[3]}    Due date: {task[4]}")
-                    print(f"Task Title: {task[1]}       Completed: {task[5]}")
-                    print("Task Description:")
-                    print(f"{task[2]}")
-            print("Currently unused.")
         elif choice == 0:
+            # ***** Exit task manager
+            print("Exiting Task Manager")
             sys.exit()
         else:
             print("invalid option")

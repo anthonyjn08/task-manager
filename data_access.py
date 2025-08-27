@@ -230,6 +230,8 @@ class TaskRepository:
             db.close()
 
     def import_tasks(self):
+        print("Import Tasks")
+        print("Please note, updates are applied to existing tasks using '4. Update tasks'")
         
         db = sqlite3.connect("taskManager.db")
         cursor = db.cursor()
@@ -255,8 +257,8 @@ class TaskRepository:
                     user = task[6].strip()
 
                     try:
-                        assigned_date = datetime.strptime(assigned_date.strip(), "%d/%m,%Y").strftime("%d/%m/%Y")
-                        due_date = datetime.strptime(due_date.strip(), "%d/%m,%Y").strftime("%d/%m/%Y")
+                        assigned_date = datetime.strptime(assigned_date.strip(), "%d/%m/%Y").strftime("%d/%m/%Y")
+                        due_date = datetime.strptime(due_date.strip(), "%d/%m/%Y").strftime("%d/%m/%Y")
                     except ValueError:
                         print(f"Task {id} skipped: Incorrect date format")
                         continue
@@ -282,18 +284,14 @@ class TaskRepository:
                         ON CONFLICT(id) DO NOTHING
                         ''', (id, title, description, assigned_date, due_date, is_complete, user)
                     )
-
-                    if cursor.rowcount == 0:
-                        print(f"Task {id} skipped. Use 'update task' option to edit existing tasks")
                 
-                    db.commit()
                 except ValueError:
                     print(f"{line.strip()} skipped due to incorrect format.")
                     continue
 
-                finally:
-                    db.close()
-                    print("Import completed.")
+        db.commit()
+        db.close()
+
 
     def export_tasks(self):
         db = sqlite3.connect("taskManager.db")
@@ -309,8 +307,8 @@ class TaskRepository:
             for task in tasks:
                 id, title, description, assigned_date, due_date, is_complete, user = task
 
-                line = f"{id},{title},{description},{assigned_date},{due_date},"
-                f"{is_complete},{user}"
+                line = (f"{id},{title},{description},{assigned_date},{due_date},"
+                        f"{is_complete},{user}")
 
                 file.write(line+"\n")
 

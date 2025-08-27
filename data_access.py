@@ -5,9 +5,19 @@ from datetime import datetime
 class TaskRepository:
 
     def __init__(self):
+        """
+        Initialise the Task Repository
+        
+        Ensures the 'tasks' table exists in the database by calling
+        the _create_table() method when a new TaskRepository is created.
+        """
+
         self._create_table()
 
     def _create_table(self):
+        """
+        Creates the tasks table, if it does not exist, when called by the __init__
+        function"""
         try:
             # Create database called tasks
             db = sqlite3.connect("taskManager.db")
@@ -29,15 +39,15 @@ class TaskRepository:
             db.commit()
 
         # Catch and exceptions
-        except Exception as e:
+        except sqlite3.Error as e:
             db.rollback()
-            raise e
+            print(f"Error creating table: {e}")
+            raise
         finally:
             # Close the db connection
             db.close()
 
-    # Task functions
-
+    # ********** Task functions **********
     def add_task(self, title, description, assigned_date, due_date, user):
         try:
             db = sqlite3.connect("taskManager.db")

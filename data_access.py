@@ -228,6 +228,7 @@ class TaskRepository:
         finally:
             # Close the db connection
             db.close()
+            print(f"Task {id} deleted")
 
     def import_tasks(self):
         print("Import Tasks")
@@ -291,7 +292,7 @@ class TaskRepository:
 
         db.commit()
         db.close()
-
+        print("\nTasks imported.\n")
 
     def export_tasks(self):
         db = sqlite3.connect("taskManager.db")
@@ -315,6 +316,7 @@ class TaskRepository:
         db.close()
 
         print(f"All tasks exported successfully. Total: {len(tasks)} tasks.")
+
 
 class UserRepository:
 

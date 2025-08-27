@@ -1,5 +1,4 @@
-import sys
-import datetime
+import sys, datetime, time
 from business_logic import TaskService, UserService
 from utilities import validate_email, date_validation
 
@@ -51,257 +50,272 @@ def start_application():
 
         print("0. Exit program")
 
-        choice = int(input("Enter your choice: "))
+        try:
+            choice = int(input("Enter your choice: "))
+        
 
-        # Return user to main menu if role is "user"
-        if role == "user" and choice > 5:
-            print("\nInvalid option, try again.\n")
-            continue
-
-        # ********** USER OPTIONS **********
-        if choice == 1:
-            # Add Task
-            print("\nAdd new task\n")
-            user = user_service.assignee_exists("Assigned to: ")
-
-            # If no user, then exit the add task process
-            if not user:
+            # Return user to main menu if role is "user"
+            if role == "user" and choice > 5:
+                print("\nInvalid option, try again.\n")
                 continue
-            
-            # Task inputs
-            title = input("Task Title: ")
-            description = input("Tasks Description: ")
-            assigned_date = datetime.date.today().strftime("%d/%m/%Y")
-            due_date_input = date_validation("Task due date (e.g., 01/01/2000): ")
-            due_date = due_date_input.strftime("%d/%m/%Y")
-            task_id = task_service.add_task(title, description, due_date, assigned_date, user)
 
-            # Confirm task added and provide task number and title
-            print(f"Task {task_id}: {title} added to the database.")
+            # ********** USER OPTIONS **********
+            if choice == 1:
+                # Add Task
+                print("\nAdd new task\n")
+                user = user_service.assignee_exists("Assigned to: ")
 
-        elif choice == 2:
-            # Get task
-            print("\nGet task\n")
-            while True:
-                try:
-                    task_id = int(input("Please enter the task number or -1 for main menu: "))
+                # If no user, then exit the add task process
+                if not user:
+                    continue
+                
+                # Task inputs
+                title = input("Task Title: ")
+                description = input("Tasks Description: ")
+                assigned_date = datetime.date.today().strftime("%d/%m/%Y")
+                due_date_input = date_validation("Task due date (e.g., 01/01/2000): ")
+                due_date = due_date_input.strftime("%d/%m/%Y")
+                task_id = task_service.add_task(title, description, due_date, assigned_date, user)
 
-                    # Return to main menu if user enters -1
-                    if task_id == -1:
-                        break
+                # Confirm task added and provide task number and title
+                print(f"Task {task_id}: {title} added to the database.")
+                time.sleep(2)
 
-                    task = task_service.get_task(task_id)
-                    
-                    if task:
-                        # Print task
-                        print("\n" + "-" * 80)
-                        print(f"Task Number: {task["id"]}")
-                        print(f"Task Assignee: {task["user"]}")
-                        print(f"Assigned date: {task["assigned_date"]}")
-                        print(f"Due date: {task["due_date"]}")
-                        print(f"Task Title: {task["title"]}")
-                        print(f"Completed: {task["is_complete"]}")
+            elif choice == 2:
+                # Get task
+                print("\nGet task\n")
+                while True:
+                    try:
+                        task_id = int(input("Please enter the task number or -1 for main menu: "))
+
+                        # Return to main menu if user enters -1
+                        if task_id == -1:
+                            break
+
+                        task = task_service.get_task(task_id)
+                        
+                        if task:
+                            # Print task
+                            print("\n" + "-" * 80)
+                            print(f"Task Number: {task["id"]}")
+                            print(f"Task Assignee: {task["user"]}")
+                            print(f"Assigned date: {task["assigned_date"]}")
+                            print(f"Due date: {task["due_date"]}")
+                            print(f"Task Title: {task["title"]}")
+                            print(f"Completed: {task["is_complete"]}")
+                            print(f"Task Description:")
+                            print(f"{task["description"]}")
+                            print("-" * 80 + "\n")
+                            break
+                        else:
+                            print("That task doesn't exist.")
+                            
+                    except ValueError:
+                        print("\nPlease enter an integer!\n")
+                
+                time.sleep(2)
+
+            elif choice == 3:
+                # View my tasks
+                print("\nView my tasks\n")
+                tasks = task_service.get_my_tasks(username)
+
+                if tasks:
+                    for task in tasks:
+                        print("-" * 80)
+                        print(f"Task Number: {task[0]}")
+                        print(f"Task Assignee: {task[6]}")
+                        print(f"Assigned date: {task[3]}")
+                        print(f"Due date: {task[4]}")
+                        print(f"Task Title: {task[1]}")
+                        print(f"Completed: {task[5]}")
                         print(f"Task Description:")
-                        print(f"{task["description"]}")
-                        print("-" * 80 + "\n")
-                        break
-                    else:
-                        print("That task doesn't exist.")
+                        print(f"{task[2]}\n")
+                    print("-" * 80 + "\n")
+                else:
+                    print("You have no tasks.")
+                
+                time.sleep(2)
+
+            elif choice == 4:
+                # Update task
+                print("\nUpdate task\n")
+                while True:
+                    try:
+                        get_task_id = int(input("Please enter the task number or -1 for main menu: "))
+
+                        # Return to main menu if user enters -1
+                        if get_task_id == -1:
+                            break
                         
-                except ValueError:
-                    print("\nPlease enter an integer!\n")
+                        task = task_service.get_task(get_task_id)
 
-        elif choice == 3:
-            # View my tasks
-            print("\nView my tasks\n")
-            tasks = task_service.get_my_tasks(username)
-
-            if tasks:
-                for task in tasks:
-                    print("-" * 80)
-                    print(f"Task Number: {task[0]}")
-                    print(f"Task Assignee: {task[6]}")
-                    print(f"Assigned date: {task[3]}")
-                    print(f"Due date: {task[4]}")
-                    print(f"Task Title: {task[1]}")
-                    print(f"Completed: {task[5]}")
-                    print(f"Task Description:")
-                    print(f"{task[2]}\n")
-                print("-" * 80 + "\n")
-            else:
-                print("You have no tasks.")
-
-        elif choice == 4:
-            # Update task
-            print("\nUpdate task\n")
-            while True:
-                try:
-                    get_task_id = int(input("Please enter the task number or -1 for main menu: "))
-
-                    # Return to main menu if user enters -1
-                    if get_task_id == -1:
-                        break
-                    
-                    task = task_service.get_task(get_task_id)
-
-                    if not task:
-                        continue
-
-                    if task:
-                        task_id = task["id"]
-                        title = task["title"]
-                        description = task["description"]
-                        due_date = task["due_date"]
-                        user = task["user"]
-
-                        if role == "user":
-                            if logged_in_user != user:
-                                print("\nUsers only allowed to edit own tasks!\n")
-                                continue
-
-                        # TITLE update
-                        print(f"\nTitle: {title}")
-                        while True:
-                            update_title = input("Would you like to update the title (y/n): ").lower()
-                            if update_title == "y":
-                                title = input("Enter new title: ")
-                                break
-                            elif update_title == "n":
-                                break
-                            else:
-                                print("Invalid option. Try again")
-                        # print(f"Title: {title}")
-                        # DESCRIPTION update
-                        print(f"\nDescription: {description}")
-                        while True:
-                            update_desc = input("Would you like to update the description (y/n): ").lower()
-                            if update_desc == "y":
-                                description = input("Enter new description: ")
-                                break
-                            elif update_desc == "n":
-                                break
-                            else:
-                                print("Invalid option. Try again")
-
-                        # DUE DATE update
-                        print(f"\nDue date: {due_date}")
-                        while True:
-                            update_date = input("Would you like to update the due date (y/n): ").lower()
-                            if update_date == "y":
-                                due_date = date_validation("Enter new due date: ")
-                                break
-                            elif update_date == "n":
-                                break
-                            else:
-                                print("Invalid option. Try again")
-
-                        # USER update
-                        print(f"\nAssigned to: {user}")
-                        while True:
-                            update_user = input("Would you like to update the assigned (y/n): ").lower()
-                            if update_user == "y":
-                                while True:
-                                    # Check user exists
-                                    user = user_service.assignee_exists("Enter new assignee: ")
-                                    # Continue if they do.
-                                    if user:
-                                        break
-                                    else:
-                                        retry = input("Try again? (y/n): ").lower()
-                                        # If retry is no then reassigned original assignee.
-                                        if retry == "n":
-                                            user = task["user"]
-                                            break
-                                break
-                            elif update_user == "n":
-                                break
-                            else:
-                                print("Invalid option. Try again")
-                                
-                        task_service.update_task(title, description, due_date, user, task_id)
-
-                    print(f"\nTask {task_id}: {title} updated.\n")
-                        
-                except ValueError:
-                    print("\nPlease enter an integer!\n")
-
-        elif choice == 5:
-            # Mark task complete
-            print("\nMark task complete\n")
-            while True:
-                try:
-                    task_id = int(input("Please enter the task number or -1 for main menu: "))
-
-                    # Return to main menu if user enter -1
-                    if task_id == -1:
-                        break
-
-                    task = task_service.get_task(task_id)
-                    # print(task["user"])
-                    # print(logged_in_user)
-                    # print(role)
-
-                    # Exit if task doeesnt exist
-                    if not task:
-                        continue
-
-                    if task:
-                        # Make sure user it editing their own task
-                        if role == "user":
-                            if logged_in_user != task["user"]:
-                                print("\nUsers only allowed to edit own tasks!\n")
-                                continue
-
-                        # If task completed already return to task number entry
-                        if task["is_complete"] == "Yes":
-                            print(f"\nTask {task_id} already completed.\n")
+                        if not task:
                             continue
 
-                        # Mark Complete
-                        print(f"Task ID: {task["id"]}       Task Title: {task["title"]}\n")
-                        while True:
-                            complete = input("Mark this task as complete? (y/n): ").lower()
-                            if complete == "y":
-                                task_service.mark_complete(task_id)
-                                break
-                            elif complete == "n":
-                                break
-                            else:
-                                print("Invalid option! Try again.")
-                    else:
-                        print("Task not found.")
-                except ValueError:
-                    print("\nPlease enter an integer!\n")
+                        if task:
+                            task_id = task["id"]
+                            title = task["title"]
+                            description = task["description"]
+                            due_date = task["due_date"]
+                            user = task["user"]
 
-        # ********** ADMIN OPTIONS **********
-        elif choice == 6:
-            # ***** View all tasks *****
-            print("\nView all tasks\n")
-            tasks = task_service.view_all_tasks()
-            if tasks:
-                for task in tasks:
-                    print("_" * 80)
-                    print(f"Task Number: {task[0]}      Task Assignee: {task[6]}")
-                    print(f"Assigned date: {task[3]}    Due date: {task[4]}")
-                    print(f"Task Title: {task[1]}       Completed: {task[5]}")
-                    print(f"Task Description:")
-                    print(f"{task[2]}")
-            else:
-                print("There are no tasks!")
+                            if role == "user":
+                                if logged_in_user != user:
+                                    print("\nUsers only allowed to edit own tasks!\n")
+                                    continue
 
-        elif choice == 7:
-            # ***** Overdue tasks *****
-            tasks = task_service.overdue_tasks()
-            if tasks:
-                for task in tasks:
-                    print("_" * 80)
-                    print(f"Task Number: {task[0]}      Task Assignee: {task[6]}")
-                    print(f"Assigned date: {task[3]}    Due date: {task[4]}")
-                    print(f"Task Title: {task[1]}       Completed: {task[5]}")
-                    print("Task Description:")
-                    print(f"{task[2]}")
+                            # TITLE update
+                            print(f"\nTitle: {title}")
+                            while True:
+                                update_title = input("Would you like to update the title (y/n): ").lower()
+                                if update_title == "y":
+                                    title = input("Enter new title: ")
+                                    break
+                                elif update_title == "n":
+                                    break
+                                else:
+                                    print("Invalid option. Try again")
+                            # print(f"Title: {title}")
+                            # DESCRIPTION update
+                            print(f"\nDescription: {description}")
+                            while True:
+                                update_desc = input("Would you like to update the description (y/n): ").lower()
+                                if update_desc == "y":
+                                    description = input("Enter new description: ")
+                                    break
+                                elif update_desc == "n":
+                                    break
+                                else:
+                                    print("Invalid option. Try again")
 
-        elif choice == 8:
+                            # DUE DATE update
+                            print(f"\nDue date: {due_date}")
+                            while True:
+                                update_date = input("Would you like to update the due date (y/n): ").lower()
+                                if update_date == "y":
+                                    due_date = date_validation("Enter new due date: ")
+                                    break
+                                elif update_date == "n":
+                                    break
+                                else:
+                                    print("Invalid option. Try again")
+
+                            # USER update
+                            print(f"\nAssigned to: {user}")
+                            while True:
+                                update_user = input("Would you like to update the assigned (y/n): ").lower()
+                                if update_user == "y":
+                                    while True:
+                                        # Check user exists
+                                        user = user_service.assignee_exists("Enter new assignee: ")
+                                        # Continue if they do.
+                                        if user:
+                                            break
+                                        else:
+                                            retry = input("Try again? (y/n): ").lower()
+                                            # If retry is no then reassigned original assignee.
+                                            if retry == "n":
+                                                user = task["user"]
+                                                break
+                                    break
+                                elif update_user == "n":
+                                    break
+                                else:
+                                    print("Invalid option. Try again")
+                                    
+                            task_service.update_task(title, description, due_date, user, task_id)
+
+                        print(f"\nTask {task_id}: {title} updated.\n")
+                            
+                    except ValueError:
+                        print("\nPlease enter an integer!\n")
+                
+                time.sleep(2)
+
+            elif choice == 5:
+                # Mark task complete
+                print("\nMark task complete\n")
+                while True:
+                    try:
+                        task_id = int(input("Please enter the task number or -1 for main menu: "))
+
+                        # Return to main menu if user enter -1
+                        if task_id == -1:
+                            break
+
+                        task = task_service.get_task(task_id)
+                        # print(task["user"])
+                        # print(logged_in_user)
+                        # print(role)
+
+                        # Exit if task doeesnt exist
+                        if not task:
+                            continue
+
+                        if task:
+                            # Make sure user it editing their own task
+                            if role == "user":
+                                if logged_in_user != task["user"]:
+                                    print("\nUsers only allowed to edit own tasks!\n")
+                                    continue
+
+                            # If task completed already return to task number entry
+                            if task["is_complete"] == "Yes":
+                                print(f"\nTask {task_id} already completed.\n")
+                                continue
+
+                            # Mark Complete
+                            print(f"Task ID: {task["id"]}       Task Title: {task["title"]}\n")
+                            while True:
+                                complete = input("Mark this task as complete? (y/n): ").lower()
+                                if complete == "y":
+                                    task_service.mark_complete(task_id)
+                                    break
+                                elif complete == "n":
+                                    break
+                                else:
+                                    print("Invalid option! Try again.")
+                        else:
+                            print("Task not found.")
+                    except ValueError:
+                        print("\nPlease enter an integer!\n")
+                
+                time.sleep(2)
+
+            # ********** ADMIN OPTIONS **********
+            elif choice == 6:
+                # ***** View all tasks *****
+                print("\nView all tasks\n")
+                tasks = task_service.view_all_tasks()
+                if tasks:
+                    for task in tasks:
+                        print("_" * 80)
+                        print(f"Task Number: {task[0]}      Task Assignee: {task[6]}")
+                        print(f"Assigned date: {task[3]}    Due date: {task[4]}")
+                        print(f"Task Title: {task[1]}       Completed: {task[5]}")
+                        print(f"Task Description:")
+                        print(f"{task[2]}")
+                else:
+                    print("There are no tasks!")
+                
+                time.sleep(2)
+
+            elif choice == 7:
+                # ***** Overdue tasks *****
+                tasks = task_service.overdue_tasks()
+                if tasks:
+                    for task in tasks:
+                        print("_" * 80)
+                        print(f"Task Number: {task[0]}      Task Assignee: {task[6]}")
+                        print(f"Assigned date: {task[3]}    Due date: {task[4]}")
+                        print(f"Task Title: {task[1]}       Completed: {task[5]}")
+                        print("Task Description:")
+                        print(f"{task[2]}")
+                
+                time.sleep(2)
+
+            elif choice == 8:
                 # ***** View completed tasks *****
                 print("\nView completed tasks\n")
                 tasks = task_service.completed_tasks()
@@ -316,171 +330,190 @@ def start_application():
                 else:
                     print("There are no completed tasks!")
 
-        elif choice == 9:
-            # ***** Delete task *****
-            print("\nDelete Task\n")
-            task_id = int(input("Please enter the task number: "))
-            task = task_service.get_task(task_id)
-            if task:
-                # Check if complete or not.
-                if task["is_complete"] == 1:
-                    status = "Yes"
+                time.sleep(2)
+
+            elif choice == 9:
+                # ***** Delete task *****
+                print("\nDelete Task\n")
+                task_id = int(input("Please enter the task number: "))
+                task = task_service.get_task(task_id)
+                if task:
+                    # Check if complete or not.
+                    if task["is_complete"] == 1:
+                        status = "Yes"
+                    else:
+                        status = "No"
+                    # Print task
+                    print("Task\n")
+                    print(f"Task Number: {task["id"]}               Task Assignee: {task["user"]}")
+                    print(f"Assigned date: {task["assigned_date"]}  Due date: {task["due_date"]}")
+                    print(f"Task Title: {task["title"]}             Completed: {status}")
+                    print(f"Task Description:")
+                    print(f"{task["description"]}\n")
                 else:
-                    status = "No"
-                # Print task
-                print("Task\n")
-                print(f"Task Number: {task["id"]}               Task Assignee: {task["user"]}")
-                print(f"Assigned date: {task["assigned_date"]}  Due date: {task["due_date"]}")
-                print(f"Task Title: {task["title"]}             Completed: {status}")
-                print(f"Task Description:")
-                print(f"{task["description"]}\n")
-            else:
-                print("Task not found.")
-            print("***WARNING***")
-            print("Deleting a task can not be undone!")
-            while True:
-                confirmation = input(f"Do you want to delete task {task_id}? (y/n): ").lower()
-                if confirmation == "y":
-                    task_service.delete_task(task_id)
-                    print("Task deleted")
-                    break
-                elif confirmation == "n":
-                    break
+                    print("Task not found.")
+                print("***WARNING***")
+                print("Deleting a task can not be undone!")
+                while True:
+                    confirmation = input(f"Do you want to delete task {task_id}? (y/n): ").lower()
+                    if confirmation == "y":
+                        task_service.delete_task(task_id)
+                        break
+                    elif confirmation == "n":
+                        break
+                    else:
+                        print("Invalid option! Try again.")
+
+                time.sleep(2)
+
+            elif choice == 10:
+                # ***** Import tasks *****
+                print("\nImport Tasks\n")
+                task_service.import_tasks()
+                time.sleep(2)
+
+            elif choice == 11:
+                # ***** Export tasks *****
+                print("\nExport tasks\n")
+                task_service.export_tasks()
+                time.sleep(2)
+
+            elif choice == 12:
+                # ***** View all users *****
+                print("\nView all userss\n")
+                users = user_service.view_all_users()
+
+                for user in users:
+                    user_id = user[0]
+                    username = user[1]
+                    email = user[3]
+                    admin = user[4]
+
+                    print("\n" + "-" * 90)
+                    print(f"User ID: {user_id}")
+                    print(f"Username: {username}")
+                    print(f"User Email: {email}")
+                    print(f"Admin User: {admin}")
+                print("-" * 90 + "\n")
+                time.sleep(2)
+
+            elif choice == 13:
+                # ***** Add user *****
+                print("\nAdd user\n")
+                username = user_service.validate_user("Enter the username: ")
+                password = input("Enter the upassword: ")
+                email = validate_email("Enter the email address: ")
+                user_service.add_user(username, password, email)
+                time.sleep(2)
+                    
+            elif choice == 14:
+                # ***** Update user *****
+                print("\nUpdate user\n")
+                user_id = int(input("Enter user ID: "))
+                user = user_service.get_user(user_id)
+
+                if user is None:
+                    print("\nUser does not exist.\n")
+                    continue
+
+                if user:
+                    # USERNAME update
+                    print(f"Username: {user["username"]}")
+                    while True:
+                        update_username = input("Update username (y/n): ").lower()
+                        if update_username == "y":
+                            user["username"] = user_service.validate_user("Enter new username: ")
+                            break
+                        elif update_username == "n":
+                            break
+                        else:
+                            print("Invalid option. Try again.")
+                    # PASSWORD update
+                    print(f"\nPassword: {user["password"]}")
+                    while True:
+                        update_pwd = input("Update password (y/n): ").lower()
+                        if update_pwd == "y":
+                            user["password"] = input("Enter new password: ")
+                            break
+                        elif update_pwd == "n":
+                            break
+                        else:
+                            print("Invalid option. Try again.")
+
+                    # EMAIL update
+                    print(f"Email: {user["email"]}")
+                    while True:
+                        update_email = input("Update email (y/n)").lower()
+                        if update_email == "y":
+                            user["email"] = validate_email("Enter new email address: ")
+                            break
+                        elif update_email == "n":
+                            break
+                        else:
+                            print("Invalid option. Try again")
                 else:
-                    print("Invalid option! Try again.")
+                    print("User not founc.")
 
-        elif choice == 10:
-            # ***** Import tasks *****
-            print("\nImport Tasks\n")
-            task_service.import_tasks()
+                id = user_id
+                username = user["username"]
+                password = user["password"]
+                email = user["email"]
+                user_service.update_user(id, username, password, email)
+                print(f"User: {id} {username} updated.")
+                time.sleep(2)
 
-        elif choice == 11:
-            # ***** Export tasks *****
-            print("\nExport tasks\n")
-            task_service.export_tasks()
+            elif choice == 15:
+                # ***** Make user Admin *****
+                print("\nMake user admnin\n")
+                user_id = int(input("Enter user ID: "))
+                user = user_service.get_user(user_id)
+                if user:
+                    while True:
+                        confirm = input(f"Make user {user["username"]} a system"
+                                        f" admin? (y/n): ").lower()
+                        if confirm == "y":
+                            user_service.make_admin(user_id)
+                            break
+                        elif confirm == "n":
+                            break
+                        else:
+                            print("Invalid Option")
+                else:
+                    print("User not found.")
 
-        elif choice == 12:
-            # ***** View all users *****
-            print("\nView all userss\n")
-            users = user_service.view_all_users()
+                print(f"User: {user_id} {user["username"]} is now an Admin")
+                time.sleep(2)
 
-            for user in users:
-                user_id = user[0]
-                username = user[1]
-                email = user[3]
-                admin = user[4]
+            elif choice == 16:
+                # ***** Delete User *****
+                print("\n Delete user\n")
+                user_id = int(input("Enter user ID: "))
+                user = user_service.get_user(user_id)
+                if user:
+                    while True:
+                        print("WARNING. This can not be undone!")
+                        confirm = input(f"Delete user {user["username"]} from"
+                                        f" system? (y/n): ").lower()
+                        if confirm == "y":
+                            user_service.make_admin(user_id)
+                            break
+                        elif confirm == "n":
+                            break
+                        else:
+                            print("Invalid option. Try again.")
+                else:
+                    print("User not found")
 
-                print("\n" + "-" * 90)
-                print(f"User ID: {user_id}")
-                print(f"Username: {username}")
-                print(f"User Email: {email}")
-                print(f"Admin User: {admin}")
-            print("-" * 90 + "\n")
+                print(f"User: {user_id} {user["username"]} deleted.")
+                time.sleep(2)
 
-        elif choice == 13:
-            # ***** Add user *****
-            print("\nAdd user\n")
-            username = user_service.validate_user("Enter the username: ")
-            password = input("Enter the upassword: ")
-            email = validate_email("Enter the email address: ")
-            user_service.add_user(username, password, email)
-                
-        elif choice == 14:
-            # ***** Update user *****
-            print("\nUpdate user\n")
-            user_id = int(input("Enter user ID: "))
-            user = user_service.get_user(user_id)
-
-            if user is None:
-                print("\nUser does not exist.\n")
-                continue
-
-            if user:
-                # USERNAME update
-                print(f"Username: {user["username"]}")
-                while True:
-                    update_username = input("Update username (y/n): ").lower()
-                    if update_username == "y":
-                        user["username"] = user_service.validate_user("Enter new username: ")
-                        break
-                    elif update_username == "n":
-                        break
-                    else:
-                        print("Invalid option. Try again.")
-                # PASSWORD update
-                print(f"\nPassword: {user["password"]}")
-                while True:
-                    update_pwd = input("Update password (y/n): ").lower()
-                    if update_pwd == "y":
-                        user["password"] = input("Enter new password: ")
-                        break
-                    elif update_pwd == "n":
-                        break
-                    else:
-                        print("Invalid option. Try again.")
-
-                # EMAIL update
-                print(f"Email: {user["email"]}")
-                while True:
-                    update_email = input("Update email (y/n)").lower()
-                    if update_email == "y":
-                        user["email"] = validate_email("Enter new email address: ")
-                        break
-                    elif update_email == "n":
-                        break
-                    else:
-                        print("Invalid option. Try again")
+            elif choice == 0:
+                # ***** Exit task manager
+                print("Exiting Task Manager")
+                time.sleep(1)
+                sys.exit()
             else:
-                print("User not founc.")
+                print("invalid option")
 
-            id = user_id
-            username = user["username"]
-            password = user["password"]
-            email = user["email"]
-            user_service.update_user(id, username, password, email)
-
-        elif choice == 15:
-            # ***** Make user Admin *****
-            print("\nMake user admnin\n")
-            user_id = int(input("Enter user ID: "))
-            user = user_service.get_user(user_id)
-            if user:
-                while True:
-                    confirm = input(f"Make user {user["username"]} a system"
-                                    f" admin? (y/n): ").lower()
-                    if confirm == "y":
-                        user_service.make_admin(user_id)
-                        break
-                    elif confirm == "n":
-                        break
-                    else:
-                        print("Invalid Option")
-            else:
-                print("User not found.")
-
-        elif choice == 16:
-            # ***** Delete User *****
-            print("\n Delete user\n")
-            user_id = int(input("Enter user ID: "))
-            user = user_service.get_user(user_id)
-            if user:
-                while True:
-                    print("WARNING. This can not be undone!")
-                    confirm = input(f"Delete user {user["username"]} from"
-                                    f" system? (y/n): ").lower()
-                    if confirm == "y":
-                        user_service.make_admin(user_id)
-                        break
-                    elif confirm == "n":
-                        break
-                    else:
-                        print("Invalid option. Try again.")
-            else:
-                print("User not found")
-
-        elif choice == 0:
-            # ***** Exit task manager
-            print("Exiting Task Manager")
-            sys.exit()
-        else:
-            print("invalid option")
+        except ValueError:
+            print("Please enter a valid menu option")

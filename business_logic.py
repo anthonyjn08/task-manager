@@ -37,6 +37,11 @@ class TaskService:
     def delete_task(self, id):
         self.task_repository.delete_task(id)
 
+    def import_tasks(self):
+        self.task_repository.import_tasks()
+
+    def export_tasks(self):
+        self.task_repository.export_tasks()
 
 class Task:
     def __init__(self, title, description, assigned_date, due_date, user):

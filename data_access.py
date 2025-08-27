@@ -240,9 +240,20 @@ class TaskRepository:
                     continue
 
                 try:
-                    id, title, description, assigned_date, due_date, is_complete, user = (
-                        line.strip().split(",")
-                    )
+                    task = line.strip().split(",")
+                    
+                    if len(task) != 7:
+                        print(f"{line.strip()} skipped due to incorrect format.")
+                        continue
+
+                    id = int(task[0].strip())
+                    title = task[1].strip()
+                    description = task[2].strip()
+                    assigned_date = task[3].strip()
+                    due_date = task[4].strip()
+                    is_complete = task[5].strip()
+                    user = task[6].strip()
+
                     try:
                         assigned_date = datetime.strptime(assigned_date.strip(), "%d/%m,%Y").strftime("%d/%m/%Y")
                         due_date = datetime.strptime(due_date.strip(), "%d/%m,%Y").strftime("%d/%m/%Y")
@@ -282,6 +293,30 @@ class TaskRepository:
 
                 finally:
                     db.close()
+                    print("Import completed.")
+
+    def export_tasks(self):
+        db = sqlite3.connect("taskManager.db")
+        cursor = db.cursor()
+        cursor.execute(
+            '''
+            SELECT * FROM tasks
+            '''
+        )
+        tasks = cursor.fetchall()
+
+        with open("tasks.txt", "w", encoding="utf-8") as file:
+            for task in tasks:
+                id, title, description, assigned_date, due_date, is_complete, user = task
+
+                line = f"{id},{title},{description},{assigned_date},{due_date},"
+                f"{is_complete},{user}"
+
+                file.write(line+"\n")
+
+        db.close()
+
+        print(f"All tasks exported successfully. Total: {len(tasks)} tasks.")
 
 class UserRepository:
 

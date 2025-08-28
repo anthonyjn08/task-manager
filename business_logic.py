@@ -86,6 +86,12 @@ class UserService:
     def delete_user(self, id):
         self.user_repository.delete_user(id)
 
+    def import_users(self):
+        self.user_repository.import_users()
+
+    def export_users(self):
+        self.user_repository.export_users()
+
 
 class User:
     def __init__(self, username, password, email, is_admin):

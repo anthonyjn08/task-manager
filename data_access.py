@@ -49,6 +49,25 @@ class TaskRepository:
 
     # ********** Task functions **********
     def add_task(self, title, description, assigned_date, due_date, user):
+        """
+        Function: add_task
+        
+        This function allows users to create new tasks which are then added to
+        the sqlite database.
+        
+        Input:
+        
+        - title: (str) Task title.
+        - description: (str) Description of the task.
+        - assigned_date: (str) Date the task was created. Date is set to task
+          creation date automatically.
+        - due_date: (str) Date the task needs to be completed by.
+        - user: (str) Task assignee.
+
+        Return:
+
+        task_no: (int) Task ID
+        """
         try:
             db = sqlite3.connect("taskManager.db")
             cursor = db.cursor()
@@ -64,14 +83,48 @@ class TaskRepository:
             db.commit()
             task_no = cursor.lastrowid
             return task_no
-        except Exception as e:
+        except sqlite3.IntegrityError as e:
             db.rollback()
-            raise e
+            print(f"Integrity error: {e}")
+            raise
+        except sqlite3.OperationalError as e:
+            db.rollback()
+            print(f"Operational error: {e}")
+            raise
+        except sqlite3.DatabaseError as e:
+            db.rollback()
+            print(f"Database error: {e}")
+            raise
         finally:
             # Close the db connection
             db.close()
 
     def get_task(self, task_id):
+        """
+        Function: get_task
+
+        This function retrieves a task from the sqlite database based on
+        its task ID. If the task does not exist, it prints a message
+        and returns None.
+
+        Input:
+
+        - task_id: (int) The unique ID of the task to retrieve.
+
+        Return:
+
+        task: If found, returns a dictionary with keys:
+            - "id": (int) Task ID
+            - "title": (str) Task title
+            - "description": (str) Description of the task
+            - "assigned_date": (str) Date the task was created
+            - "due_date": (str) Date the task is due
+            - "is_complete": (str) Completion status ("Yes"/"No")
+            - "user": (str) Task assignee
+
+        - None: occurs if the task is not found.
+        """
+
         db = sqlite3.connect("taskManager.db")
         cursor = db.cursor()
         cursor.execute(
@@ -89,6 +142,7 @@ class TaskRepository:
             print("\nTask not found\n")
             return None
 
+        # Task dictionary
         return {
             "id": task[0],
             "title": task[1],
@@ -100,6 +154,21 @@ class TaskRepository:
         }
 
     def get_my_tasks(self, user):
+        """
+        Function: get_my_tasks
+
+        The functions returns all tasks assigned to the currently logged in user from the
+        database.
+
+        Input:
+
+        - user: (str) Username of the logged in user.
+
+        Return:
+
+        - tasks: returns all tasks assigned to user
+        - None: occurs if no tasks are found
+        """
         db = sqlite3.connect("taskManager.db")
         cursor = db.cursor()
         cursor.execute(
@@ -115,10 +184,20 @@ class TaskRepository:
 
         if tasks is None:
             print("\nYou have no tasks!\n")
+            return None
 
         return tasks
 
     def view_all_tasks(self):
+        """
+        Function: view_all_tasks
+
+        Returns all tasks from the database. Available to admins only
+
+        Return:
+
+        - tasks: returns all tasks no matter who they're assigned to
+        """
         db = sqlite3.connect("taskManager.db")
         cursor = db.cursor()
         cursor.execute(
@@ -132,10 +211,20 @@ class TaskRepository:
 
         if tasks is None:
             print("\nThere are currently no tasks!\n")
+            return None
 
         return tasks
 
     def completed_tasks(self):
+        """
+        Function: completed_tasks
+
+        Returns all tasks that have been marked as complete. Available to admins only.
+
+        Return:
+
+        - completed_tasks: returns all tasks marked as complete no matter the assignee.
+        """
         is_complete = "Yes"
         db = sqlite3.connect("taskManager.db")
         cursor = db.cursor()
@@ -155,6 +244,26 @@ class TaskRepository:
         return completed_tasks
 
     def update_task(self, title, description, due_date, user, task_id):
+        """
+        Function: update_task
+
+        Allows users to update an existing task. Title, description, due date, and assignee
+        can all be updated. If there are no updates for any of these, the existing data is
+        retained. ID/task No. and assigned_date cannot be changed, and is_complete is
+        updated in a separate function.
+
+        Input:
+
+        - title: (str) current or new title of the task.
+        - description: (str) current or new description of the task.
+        - due_date: (str) current or updated due date in "%d/%m/%Y" format.
+        - user: (str) current or updated task assignee.
+        - task_id: (int) ID of the task to update.
+
+        Return:
+
+        task_id: (int) the ID of the updated task.
+        """
         try:
             db = sqlite3.connect("taskManager.db")
             cursor = db.cursor()
@@ -165,17 +274,33 @@ class TaskRepository:
                 WHERE id = ?''',
                 (title, description, due_date, user, task_id)
             )
-            # Commit the changes
             db.commit()
             return task_id
-        except Exception as e:
+        except sqlite3.IntegrityError as e:
             db.rollback()
-            raise e
+            print(f"Integrity error: {e}")
+            raise
+        except sqlite3.OperationalError as e:
+            db.rollback()
+            print(f"Operational error: {e}")
+            raise
+        except sqlite3.DatabaseError as e:
+            db.rollback()
+            print(f"Database error: {e}")
+            raise
         finally:
-            # Close the db connection
             db.close()
 
     def mark_complete(self, task_id):
+        """
+        Function: mark_complete
+
+        Marks selected task as complete.
+
+        Input:
+
+        - task_id: (int) ID of the task to mark as complete.
+        """       
         try:
             is_complete = "Yes"
             db = sqlite3.connect("taskManager.db")
@@ -188,39 +313,63 @@ class TaskRepository:
                 ''',
                 (is_complete, task_id)
             )
-            # Commit the changes
             db.commit()
             print(f"Task {task_id} marked as complete.")
-        except Exception as e:
+        except sqlite3.IntegrityError as e:
             db.rollback()
-            raise e
+            print(f"Integrity error: {e}")
+            raise
+        except sqlite3.OperationalError as e:
+            db.rollback()
+            print(f"Operational error: {e}")
+            raise
+        except sqlite3.DatabaseError as e:
+            db.rollback()
+            print(f"Database error: {e}")
+            raise
         finally:
-            # Close the db connection
             db.close()
 
     def overdue_tasks(self):
-        try:
-            db = sqlite3.connect("taskManager.db")
-            cursor = db.cursor()
-            cursor.execute(
-                """
-                SELECT *
-                FROM tasks
-                WHERE dueDate < DATE("now") AND isComplete = "No"
-                """
-            )
-            tasks = cursor.fetchall()
-            db.close()
+        """
+        Function: overdue_tasks
 
-            if tasks is None:
-                print("No overdue tasks.")
-                return None
+        Returns all tasks that are incomplete and the due date has passed. Available to
+        admins only.
 
-            return tasks
-        except Exception as e:
-            raise e
+        Return:
 
+        - overdue_tasks: returns all overdue tasks.
+        - None: occurs when there are no overdue tasks
+        """    
+        db = sqlite3.connect("taskManager.db")
+        cursor = db.cursor()
+        cursor.execute(
+            """
+            SELECT *
+            FROM tasks
+            WHERE dueDate < DATE("now") AND isComplete = "No"
+            """
+        )
+        overdue_tasks = cursor.fetchall()
+        db.close()
+
+        if overdue_tasks is None:
+            print("No overdue tasks.")
+            return None
+
+        return overdue_tasks
+    
     def delete_task(self, id):
+        """
+        Function: delete_task
+
+        Deletes selected task from the database. Available to admins only.
+
+        Input:
+
+        - id: (int) ID of the task to delete.
+        """
         try:
             db = sqlite3.connect("taskManager.db")
             cursor = db.cursor()
@@ -232,18 +381,30 @@ class TaskRepository:
             )
             # Commit the changes
             db.commit()
-        except Exception as e:
+        except sqlite3.IntegrityError as e:
             db.rollback()
-            raise e
+            print(f"Integrity error: {e}")
+            raise
+        except sqlite3.OperationalError as e:
+            db.rollback()
+            print(f"Operational error: {e}")
+            raise
+        except sqlite3.DatabaseError as e:
+            db.rollback()
+            print(f"Database error: {e}")
+            raise
         finally:
-            # Close the db connection
             db.close()
             print(f"Task {id} deleted")
 
     def import_tasks(self):
-        print("Import Tasks")
-        print("Please note, updates are applied to existing tasks using '4. Update tasks'")
-        
+        """
+        Function: import_tasks
+
+        Imports tasks from a 'tasks.txt' file into the database. Tasks with invalid
+        dates or where user doesn't exist are skipped. Updates to existing tasks are
+        also skipped and users are warned of this. Available to admins only.
+        """
         db = sqlite3.connect("taskManager.db")
         cursor = db.cursor()
 
@@ -287,14 +448,27 @@ class TaskRepository:
                         print(f"Task {id} skipped: {user} does not exist.")
                         continue
 
-                    cursor.execute(
-                        '''
-                        INSERT INTO tasks(id, title, description, assignedDate, dueDate, isComplete,
-                        user)
-                        VALUES (?, ?, ?, ?, ?, ?, ?)
-                        ON CONFLICT(id) DO NOTHING
-                        ''', (id, title, description, assigned_date, due_date, is_complete, user)
-                    )
+                    try:
+                        cursor.execute(
+                            '''
+                            INSERT INTO tasks(id, title, description, assignedDate, dueDate, isComplete,
+                            user)
+                            VALUES (?, ?, ?, ?, ?, ?, ?)
+                            ON CONFLICT(id) DO NOTHING
+                            ''', (id, title, description, assigned_date, due_date, is_complete, user)
+                        )
+                    except sqlite3.IntegrityError as e:
+                        db.rollback()
+                        print(f"Integrity error: {e}")
+                        raise
+                    except sqlite3.OperationalError as e:
+                        db.rollback()
+                        print(f"Operational error: {e}")
+                        raise
+                    except sqlite3.DatabaseError as e:
+                        db.rollback()
+                        print(f"Database error: {e}")
+                        raise
                 
                 except ValueError:
                     print(f"{line.strip()} skipped due to incorrect format.")
@@ -305,6 +479,12 @@ class TaskRepository:
         print("\nTasks imported.\n")
 
     def export_tasks(self):
+        """
+        Function: export_tasks
+
+        Exports all tasks from the database to a 'tasks.txt' file. Available to
+        admin users only.
+        """
         db = sqlite3.connect("taskManager.db")
         cursor = db.cursor()
         cursor.execute(

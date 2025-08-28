@@ -47,6 +47,8 @@ def start_application():
             print("14. Update user")
             print("15. Make user an Admin")
             print("16. Delete user")
+            print("17. Import users")
+            print("18. Export users")
 
         print("0. Exit program")
 
@@ -369,7 +371,7 @@ def start_application():
             elif choice == 10:
                 # ***** Import tasks *****
                 print("\nImport Tasks\n")
-                print("Please note, updates are applied to existing tasks using '4. Update tasks'\n")
+                print("Please note, option '4. Update tasks' to update existing tasks.\n")
                 time.sleep(2)
                 task_service.import_tasks()
                 time.sleep(2)
@@ -519,13 +521,28 @@ def start_application():
                 print(f"User: {user_id} {user["username"]} deleted.")
                 time.sleep(2)
 
+            elif choice == 17:
+                # ***** Import users *****
+                print("\nImport users\n")
+                print("Please note, option '14. Update users' to update existing users\n")
+                time.sleep(2)
+                user_service.import_users()
+                time.sleep(2)
+
+            elif choice == 11:
+                # ***** Export users *****
+                print("\nExport users\n")
+                user_service.export_users()
+                time.sleep(2)
+
             elif choice == 0:
                 # ***** Exit task manager
                 print("Exiting Task Manager")
                 time.sleep(1)
                 sys.exit()
+
             else:
-                print("invalid option")
+                print("Please enter a valid menu option")
 
         except ValueError:
             print("Please enter a valid menu option")

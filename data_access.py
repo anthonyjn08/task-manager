@@ -1,4 +1,4 @@
-import sqlite3
+import sqlite3, re
 from datetime import datetime
 
 
@@ -754,3 +754,104 @@ class UserRepository:
         finally:
             # Close the db connection
             db.close()
+
+    def import_users(self):
+        db = sqlite3.connect("taskManager.db")
+        cursor = db.cursor()
+
+        with open("users.txt", "r", encoding="utf-8") as file:
+            for line in file:
+                if not line.strip():
+                    continue
+
+                try:
+                    user = line.strip().split(",")
+                    
+                    if len(user) != 5:
+                        print(f"{line.strip()} skipped due to incorrect format.")
+                        continue
+
+                    id = int(user[0].strip())
+                    username = user[1].strip()
+                    password = user[2].strip()
+                    email = user[3].strip()
+                    is_admin = user[4].strip()
+
+                    # Validate email address, skip line where not valid
+                    if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+                        print(f"User: {id} {username} skipped. Incorrect email format")
+                        continue
+
+                    # Check for iD and username already existing,
+                    # Skip where ID or user name conflict happen
+                    cursor.execute(
+                        """
+                        SELECT id, username
+                        FROM user
+                        WHERE id = ? OR username = ?
+                        """, (id, username)
+                    )
+
+                    users_check = cursor.fetchall()
+
+                    conflict = False
+                    for user in users_check:
+                        exist_id, exist_username = user
+                        if exist_id == id and exist_username != username:
+                            print(f"User {id} skipped. ID in use by {exist_username}")
+                            conflict = True
+                        elif exist_username == username and exist_id != id:
+                            print(f"User {username} skiipped. Username used by user ID {exist_id}")
+                            conflict = True
+
+                    if conflict:
+                        continue
+
+                    try:
+                        cursor.execute(
+                            """
+                            INSERT INTO user(id, username, password, email, isAdmin)
+                            VALUES (?, ?, ?, ?, ?)
+                            """, (id, username, password, email, is_admin)
+                        )
+                    except sqlite3.IntegrityError as e:
+                        db.rollback()
+                        print(f"Integrity error: {e}")
+                        raise
+                    except sqlite3.OperationalError as e:
+                        db.rollback()
+                        print(f"Operational error: {e}")
+                        raise
+                    except sqlite3.DatabaseError as e:
+                        db.rollback()
+                        print(f"Database error: {e}")
+                        raise
+                
+                except ValueError:
+                    print(f"{line.strip()} skipped. Invalid ID format")
+                    continue
+        
+        db.commit()
+        db.close()
+
+    def export_users(self):
+        db = sqlite3.connect("taskManager.db")
+        cursor = db.cursor()
+        cursor.execute(
+            '''
+            SELECT * FROM user
+            '''
+        )
+        users = cursor.fetchall()
+
+        with open("users.txt", "w", encoding="utf-8") as file:
+            for user in users:
+                id, username, password, email, is_admin = user
+
+                line = (f"{id},{username},{password},{email},{is_admin}")
+
+                file.write(line+"\n")
+
+        db.close()
+
+        print(f"All users exported successfully. Total: {len(users)} users.")

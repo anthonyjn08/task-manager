@@ -548,20 +548,35 @@ class UserRepository:
                 email = "test@test.com"
                 is_admin = "Yes"
 
-                cursor.execute(
-                    '''
-                    INSERT INTO user(username, password, email, isAdmin)
-                    VALUES(?, ?, ?, ?)
-                    ''', (username, password, email, is_admin)
-                )
+                try:
+                    cursor.execute(
+                        '''
+                        INSERT INTO user(username, password, email, isAdmin)
+                        VALUES(?, ?, ?, ?)
+                        ''', (username, password, email, is_admin)
+                    )
+
+                except sqlite3.IntegrityError as e:
+                    db.rollback()
+                    print(f"Integrity error: {e}")
+                    raise
+                except sqlite3.OperationalError as e:
+                    db.rollback()
+                    print(f"Operational error: {e}")
+                    raise
+                except sqlite3.DatabaseError as e:
+                    db.rollback()
+                    print(f"Database error: {e}")
+                    raise
 
                 # Commit the changes
                 db.commit()
 
         # Catch and exceptions
-        except Exception as e:
+        except sqlite3.Error as e:
             db.rollback()
-            raise e
+            print(f"Error creating table: {e}")
+            raise
         finally:
             # Close the db connection
             db.close()
@@ -798,10 +813,10 @@ class UserRepository:
                     for user in users_check:
                         exist_id, exist_username = user
                         if exist_id == id and exist_username != username:
-                            print(f"User {id} skipped. ID in use by {exist_username}")
+                            print(f"User: {id} {username} skipped. ID in use by {exist_id} {exist_username}")
                             conflict = True
                         elif exist_username == username and exist_id != id:
-                            print(f"User {username} skiipped. Username used by user ID {exist_id}")
+                            print(f"User: {id} {username} skipped. Username used by user ID {exist_id} {exist_username}")
                             conflict = True
 
                     if conflict:
@@ -812,6 +827,7 @@ class UserRepository:
                             """
                             INSERT INTO user(id, username, password, email, isAdmin)
                             VALUES (?, ?, ?, ?, ?)
+                            ON CONFLICT(id) DO NOTHING
                             """, (id, username, password, email, is_admin)
                         )
                     except sqlite3.IntegrityError as e:

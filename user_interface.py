@@ -21,13 +21,16 @@ def start_application():
 
     if role == "admin":
         print(f"Welcome {logged_in_user}. You're logged in as an admin")
+        time.sleep(1)
     elif role == "user":
         print(f"Welcome {logged_in_user}")
+        time.sleep(1)
 
     while True:
         print("\n*** Main Menu ***")
         print("Please select one of the following options:\n")
 
+        print("0. Exit program")
         print("1. Add task")
         print("2. Get task")
         print("3. View all my tasks")
@@ -49,8 +52,6 @@ def start_application():
             print("16. Delete user")
             print("17. Import users")
             print("18. Export users")
-
-        print("0. Exit program")
 
         try:
             choice = int(input("Enter your choice: "))
@@ -529,7 +530,7 @@ def start_application():
                 user_service.import_users()
                 time.sleep(2)
 
-            elif choice == 11:
+            elif choice == 18:
                 # ***** Export users *****
                 print("\nExport users\n")
                 user_service.export_users()

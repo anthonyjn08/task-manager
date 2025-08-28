@@ -369,6 +369,8 @@ def start_application():
             elif choice == 10:
                 # ***** Import tasks *****
                 print("\nImport Tasks\n")
+                print("Please note, updates are applied to existing tasks using '4. Update tasks'\n")
+                time.sleep(2)
                 task_service.import_tasks()
                 time.sleep(2)
 
@@ -487,22 +489,32 @@ def start_application():
             elif choice == 16:
                 # ***** Delete User *****
                 print("\n Delete user\n")
-                user_id = int(input("Enter user ID: "))
-                user = user_service.get_user(user_id)
-                if user:
-                    while True:
-                        print("WARNING. This can not be undone!")
-                        confirm = input(f"Delete user {user["username"]} from"
-                                        f" system? (y/n): ").lower()
-                        if confirm == "y":
-                            user_service.make_admin(user_id)
-                            break
-                        elif confirm == "n":
-                            break
-                        else:
-                            print("Invalid option. Try again.")
-                else:
-                    print("User not found")
+                try:
+                    user_id = int(input("Enter user ID: "))
+
+                    # Ensure admin user can not be deleted
+                    if user_id == 1:
+                        print("Admin can not be deleted!")
+                        time.sleep(2)
+                        continue
+                    
+                    user = user_service.get_user(user_id)
+                    if user:
+                        while True:
+                            print("WARNING. This can not be undone!")
+                            confirm = input(f"Delete user {user["username"]} from"
+                                            f" system? (y/n): ").lower()
+                            if confirm == "y":
+                                user_service.make_admin(user_id)
+                                break
+                            elif confirm == "n":
+                                break
+                            else:
+                                print("Invalid option. Try again.")
+                    else:
+                        print("User not found")
+                except ValueError:
+                    print("Please enter a valid ID")
 
                 print(f"User: {user_id} {user["username"]} deleted.")
                 time.sleep(2)

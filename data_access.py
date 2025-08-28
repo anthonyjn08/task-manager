@@ -42,7 +42,6 @@ class TaskRepository:
         except sqlite3.Error as e:
             db.rollback()
             print(f"Error creating table: {e}")
-            raise
         finally:
             # Close the db connection
             db.close()
@@ -66,7 +65,8 @@ class TaskRepository:
 
         Return:
 
-        task_no: (int) Task ID
+        - task_no: (int) Task ID
+        - None: occurs if a sqlite3 error happens
         """
         try:
             db = sqlite3.connect("taskManager.db")
@@ -86,15 +86,15 @@ class TaskRepository:
         except sqlite3.IntegrityError as e:
             db.rollback()
             print(f"Integrity error: {e}")
-            raise
+            return None
         except sqlite3.OperationalError as e:
             db.rollback()
             print(f"Operational error: {e}")
-            raise
+            return None
         except sqlite3.DatabaseError as e:
             db.rollback()
             print(f"Database error: {e}")
-            raise
+            return None
         finally:
             # Close the db connection
             db.close()
@@ -113,7 +113,7 @@ class TaskRepository:
 
         Return:
 
-        task: If found, returns a dictionary with keys:
+        - task: If found, returns a dictionary with keys:
             - "id": (int) Task ID
             - "title": (str) Task title
             - "description": (str) Description of the task
@@ -262,7 +262,8 @@ class TaskRepository:
 
         Return:
 
-        task_id: (int) the ID of the updated task.
+        - task_id: (int) the ID of the updated task.
+        - None: occurs if there is a sqlite3 error
         """
         try:
             db = sqlite3.connect("taskManager.db")
@@ -279,15 +280,15 @@ class TaskRepository:
         except sqlite3.IntegrityError as e:
             db.rollback()
             print(f"Integrity error: {e}")
-            raise
+            return None
         except sqlite3.OperationalError as e:
             db.rollback()
             print(f"Operational error: {e}")
-            raise
+            return None
         except sqlite3.DatabaseError as e:
             db.rollback()
             print(f"Database error: {e}")
-            raise
+            return None
         finally:
             db.close()
 
@@ -300,6 +301,7 @@ class TaskRepository:
         Input:
 
         - task_id: (int) ID of the task to mark as complete.
+        - None: occurs if there is a sqlite3 error
         """       
         try:
             is_complete = "Yes"
@@ -318,15 +320,15 @@ class TaskRepository:
         except sqlite3.IntegrityError as e:
             db.rollback()
             print(f"Integrity error: {e}")
-            raise
+            return None
         except sqlite3.OperationalError as e:
             db.rollback()
             print(f"Operational error: {e}")
-            raise
+            return None
         except sqlite3.DatabaseError as e:
             db.rollback()
             print(f"Database error: {e}")
-            raise
+            return None
         finally:
             db.close()
 
@@ -369,6 +371,7 @@ class TaskRepository:
         Input:
 
         - id: (int) ID of the task to delete.
+        - None: occurs if there is a sqlite3 error
         """
         try:
             db = sqlite3.connect("taskManager.db")
@@ -379,20 +382,19 @@ class TaskRepository:
                 WHERE ID = ?
                 ''', (id,)
             )
-            # Commit the changes
             db.commit()
         except sqlite3.IntegrityError as e:
             db.rollback()
             print(f"Integrity error: {e}")
-            raise
+            return None
         except sqlite3.OperationalError as e:
             db.rollback()
             print(f"Operational error: {e}")
-            raise
+            return None
         except sqlite3.DatabaseError as e:
             db.rollback()
             print(f"Database error: {e}")
-            raise
+            return None
         finally:
             db.close()
             print(f"Task {id} deleted")
@@ -404,6 +406,10 @@ class TaskRepository:
         Imports tasks from a 'tasks.txt' file into the database. Tasks with invalid
         dates or where user doesn't exist are skipped. Updates to existing tasks are
         also skipped and users are warned of this. Available to admins only.
+
+        Return:
+        
+        - None: occurs if there is a sqlite3 error
         """
         db = sqlite3.connect("taskManager.db")
         cursor = db.cursor()
@@ -460,16 +466,16 @@ class TaskRepository:
                     except sqlite3.IntegrityError as e:
                         db.rollback()
                         print(f"Integrity error: {e}")
-                        raise
+                        return None
                     except sqlite3.OperationalError as e:
                         db.rollback()
                         print(f"Operational error: {e}")
-                        raise
+                        return None
                     except sqlite3.DatabaseError as e:
                         db.rollback()
                         print(f"Database error: {e}")
-                        raise
-                
+                        return None
+
                 except ValueError:
                     print(f"{line.strip()} skipped due to incorrect format.")
                     continue
@@ -559,15 +565,12 @@ class UserRepository:
                 except sqlite3.IntegrityError as e:
                     db.rollback()
                     print(f"Integrity error: {e}")
-                    raise
                 except sqlite3.OperationalError as e:
                     db.rollback()
                     print(f"Operational error: {e}")
-                    raise
                 except sqlite3.DatabaseError as e:
                     db.rollback()
                     print(f"Database error: {e}")
-                    raise
 
                 # Commit the changes
                 db.commit()
@@ -576,7 +579,6 @@ class UserRepository:
         except sqlite3.Error as e:
             db.rollback()
             print(f"Error creating table: {e}")
-            raise
         finally:
             # Close the db connection
             db.close()
@@ -636,15 +638,22 @@ class UserRepository:
                 VALUES(?, ?, ?)
                 ''', (username, password, email)
             )
-            # Commit the changes
             db.commit()
             user_id = cursor.lastrowid
             print(f"\nUser {user_id}: {username} successfully added.\n")
-        except Exception as e:
+        except sqlite3.IntegrityError as e:
             db.rollback()
-            raise e
+            print(f"Integrity error: {e}")
+            return None
+        except sqlite3.OperationalError as e:
+            db.rollback()
+            print(f"Operational error: {e}")
+            return None
+        except sqlite3.DatabaseError as e:
+            db.rollback()
+            print(f"Database error: {e}")
+            return None
         finally:
-            # Close the db connection
             db.close()
 
     def validate_username(self, prompt):
@@ -667,7 +676,6 @@ class UserRepository:
             return username
 
     def assignee_exists(self, prompt):
-        # while True:
         username = input(prompt)
         db = sqlite3.connect("taskManager.db")
         cursor = db.cursor()
@@ -721,13 +729,20 @@ class UserRepository:
                 WHERE id = ?
                 ''', (username, password, email, id)
             )
-            # Commit the changes
             db.commit()
-        except Exception as e:
+        except sqlite3.IntegrityError as e:
             db.rollback()
-            raise e
+            print(f"Integrity error: {e}")
+            return None
+        except sqlite3.OperationalError as e:
+            db.rollback()
+            print(f"Operational error: {e}")
+            return None
+        except sqlite3.DatabaseError as e:
+            db.rollback()
+            print(f"Database error: {e}")
+            return None
         finally:
-            # Close the db connection
             db.close()
 
     def make_admin(self, id):
@@ -742,13 +757,20 @@ class UserRepository:
                 WHERE id = ?
                 ''', (is_admin, id)
             )
-            # Commit the changes
             db.commit()
-        except Exception as e:
+        except sqlite3.IntegrityError as e:
             db.rollback()
-            raise e
+            print(f"Integrity error: {e}")
+            return None
+        except sqlite3.OperationalError as e:
+            db.rollback()
+            print(f"Operational error: {e}")
+            return None
+        except sqlite3.DatabaseError as e:
+            db.rollback()
+            print(f"Database error: {e}")
+            return None
         finally:
-            # Close the db connection
             db.close()
 
     def delete_user(self, id):
@@ -761,13 +783,20 @@ class UserRepository:
                 WHERE id = ?
                 ''', (id,)
             )
-            # Commit the changes
             db.commit()
-        except Exception as e:
+        except sqlite3.IntegrityError as e:
             db.rollback()
-            raise e
+            print(f"Integrity error: {e}")
+            return None
+        except sqlite3.OperationalError as e:
+            db.rollback()
+            print(f"Operational error: {e}")
+            return None
+        except sqlite3.DatabaseError as e:
+            db.rollback()
+            print(f"Database error: {e}")
+            return None
         finally:
-            # Close the db connection
             db.close()
 
     def import_users(self):
@@ -833,15 +862,15 @@ class UserRepository:
                     except sqlite3.IntegrityError as e:
                         db.rollback()
                         print(f"Integrity error: {e}")
-                        raise
+                        return None
                     except sqlite3.OperationalError as e:
                         db.rollback()
                         print(f"Operational error: {e}")
-                        raise
+                        return None
                     except sqlite3.DatabaseError as e:
                         db.rollback()
                         print(f"Database error: {e}")
-                        raise
+                        return None
                 
                 except ValueError:
                     print(f"{line.strip()} skipped. Invalid ID format")

@@ -56,7 +56,6 @@ class TaskRepository:
         the sqlite database.
         
         Input:
-        
         - title: (str) Task title.
         - description: (str) Description of the task.
         - assigned_date: (str) Date the task was created. Date is set to task
@@ -64,8 +63,7 @@ class TaskRepository:
         - due_date: (str) Date the task needs to be completed by.
         - user: (str) Task assignee.
 
-        Return:
-
+        Output:
         - cursor.lastrowid: returns the id of new task if added
         - None: occurs if a sqlite3 error happens
         """
@@ -108,11 +106,9 @@ class TaskRepository:
         and returns None.
 
         Input:
-
         - task_id: (int) The unique ID of the task to retrieve.
 
-        Return:
-
+        Output:
         - task: If found, returns a dictionary with keys:
             - "id": (int) Task ID
             - "title": (str) Task title
@@ -121,7 +117,6 @@ class TaskRepository:
             - "due_date": (str) Date the task is due
             - "is_complete": (str) Completion status ("Yes"/"No")
             - "user": (str) Task assignee
-
         - None: occurs if the task is not found.
         """
 
@@ -161,11 +156,9 @@ class TaskRepository:
         database.
 
         Input:
-
         - user: (str) Username of the logged in user.
 
-        Return:
-
+        Output:
         - tasks: returns all tasks assigned to user
         - None: occurs if no tasks are found
         """
@@ -194,8 +187,7 @@ class TaskRepository:
 
         Returns all tasks from the database. Available to admins only
 
-        Return:
-
+        Output:
         - tasks: returns all tasks no matter who they're assigned to
         """
         db = sqlite3.connect("taskManager.db")
@@ -221,8 +213,7 @@ class TaskRepository:
 
         Returns all tasks that have been marked as complete. Available to admins only.
 
-        Return:
-
+        Output:
         - completed_tasks: returns all tasks marked as complete no matter the assignee.
         """
         is_complete = "Yes"
@@ -253,15 +244,13 @@ class TaskRepository:
         updated in a separate function.
 
         Input:
-
         - title: (str) current or new title of the task.
         - description: (str) current or new description of the task.
         - due_date: (str) current or updated due date in "%d/%m/%Y" format.
         - user: (str) current or updated task assignee.
         - task_id: (int) ID of the task to update.
 
-        Return:
-
+        Output:
         - cursor.rowcount: if more than 0 the update was completed else it failed
         - None: occurs if there is a sqlite3 error or update failed
         """
@@ -299,7 +288,9 @@ class TaskRepository:
         Marks selected task as complete.
 
         Input:
+        - task_id: ID of task to be marked as complete
 
+        Output:
         - cursor.rowcount: if more than 0 the update was completed else it failed
         - None: occurs if there is a sqlite3 error
         """       
@@ -339,8 +330,7 @@ class TaskRepository:
         Returns all tasks that are incomplete and the due date has passed. Available to
         admins only.
 
-        Return:
-
+        Output:
         - overdue_tasks: returns all overdue tasks.
         - None: occurs when there are no overdue tasks
         """    
@@ -369,12 +359,10 @@ class TaskRepository:
         Deletes selected task from the database. Available to admins only.
 
         Input:
-
         - id: (int) ID of the task to delete.
         - None: occurs if there is a sqlite3 error
 
-        Return:
-
+        Output:
         - cursor.rowcount: if more than 0 the deletion was completed else it failed
         """
         try:
@@ -411,8 +399,7 @@ class TaskRepository:
         dates or where user doesn't exist are skipped. Updates to existing tasks are
         also skipped and users are warned of this. Available to admins only.
 
-        Return:
-        
+        Output:
         - None: occurs if there is a sqlite3 error
         """
         db = sqlite3.connect("taskManager.db")
@@ -607,12 +594,10 @@ class UserRepository:
         have more persmissions than standard users.
 
         Input:
-        
         - username: (str) The username of the user attempting to log in.
         - password: (str) The password associated with the user account.
 
-        Return:
-        
+        Output:
         - role: (str) Returns the users role on successful login, which determines
           menu options.
         """
@@ -649,8 +634,7 @@ class UserRepository:
 
         This function queries the database and returns all current users.
 
-        Return:
-        
+        Output:
         - users: returns all active users.
         """
         db = sqlite3.connect("taskManager.db")
@@ -673,13 +657,11 @@ class UserRepository:
         This function adds a new user to the database.
 
         Input:
-        
         - username: (str) The username of the new user.
         - password: (str) The password for the new user.
         - email: (str) The email address of the new user.
 
-        Return:
-
+        Output:
         - cursor.lastrowid: returns the ID (primary key) of last entry into user table.
         """
         try:
@@ -717,11 +699,9 @@ class UserRepository:
         unique username.
 
         Input:
-        
         - prompt: (str) A message shown to the user when asking for input.
 
-        Return:
-        
+        Output:
         - username: (str) If username is unique, this is returned.
         """
         while True:
@@ -750,11 +730,9 @@ class UserRepository:
         already exists in the database. If not, users are prompted to add a valid assignee.
 
         Input:
-        
         - prompt: (str) A message shown to the user when asking for input.
 
-        Return:
-        
+        Output:
         - username: (str) The existing username if found.
         - None: If the username does not exist.
         """
@@ -783,12 +761,15 @@ class UserRepository:
         This function returns the details of user with entered ID.
 
         Input:
-        
         - id: (int) The user ID.
 
-        Return:
-        
+        Output:
         - user: (dict) A dictionary containing user details if found.
+            -   "id": (int) users unique ID
+            -   "username": (str) users username, must be unique
+            -   "password": (str) users password
+            -   "email": (str) users email address
+            -   "admin": (str) Yes or No depeing on if user is an admin or not
         - None: If no user is found with the entered ID.
         """
         db = sqlite3.connect("taskManager.db")
@@ -823,14 +804,12 @@ class UserRepository:
         the existing data is retained.
 
         Input:
-        
         - id: (int) The ID of the user to update.
         - username: (str) The updated/existing username.
         - password: (str) The updated/existing password.
         - email: (str) The updated/existing email address.
 
-        Return:
-        
+        Output:
         - cursor.rowcount: If > 0 update was completed else it failed.
         """
         try:
@@ -867,11 +846,9 @@ class UserRepository:
         This function updates selected user to gain admin privileges.
 
         Input:
-        
         - id: (int) ID of the user to promote.
 
-        Return:
-
+        Output:
         - cursor.rowcount: If > 0 update was completed else it failed.
         """
         try:
@@ -909,11 +886,9 @@ class UserRepository:
         This function deletes a user from the database by their ID.
 
         Input:
-        
         - id: (int) The ID of the user to delete.
 
-        Return:
-
+        Output:
         - cursor.rowcount: If rowcount > 0 user was deleted else deletion failed.
         """
         try:

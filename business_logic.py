@@ -65,7 +65,7 @@ class UserService:
         return self.user_repository.view_all_users()
 
     def add_user(self, username, password, email):
-        self.user_repository.add_user(username, password, email)
+        return self.user_repository.add_user(username, password, email)
 
     def validate_user(self, prompt):
         return self.user_repository.validate_username(prompt)
@@ -77,13 +77,13 @@ class UserService:
         return self.user_repository.get_user(id)
 
     def update_user(self, id, username, password, email):
-        self.user_repository.update_user(id, username, password, email)
+        return self.user_repository.update_user(id, username, password, email)
 
     def make_admin(self, id):
-        self.user_repository.make_admin(id)
+        return self.user_repository.make_admin(id)
 
     def delete_user(self, id):
-        self.user_repository.delete_user(id)
+        return self.user_repository.delete_user(id)
 
     def import_users(self):
         self.user_repository.import_users()

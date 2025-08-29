@@ -1,4 +1,5 @@
-import sqlite3, re
+import sqlite3
+import re
 from datetime import datetime
 
 
@@ -7,7 +8,7 @@ class TaskRepository:
     def __init__(self):
         """
         Initialise the Task Repository
-        
+
         Ensures the 'tasks' table exists in the database by calling
         the _create_table() method when a new TaskRepository is created.
         """
@@ -16,7 +17,7 @@ class TaskRepository:
 
     def _create_table(self):
         """
-        Creates the tasks table, if it does not exist, when called by 
+        Creates the tasks table, if it does not exist, when called by
         the __init__ function.
         """
         try:
@@ -51,10 +52,10 @@ class TaskRepository:
     def add_task(self, title, description, assigned_date, due_date, user):
         """
         Function: add_task
-        
+
         This function allows users to create new tasks which are then added to
         the sqlite database.
-        
+
         Input:
         - title: (str) Task title.
         - description: (str) Description of the task.
@@ -79,7 +80,7 @@ class TaskRepository:
                 (title, description, assigned_date, due_date, user),
             )
             # Commit the changes
-            db.commit()            
+            db.commit()
             return cursor.lastrowid
         except sqlite3.IntegrityError as e:
             db.rollback()
@@ -152,8 +153,8 @@ class TaskRepository:
         """
         Function: get_my_tasks
 
-        The functions returns all tasks assigned to the currently logged in user from the
-        database.
+        The functions returns all tasks assigned to the currently logged in
+        user from the database.
 
         Input:
         - user: (str) Username of the logged in user.
@@ -185,7 +186,8 @@ class TaskRepository:
         """
         Function: view_all_tasks
 
-        Returns all tasks from the database. Available to admins only
+        Returns all tasks from the database.
+        Available to admins only
 
         Output:
         - tasks: returns all tasks no matter who they're assigned to
@@ -211,10 +213,12 @@ class TaskRepository:
         """
         Function: completed_tasks
 
-        Returns all tasks that have been marked as complete. Available to admins only.
+        Returns all tasks that have been marked as complete.
+        Available to admins only.
 
         Output:
-        - completed_tasks: returns all tasks marked as complete no matter the assignee.
+        - completed_tasks: returns all tasks marked as complete no matter
+          the assignee.
         """
         is_complete = "Yes"
         db = sqlite3.connect("taskManager.db")
@@ -238,10 +242,10 @@ class TaskRepository:
         """
         Function: update_task
 
-        Allows users to update an existing task. Title, description, due date, and assignee
-        can all be updated. If there are no updates for any of these, the existing data is
-        retained. ID/task No. and assigned_date cannot be changed, and is_complete is
-        updated in a separate function.
+        Allows users to update an existing task. Title, description, due date
+        and assignee can all be updated. If there are no updates for any of
+        these, the existing data is retained. ID/task No. and assigned_date
+        cannot be changed, and is_complete is updated in a separate function.
 
         Input:
         - title: (str) current or new title of the task.
@@ -251,7 +255,8 @@ class TaskRepository:
         - task_id: (int) ID of the task to update.
 
         Output:
-        - cursor.rowcount: if more than 0 the update was completed else it failed
+        - cursor.rowcount: if more than 0 the update was completed
+          else it failed
         - None: occurs if there is a sqlite3 error or update failed
         """
         try:
@@ -291,9 +296,10 @@ class TaskRepository:
         - task_id: ID of task to be marked as complete
 
         Output:
-        - cursor.rowcount: if more than 0 the update was completed else it failed
+        - cursor.rowcount: if more than 0 the update was completed,
+          else it failed
         - None: occurs if there is a sqlite3 error
-        """       
+        """
         try:
             is_complete = "Yes"
             db = sqlite3.connect("taskManager.db")
@@ -327,13 +333,13 @@ class TaskRepository:
         """
         Function: overdue_tasks
 
-        Returns all tasks that are incomplete and the due date has passed. Available to
-        admins only.
+        Returns all tasks that are incomplete and the due date has passed.
+        Available to admins only.
 
         Output:
         - overdue_tasks: returns all overdue tasks.
         - None: occurs when there are no overdue tasks
-        """    
+        """
         db = sqlite3.connect("taskManager.db")
         cursor = db.cursor()
         cursor.execute(
@@ -351,7 +357,7 @@ class TaskRepository:
             return None
 
         return overdue_tasks
-    
+
     def delete_task(self, id):
         """
         Function: delete_task
@@ -363,7 +369,8 @@ class TaskRepository:
         - None: occurs if there is a sqlite3 error
 
         Output:
-        - cursor.rowcount: if more than 0 the deletion was completed else it failed
+        - cursor.rowcount: if more than 0 the deletion was completed,
+          else it failed
         """
         try:
             db = sqlite3.connect("taskManager.db")
@@ -395,9 +402,11 @@ class TaskRepository:
         """
         Function: import_tasks
 
-        Imports tasks from a 'tasks.txt' file into the database. Tasks with invalid
-        dates or where user doesn't exist are skipped. Updates to existing tasks are
-        also skipped and users are warned of this. Available to admins only.
+        Imports tasks from a 'tasks.txt' file into the database.
+        Tasks with invalid dates or where user doesn't exist are skipped.
+        Updates to existing tasks are also skipped and users are
+        warned of this.
+        Available to admins only.
 
         Output:
         - None: occurs if there is a sqlite3 error
@@ -412,9 +421,10 @@ class TaskRepository:
 
                 try:
                     task = line.strip().split(",")
-                    
+
                     if len(task) != 7:
-                        print(f"{line.strip()} skipped due to incorrect format.")
+                        print(f"{line.strip()} skipped due to incorrect"
+                              f" format.")
                         continue
 
                     id = int(task[0].strip())
@@ -426,8 +436,12 @@ class TaskRepository:
                     user = task[6].strip()
 
                     try:
-                        assigned_date = datetime.strptime(assigned_date.strip(), "%d/%m/%Y").strftime("%d/%m/%Y")
-                        due_date = datetime.strptime(due_date.strip(), "%d/%m/%Y").strftime("%d/%m/%Y")
+                        assigned_date = datetime.strptime(
+                            assigned_date.strip(), "%d/%m/%Y").strftime(
+                                "%d/%m/%Y")
+                        due_date = datetime.strptime(
+                            due_date.strip(), "%d/%m/%Y").strftime(
+                                "%d/%m/%Y")
                     except ValueError:
                         print(f"Task {id} skipped: Incorrect date format")
                         continue
@@ -448,11 +462,12 @@ class TaskRepository:
                     try:
                         cursor.execute(
                             '''
-                            INSERT INTO tasks(id, title, description, assignedDate, dueDate, isComplete,
-                            user)
+                            INSERT INTO tasks(id, title, description,
+                            assignedDate, dueDate, isComplete, user)
                             VALUES (?, ?, ?, ?, ?, ?, ?)
                             ON CONFLICT(id) DO NOTHING
-                            ''', (id, title, description, assigned_date, due_date, is_complete, user)
+                            ''', (id, title, description, assigned_date,
+                                  due_date, is_complete, user)
                         )
                     except sqlite3.IntegrityError as e:
                         db.rollback()
@@ -493,10 +508,11 @@ class TaskRepository:
 
         with open("tasks.txt", "w", encoding="utf-8") as file:
             for task in tasks:
-                id, title, description, assigned_date, due_date, is_complete, user = task
+                (id, title, description, assigned_date, due_date,
+                 is_complete, user) = task
 
-                line = (f"{id},{title},{description},{assigned_date},{due_date},"
-                        f"{is_complete},{user}")
+                line = (f"{id},{title},{description},{assigned_date},"
+                        f"{due_date}, {is_complete},{user}")
 
                 file.write(line+"\n")
         db.close()
@@ -508,7 +524,7 @@ class UserRepository:
     def __init__(self):
         """
         Initialise the User Repository
-        
+
         Ensures the 'user' table exists in the database by calling
         the _create_table() method when a new UserRepository is created.
         """
@@ -516,7 +532,7 @@ class UserRepository:
 
     def _create_table(self):
         """
-        Creates the user table, if it does not exist, when called by 
+        Creates the user table, if it does not exist, when called by
         the __init__ function. It then adds 'admin' user to the database so the
         system can be accessed.
         """
@@ -598,8 +614,8 @@ class UserRepository:
         - password: (str) The password associated with the user account.
 
         Output:
-        - role: (str) Returns the users role on successful login, which determines
-          menu options.
+        - role: (str) Returns the users role on successful login,
+          which determines menu options.
         """
         db = sqlite3.connect("taskManager.db")
         cursor = db.cursor()
@@ -662,7 +678,8 @@ class UserRepository:
         - email: (str) The email address of the new user.
 
         Output:
-        - cursor.lastrowid: returns the ID (primary key) of last entry into user table.
+        - cursor.lastrowid: returns the ID (primary key) of last entry into
+          user table.
         """
         try:
             db = sqlite3.connect("taskManager.db")
@@ -694,9 +711,9 @@ class UserRepository:
         """
         Function: validate_username
 
-        This function prompts for and validates a new username against existing 
-        entries in the database. if user already exists, user is told to enter a
-        unique username.
+        This function prompts for and validates a new username against existing
+        entries in the database. if user already exists, user is told to enter
+        a unique username.
 
         Input:
         - prompt: (str) A message shown to the user when asking for input.
@@ -726,8 +743,9 @@ class UserRepository:
         """
         Function: assignee_exists
 
-        This function checks if the provided username for either a new or updated task
-        already exists in the database. If not, users are prompted to add a valid assignee.
+        This function checks if the provided username for either
+        a new or updated task already exists in the database. If not,
+        users are prompted to add a valid assignee.
 
         Input:
         - prompt: (str) A message shown to the user when asking for input.
@@ -800,8 +818,8 @@ class UserRepository:
         Function: update_user
 
         This function updates the details of an existing user in the database.
-        Users can choose what they need to update. If a field  doesn't need updating
-        the existing data is retained.
+        Users can choose what they need to update. If a field  doesn't need
+        updating the existing data is retained.
 
         Input:
         - id: (int) The ID of the user to update.
@@ -839,7 +857,7 @@ class UserRepository:
         finally:
             db.close()
 
-    def make_admin(self, id)
+    def make_admin(self, id):
         """
         Function: make_admin
 
@@ -889,7 +907,8 @@ class UserRepository:
         - id: (int) The ID of the user to delete.
 
         Output:
-        - cursor.rowcount: If rowcount > 0 user was deleted else deletion failed.
+        - cursor.rowcount: If rowcount > 0 user was deleted else
+          the deletion failed.
         """
         try:
             db = sqlite3.connect("taskManager.db")
@@ -921,9 +940,12 @@ class UserRepository:
         """
         Function: import_users
 
-        This function imports user records from a 'users.txt' file into the database.
-        It checks IDs, usernames, and email to ensure they valid before insertion.
-        Any updates are skipped as well as updates handled in separate function.
+        This function imports user records from a 'users.txt' file into the
+        database.
+        It checks IDs, usernames, and email to ensure they valid before
+        insertion.
+        Any updates are skipped as well as updates handled in separate
+        function.
         """
         db = sqlite3.connect("taskManager.db")
         cursor = db.cursor()
@@ -935,9 +957,10 @@ class UserRepository:
 
                 try:
                     user = line.strip().split(",")
-                    
+
                     if len(user) != 5:
-                        print(f"{line.strip()} skipped due to incorrect format.")
+                        print(f"{line.strip()} skipped due to"
+                              f" incorrect format.")
                         continue
 
                     id = int(user[0].strip())
@@ -948,7 +971,8 @@ class UserRepository:
 
                     # Validate email address, skip line where not valid
                     if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
-                        print(f"User: {id} {username} skipped. Incorrect email format")
+                        print(f"User: {id} {username} skipped. "
+                              f"Incorrect email format")
                         continue
 
                     # Check for iD and username already existing,
@@ -967,10 +991,13 @@ class UserRepository:
                     for user in users_check:
                         exist_id, exist_username = user
                         if exist_id == id and exist_username != username:
-                            print(f"User: {id} {username} skipped. ID in use by {exist_id} {exist_username}")
+                            print(f"User: {id} {username} skipped. "
+                                  f"ID in use by {exist_id} {exist_username}")
                             conflict = True
                         elif exist_username == username and exist_id != id:
-                            print(f"User: {id} {username} skipped. Username used by user ID {exist_id} {exist_username}")
+                            print(f"User: {id} {username} skipped. "
+                                  f"Username used by user ID "
+                                  f"{exist_id} {exist_username}")
                             conflict = True
 
                     if conflict:
@@ -979,7 +1006,8 @@ class UserRepository:
                     try:
                         cursor.execute(
                             """
-                            INSERT INTO user(id, username, password, email, isAdmin)
+                            INSERT INTO user(id, username, password, email,
+                            isAdmin)
                             VALUES (?, ?, ?, ?, ?)
                             ON CONFLICT(id) DO NOTHING
                             """, (id, username, password, email, is_admin)
@@ -996,11 +1024,11 @@ class UserRepository:
                         db.rollback()
                         print(f"Database error: {e}")
                         return None
-                
+
                 except ValueError:
                     print(f"{line.strip()} skipped. Invalid ID format")
                     continue
-        
+
         db.commit()
         db.close()
 
@@ -1008,7 +1036,8 @@ class UserRepository:
         """
         Function: export_users
 
-        This function exports all user records from the database into a 'users.txt' file.
+        This function exports all user records from the database into a
+        'users.txt' file.
         """
         db = sqlite3.connect("taskManager.db")
         cursor = db.cursor()

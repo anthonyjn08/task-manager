@@ -402,11 +402,11 @@ class TaskRepository:
         """
         Function: import_tasks
 
-        Imports tasks from a 'tasks.txt' file into the database.
-        Tasks with invalid dates or where user doesn't exist are skipped.
-        Updates to existing tasks are also skipped and users are
-        warned of this.
-        Available to admins only.
+        Imports tasks from a 'tasks.txt' file into the database. Existing
+        tasks are skipped, as they're updated using'update_task'. New tasks
+        can be added if they meet validation rules. Tasks with invalid dates
+        or where user doesn't exist are skipped, with a message printed to
+        the console for each task that is skipped. Available to admins only.
 
         Output:
         - None: occurs if there is a sqlite3 error
@@ -649,6 +649,7 @@ class UserRepository:
         Function: view_all_users
 
         This function queries the database and returns all current users.
+        Available to admins only.
 
         Output:
         - users: returns all active users.
@@ -671,6 +672,7 @@ class UserRepository:
         Function: add_user
 
         This function adds a new user to the database.
+        Available to admins only.
 
         Input:
         - username: (str) The username of the new user.
@@ -820,6 +822,7 @@ class UserRepository:
         This function updates the details of an existing user in the database.
         Users can choose what they need to update. If a field  doesn't need
         updating the existing data is retained.
+        Available to admins only.
 
         Input:
         - id: (int) The ID of the user to update.
@@ -862,6 +865,7 @@ class UserRepository:
         Function: make_admin
 
         This function updates selected user to gain admin privileges.
+        Available to admins only.
 
         Input:
         - id: (int) ID of the user to promote.
@@ -902,6 +906,7 @@ class UserRepository:
         Function: delete_user
 
         This function deletes a user from the database by their ID.
+        Available to admins only.
 
         Input:
         - id: (int) The ID of the user to delete.
@@ -946,6 +951,7 @@ class UserRepository:
         insertion.
         Any updates are skipped as well as updates handled in separate
         function.
+        Available to admins only.
         """
         db = sqlite3.connect("taskManager.db")
         cursor = db.cursor()
@@ -1038,6 +1044,7 @@ class UserRepository:
 
         This function exports all user records from the database into a
         'users.txt' file.
+        Available to admins only.
         """
         db = sqlite3.connect("taskManager.db")
         cursor = db.cursor()

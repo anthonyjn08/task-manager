@@ -16,8 +16,9 @@ class TaskRepository:
 
     def _create_table(self):
         """
-        Creates the tasks table, if it does not exist, when called by the __init__
-        function"""
+        Creates the tasks table, if it does not exist, when called by 
+        the __init__ function.
+        """
         try:
             # Create database called tasks
             db = sqlite3.connect("taskManager.db")
@@ -518,9 +519,20 @@ class TaskRepository:
 class UserRepository:
 
     def __init__(self):
+        """
+        Initialise the User Repository
+        
+        Ensures the 'user' table exists in the database by calling
+        the _create_table() method when a new UserRepository is created.
+        """
         self._create_table()
 
     def _create_table(self):
+        """
+        Creates the user table, if it does not exist, when called by 
+        the __init__ function. It then adds 'admin' user to the database so the
+        system can be accessed.
+        """
         try:
             # Create database called tasks
             db = sqlite3.connect("taskManager.db")
@@ -587,6 +599,23 @@ class UserRepository:
     # User functions
 
     def login(self, username, password):
+        """
+        Function: login
+
+        This function checks a user’s details in the database to allow login.
+        Upon login the users role is determined between 'user' and 'admin' who
+        have more persmissions than standard users.
+
+        Input:
+        
+        - username: (str) The username of the user attempting to log in.
+        - password: (str) The password associated with the user account.
+
+        Return:
+        
+        - role: (str) Returns the users role on successful login, which determines
+          menu options.
+        """
         db = sqlite3.connect("taskManager.db")
         cursor = db.cursor()
         cursor.execute(
@@ -615,7 +644,15 @@ class UserRepository:
             print("Incorrect password.")
 
     def view_all_users(self):
+        """
+        Function: view_all_users
+
+        This function queries the database and returns all current users.
+
+        Return:
         
+        - users: returns all active users.
+        """
         db = sqlite3.connect("taskManager.db")
         cursor = db.cursor()
         cursor.execute(
@@ -630,6 +667,21 @@ class UserRepository:
         return users
 
     def add_user(self, username, password, email):
+        """
+        Function: add_user
+
+        This function adds a new user to the database.
+
+        Input:
+        
+        - username: (str) The username of the new user.
+        - password: (str) The password for the new user.
+        - email: (str) The email address of the new user.
+
+        Return:
+
+        - cursor.lastrowid: returns the ID (primary key) of last entry into user table.
+        """
         try:
             db = sqlite3.connect("taskManager.db")
             cursor = db.cursor()
@@ -640,8 +692,7 @@ class UserRepository:
                 ''', (username, password, email)
             )
             db.commit()
-            user_id = cursor.lastrowid
-            print(f"\nUser {user_id}: {username} successfully added.\n")
+            return cursor.lastrowid
         except sqlite3.IntegrityError as e:
             db.rollback()
             print(f"Integrity error: {e}")
@@ -658,6 +709,21 @@ class UserRepository:
             db.close()
 
     def validate_username(self, prompt):
+        """
+        Function: validate_username
+
+        This function prompts for and validates a new username against existing 
+        entries in the database. if user already exists, user is told to enter a
+        unique username.
+
+        Input:
+        
+        - prompt: (str) A message shown to the user when asking for input.
+
+        Return:
+        
+        - username: (str) If username is unique, this is returned.
+        """
         while True:
             username = input(prompt)
             db = sqlite3.connect("taskManager.db")
@@ -677,6 +743,21 @@ class UserRepository:
             return username
 
     def assignee_exists(self, prompt):
+        """
+        Function: assignee_exists
+
+        This function checks if the provided username for either a new or updated task
+        already exists in the database. If not, users are prompted to add a valid assignee.
+
+        Input:
+        
+        - prompt: (str) A message shown to the user when asking for input.
+
+        Return:
+        
+        - username: (str) The existing username if found.
+        - None: If the username does not exist.
+        """
         username = input(prompt)
         db = sqlite3.connect("taskManager.db")
         cursor = db.cursor()
@@ -696,6 +777,20 @@ class UserRepository:
         return username
 
     def get_user(self, id):
+        """
+        Function: get_user
+
+        This function returns the details of user with entered ID.
+
+        Input:
+        
+        - id: (int) The user ID.
+
+        Return:
+        
+        - user: (dict) A dictionary containing user details if found.
+        - None: If no user is found with the entered ID.
+        """
         db = sqlite3.connect("taskManager.db")
         cursor = db.cursor()
         cursor.execute(
@@ -720,6 +815,24 @@ class UserRepository:
             }
 
     def update_user(self, id, username, password, email):
+        """
+        Function: update_user
+
+        This function updates the details of an existing user in the database.
+        Users can choose what they need to update. If a field  doesn't need updating
+        the existing data is retained.
+
+        Input:
+        
+        - id: (int) The ID of the user to update.
+        - username: (str) The updated/existing username.
+        - password: (str) The updated/existing password.
+        - email: (str) The updated/existing email address.
+
+        Return:
+        
+        - cursor.rowcount: If > 0 update was completed else it failed.
+        """
         try:
             db = sqlite3.connect("taskManager.db")
             cursor = db.cursor()
@@ -731,6 +844,7 @@ class UserRepository:
                 ''', (username, password, email, id)
             )
             db.commit()
+            return cursor.rowcount > 0
         except sqlite3.IntegrityError as e:
             db.rollback()
             print(f"Integrity error: {e}")
@@ -746,7 +860,20 @@ class UserRepository:
         finally:
             db.close()
 
-    def make_admin(self, id):
+    def make_admin(self, id)
+        """
+        Function: make_admin
+
+        This function updates selected user to gain admin privileges.
+
+        Input:
+        
+        - id: (int) ID of the user to promote.
+
+        Return:
+
+        - cursor.rowcount: If > 0 update was completed else it failed.
+        """
         try:
             is_admin = "Yes"
             db = sqlite3.connect("taskManager.db")
@@ -759,6 +886,7 @@ class UserRepository:
                 ''', (is_admin, id)
             )
             db.commit()
+            return cursor.rowcount > 0
         except sqlite3.IntegrityError as e:
             db.rollback()
             print(f"Integrity error: {e}")
@@ -775,6 +903,19 @@ class UserRepository:
             db.close()
 
     def delete_user(self, id):
+        """
+        Function: delete_user
+
+        This function deletes a user from the database by their ID.
+
+        Input:
+        
+        - id: (int) The ID of the user to delete.
+
+        Return:
+
+        - cursor.rowcount: If rowcount > 0 user was deleted else deletion failed.
+        """
         try:
             db = sqlite3.connect("taskManager.db")
             cursor = db.cursor()
@@ -785,6 +926,7 @@ class UserRepository:
                 ''', (id,)
             )
             db.commit()
+            return cursor.rowcount > 0
         except sqlite3.IntegrityError as e:
             db.rollback()
             print(f"Integrity error: {e}")
@@ -801,6 +943,13 @@ class UserRepository:
             db.close()
 
     def import_users(self):
+        """
+        Function: import_users
+
+        This function imports user records from a 'users.txt' file into the database.
+        It checks IDs, usernames, and email to ensure they valid before insertion.
+        Any updates are skipped as well as updates handled in separate function.
+        """
         db = sqlite3.connect("taskManager.db")
         cursor = db.cursor()
 
@@ -881,6 +1030,11 @@ class UserRepository:
         db.close()
 
     def export_users(self):
+        """
+        Function: export_users
+
+        This function exports all user records from the database into a 'users.txt' file.
+        """
         db = sqlite3.connect("taskManager.db")
         cursor = db.cursor()
         cursor.execute(

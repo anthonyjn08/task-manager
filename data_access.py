@@ -316,7 +316,7 @@ class TaskRepository:
                 (is_complete, task_id)
             )
             db.commit()
-            print(f"Task {task_id} marked as complete.")
+            return task_id
         except sqlite3.IntegrityError as e:
             db.rollback()
             print(f"Integrity error: {e}")

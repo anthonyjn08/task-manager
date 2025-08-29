@@ -81,7 +81,10 @@ def start_application():
                 task_id = task_service.add_task(title, description, due_date, assigned_date, user)
 
                 # Confirm task added and provide task number and title
-                print(f"Task {task_id}: {title} added to the database.")
+                if task_id:
+                    print(f"Task {task_id}: {title} added to the database.")
+                else:
+                    print("Failed to add task. Try again.")
                 time.sleep(2)
 
             elif choice == 2:

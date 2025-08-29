@@ -65,7 +65,7 @@ class TaskRepository:
 
         Return:
 
-        - task_no: (int) Task ID
+        - cursor.lastrowid: returns the id of new task if added
         - None: occurs if a sqlite3 error happens
         """
         try:
@@ -80,9 +80,8 @@ class TaskRepository:
                 (title, description, assigned_date, due_date, user),
             )
             # Commit the changes
-            db.commit()
-            task_no = cursor.lastrowid
-            return task_no
+            db.commit()            
+            return cursor.lastrowid
         except sqlite3.IntegrityError as e:
             db.rollback()
             print(f"Integrity error: {e}")
@@ -262,8 +261,8 @@ class TaskRepository:
 
         Return:
 
-        - task_id: (int) the ID of the updated task.
-        - None: occurs if there is a sqlite3 error
+        - cursor.rowcount: if more than 0 the update was completed else it failed
+        - None: occurs if there is a sqlite3 error or update failed
         """
         try:
             db = sqlite3.connect("taskManager.db")
@@ -276,7 +275,7 @@ class TaskRepository:
                 (title, description, due_date, user, task_id)
             )
             db.commit()
-            return task_id
+            return cursor.rowcount > 0
         except sqlite3.IntegrityError as e:
             db.rollback()
             print(f"Integrity error: {e}")
@@ -300,7 +299,7 @@ class TaskRepository:
 
         Input:
 
-        - task_id: (int) ID of the task to mark as complete.
+        - cursor.rowcount: if more than 0 the update was completed else it failed
         - None: occurs if there is a sqlite3 error
         """       
         try:
@@ -316,7 +315,7 @@ class TaskRepository:
                 (is_complete, task_id)
             )
             db.commit()
-            return task_id
+            return cursor.rowcount > 0
         except sqlite3.IntegrityError as e:
             db.rollback()
             print(f"Integrity error: {e}")
@@ -372,6 +371,10 @@ class TaskRepository:
 
         - id: (int) ID of the task to delete.
         - None: occurs if there is a sqlite3 error
+
+        Return:
+
+        - cursor.rowcount: if more than 0 the deletion was completed else it failed
         """
         try:
             db = sqlite3.connect("taskManager.db")
@@ -383,6 +386,7 @@ class TaskRepository:
                 ''', (id,)
             )
             db.commit()
+            return cursor.rowcount > 0
         except sqlite3.IntegrityError as e:
             db.rollback()
             print(f"Integrity error: {e}")
@@ -508,9 +512,7 @@ class TaskRepository:
                         f"{is_complete},{user}")
 
                 file.write(line+"\n")
-
         db.close()
-
         print(f"All tasks exported successfully. Total: {len(tasks)} tasks.")
 
 

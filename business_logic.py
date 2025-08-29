@@ -6,10 +6,9 @@ class TaskService:
         """Initialise the TaskService with a TaskRepository"""
         self.task_repository = TaskRepository()
 
-    def add_task(self, title, description, due_date, assigned_date,
-                 user):
+    def add_task(self, title, description, due_date, assigned_date, user):
         return self.task_repository.add_task(title, description, assigned_date,
-                                      due_date, user)
+                                             due_date, user)
 
     def get_task(self, task_id):
         return self.task_repository.get_task(task_id)
@@ -25,7 +24,7 @@ class TaskService:
 
     def update_task(self, title, description, due_date, user, task_id):
         return self.task_repository.update_task(title, description, due_date,
-                                         user, task_id)
+                                                user, task_id)
 
     def mark_complete(self, task_id):
         return self.task_repository.mark_complete(task_id)
@@ -41,6 +40,7 @@ class TaskService:
 
     def export_tasks(self):
         self.task_repository.export_tasks()
+
 
 class Task:
     def __init__(self, title, description, assigned_date, due_date, user):
@@ -60,7 +60,7 @@ class UserService:
 
     def login(self, username, password):
         return self.user_repository.login(username, password)
-    
+
     def view_all_users(self):
         return self.user_repository.view_all_users()
 
@@ -69,7 +69,7 @@ class UserService:
 
     def validate_user(self, prompt):
         return self.user_repository.validate_username(prompt)
-    
+
     def assignee_exists(self, prompt):
         return self.user_repository.assignee_exists(prompt)
 

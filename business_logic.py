@@ -28,13 +28,13 @@ class TaskService:
                                          user, task_id)
 
     def mark_complete(self, task_id):
-        self.task_repository.mark_complete(task_id)
+        return self.task_repository.mark_complete(task_id)
 
     def overdue_tasks(self):
         return self.task_repository.overdue_tasks()
 
     def delete_task(self, id):
-        self.task_repository.delete_task(id)
+        return self.task_repository.delete_task(id)
 
     def import_tasks(self):
         self.task_repository.import_tasks()

@@ -230,10 +230,13 @@ def start_application():
                                 else:
                                     print("Invalid option. Try again")
                                     
-                            task_service.update_task(title, description, due_date, user, task_id)
+                            update = task_service.update_task(title, description, due_date, user, task_id)
 
-                        print(f"\nTask {task_id}: {title} updated.\n")
-                            
+                            if update:
+                                print(f"\nTask {task_id}: {title} updated.\n")
+                            else:
+                                print("Update failed. Try again.")
+                                
                     except ValueError:
                         print("\nPlease enter an integer!\n")
                 
@@ -276,7 +279,11 @@ def start_application():
                             while True:
                                 complete = input("Mark this task as complete? (y/n): ").lower()
                                 if complete == "y":
-                                    task_service.mark_complete(task_id)
+                                    complete = task_service.mark_complete(task_id)
+                                    if complete:
+                                        print(f"Task: {task_id} {task["title"]} marked as complete.")
+                                    else:
+                                        print(f"Error! Update failed. Task: {task_id} not updated.")
                                     break
                                 elif complete == "n":
                                     break
@@ -363,7 +370,11 @@ def start_application():
                 while True:
                     confirmation = input(f"Do you want to delete task {task_id}? (y/n): ").lower()
                     if confirmation == "y":
-                        task_service.delete_task(task_id)
+                        deleted = task_service.delete_task(task_id)
+                        if deleted:
+                            print(f"Task {task_id} {task["title"]} successfully deleted.")
+                        else:
+                            print(f"Error! Task: {task_id} not deleted. Try again.")
                         break
                     elif confirmation == "n":
                         break

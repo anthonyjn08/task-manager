@@ -401,7 +401,6 @@ class TaskRepository:
             return None
         finally:
             db.close()
-            print(f"Task {id} deleted")
 
     def import_tasks(self):
         """

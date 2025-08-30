@@ -71,7 +71,8 @@ def start_application():
             if choice == 1:
                 # Add Task
                 print("\nAdd new task\n")
-                user = user_service.assignee_exists("Assigned to: ")
+                username = input("Assigned to: ")
+                user = user_service.assignee_exists(username)
 
                 # If user doesn' exist, prompted to try again or return
                 # to main menu
@@ -83,6 +84,9 @@ def start_application():
                         time.sleep(2)
                         break
                     user = user_service.assignee_exists(choice)
+
+                if not user:
+                    continue
 
                 # Task inputs
                 title = input("\nTask Title: ")

@@ -12,8 +12,8 @@ class TaskService:
         Calls 'add_task' function from the TaskRepository in data_access.py
         to handle interaction with the database.
         """
-        return self.task_repository.add_task(title, description, assigned_date,
-                                             due_date, user)
+        return self.task_repository.add_task(
+            title, description, due_date, assigned_date, user)
 
     def get_task(self, task_id):
         """

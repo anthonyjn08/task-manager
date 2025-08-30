@@ -76,8 +76,7 @@ class TaskRepository:
                 INSERT INTO tasks(title, description, assignedDate, dueDate,
                 user)
                 VALUES(?, ?, ?, ?, ?)
-                """,
-                (title, description, assigned_date, due_date, user),
+                """, (title, description, assigned_date, due_date, user)
             )
             # Commit the changes
             db.commit()
@@ -736,7 +735,7 @@ class UserRepository:
                 continue
             return username
 
-    def assignee_exists(self, prompt):
+    def assignee_exists(self, username):
         """
         Function: assignee_exists
 
@@ -751,7 +750,6 @@ class UserRepository:
         - username: (str) The existing username if found.
         - None: If the username does not exist.
         """
-        username = input(prompt)
         db = sqlite3.connect("taskManager.db")
         cursor = db.cursor()
         cursor.execute(
@@ -766,7 +764,7 @@ class UserRepository:
         if not user:
             return None
         
-        return username
+        return user[0]
 
     def get_user(self, id):
         """

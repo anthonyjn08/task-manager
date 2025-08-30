@@ -1,6 +1,5 @@
 import sys
-import datetime
-import time
+from datetime import datetime, time
 from business_logic import TaskService, UserService
 from utilities import validate_email, date_validation
 
@@ -77,8 +76,10 @@ def start_application():
                 # If user doesn' exist, prompted to try again or return
                 # to main menu
                 while not user:
-                    choice = input("\nUser does not exist. Enter a valid username "
-                                 "or enter '-1' to return to main menu: ")
+                    choice = input("\nUser does not exist. Enter a valid "
+                                   "username or enter '-1' to return to "
+                                   "main menu: ")
+
                     if choice == "-1":
                         print("Returning to main menu")
                         time.sleep(2)
@@ -94,11 +95,13 @@ def start_application():
                 auto_assigned_date = datetime.date.today()
 
                 while True:
-                    entered_due_date = input("Task due date (e.g., 01/01/2000): ")
+                    entered_due_date = input("Task due date (e.g., "
+                                             "01/01/2000): ")
                     due_date_input = date_validation(entered_due_date)
 
                     if due_date_input < auto_assigned_date:
-                        print("Due date cannot be before assigned date. Please try again.")
+                        print("Due date cannot be before assigned date. "
+                              "Please try again.")
                         continue
                     else:
                         break
@@ -112,7 +115,7 @@ def start_application():
 
                 # Confirm task added and provide task number and title
                 if task_id:
-                    print(f"\nTask {task_id}: {title} added to the database.\n")
+                    print(f"\nTask {task_id} {title} added to the database.\n")
                 else:
                     print("\nFailed to add task! Try again.\n")
                 time.sleep(2)
@@ -243,19 +246,21 @@ def start_application():
                                 if update_date == "y":
                                     while True:
                                         entered_due_date = input("Enter new "
-                                                               "due date: ")
+                                                                 "due date: ")
                                         due_date_input = date_validation(
                                             entered_due_date)
-                                        
-                                        assigned_date = datetime.datetime.strptime(
+
+                                        assigned_date = datetime.strptime(
                                             stored_assigned_date, "%d/%m/%Y"
                                             ).date()
-                                        
+
                                         if due_date_input < assigned_date:
-                                            print("Due date can not be before assigned date. Try again")
+                                            print("Due date can not be before "
+                                                  "assigned date. Try again")
                                             continue
                                         else:
-                                            due_date = due_date_input.strftime("%d/%m/%Y")
+                                            due_date = due_date_input.strftime(
+                                                "%d/%m/%Y")
                                             break
 
                                     break
@@ -274,31 +279,37 @@ def start_application():
                                 if update_user == "y":
                                     while True:
                                         choice = input("Enter new username: ")
-                                        found_user = user_service.assignee_exists(choice)
+                                        found_user = (
+                                            user_service.
+                                            assignee_exists(choice))
 
                                         if found_user:
                                             user = found_user
-                                            print(f"Assigned user updated to {user}")
+                                            print(f"Assigned user updated to "
+                                                  f"{user}")
                                             break
                                         elif choice == "-1":
                                             print("Keeping existing user!")
                                             break
                                         else:
-                                            print("That user does not exist. Try again or enter '-1' to keep existing user.")
+                                            print("That user does not exist. "
+                                                  "Try again or enter '-1' to "
+                                                  "keep existing user.")
                                     break
-                                
+
                                 elif update_user == "n":
                                     break
                                 else:
                                     print("\nInvalid option. Try again\n")
 
-                            if (update_title == "n" and update_desc == "n" 
-                                and update_date == "n" and update_user == "n"):
+                            if (update_title == "n" and update_desc == "n"
+                                    and update_date == "n" and
+                                    update_user == "n"):
                                 print("Nothing to update. Returning to menu")
                                 time.sleep(2)
                                 break
-                            elif (update_title == "n" and update_desc == "n" 
-                                and update_date == "n" and choice == "-1"):
+                            elif (update_title == "n" and update_desc == "n"
+                                    and update_date == "n" and choice == "-1"):
                                 print("Nothing to update. Returning to menu")
                                 time.sleep(2)
                                 break
@@ -362,7 +373,7 @@ def start_application():
                                 complete = input(
                                     "Mark this task as complete? "
                                     "(y/n): ").lower()
-                                
+
                                 if complete == "y":
                                     complete = task_service.mark_complete(
                                         task_id)
@@ -374,7 +385,7 @@ def start_application():
                                     else:
                                         print(f"\nError! Update failed. Task: "
                                               f"{task_id} not updated.\n")
-                                        
+
                                 elif complete == "n":
                                     break
                                 else:
@@ -480,8 +491,8 @@ def start_application():
                             print(f"Task {task_id}: {task["title"]} "
                                   f"successfully deleted.")
                         else:
-                            print(f"Error! Task: {task_id}: {task["title"]} not deleted. "
-                                  f"Try again.")
+                            print(f"Error! Task: {task_id}: {task["title"]} "
+                                  f"not deleted. Try again.")
                         break
                     elif confirmation == "n":
                         break
@@ -614,9 +625,11 @@ def start_application():
                         if confirm == "y":
                             admin = user_service.make_admin(user_id)
                             if admin:
-                                print(f"User: {user_id} {user["username"]} made admin.")
+                                print(f"User: {user_id} {user["username"]} "
+                                      f"made admin.")
                             else:
-                                print(f"Error occurred, user {user_id} {user["username"]} not updated.")
+                                print(f"Error occurred, user {user_id} "
+                                      f"{user["username"]} not updated.")
                             break
                         elif confirm == "n":
                             break
@@ -648,9 +661,11 @@ def start_application():
                             if confirm == "y":
                                 delete = user_service.delete_user(user_id)
                                 if delete:
-                                    print(f"User: {user_id} {user["username"]} deleted.")
+                                    print(f"User: {user_id} {user["username"]} "
+                                          f"deleted.")
                                 else:
-                                    print(f"Error occurred, user {user_id} {user["username"]} not deleted.")
+                                    print(f"Error occurred, user {user_id} "
+                                          f"{user["username"]} not deleted.")
                                 break
                             elif confirm == "n":
                                 break

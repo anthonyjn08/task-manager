@@ -77,7 +77,7 @@ def start_application():
                 # If user doesn' exist, prompted to try again or return
                 # to main menu
                 while not user:
-                    choice = input("User does not exist. Enter a valid username "
+                    choice = input("\nUser does not exist. Enter a valid username "
                                  "or enter '-1' to return to main menu: ")
                     if choice == "-1":
                         print("Returning to main menu")
@@ -273,28 +273,39 @@ def start_application():
 
                                 if update_user == "y":
                                     while True:
-                                        # Check user exists
-                                        user = user_service.assignee_exists(
-                                            "Enter new assignee: ")
-                                        # Continue if they do.
-                                        if user:
+                                        choice = input("Enter new username: ")
+                                        found_user = user_service.assignee_exists(choice)
+
+                                        if found_user:
+                                            user = found_user
+                                            print(f"Assigned user updated to {user}")
+                                            break
+                                        elif choice == "-1":
+                                            print("Keeping existing user!")
                                             break
                                         else:
-                                            retry = input("Try again? "
-                                                          "(y/n): ").lower()
-                                            # If retry is no then reassigned
-                                            # original assignee.
-                                            if retry == "n":
-                                                user = task["user"]
-                                                break
+                                            print("That user does not exist. Try again or enter '-1' to keep existing user.")
                                     break
+                                
                                 elif update_user == "n":
                                     break
                                 else:
                                     print("\nInvalid option. Try again\n")
 
-                            update = task_service.update_task(
-                                title, description, due_date, user, task_id)
+                            if (update_title == "n" and update_desc == "n" 
+                                and update_date == "n" and update_user == "n"):
+                                print("Nothing to update. Returning to menu")
+                                time.sleep(2)
+                                break
+                            elif (update_title == "n" and update_desc == "n" 
+                                and update_date == "n" and choice == "-1"):
+                                print("Nothing to update. Returning to menu")
+                                time.sleep(2)
+                                break
+                            else:
+                                update = task_service.update_task(
+                                    title, description, due_date, user, task_id
+                                )
 
                             if update:
                                 print(f"\nTask {task_id}: {title} updated.\n")
@@ -346,7 +357,7 @@ def start_application():
                                 continue
 
                             # Mark Complete
-                            print(f"Task: {task["id"]} {task["title"]}\n")
+                            print(f"\nTask: {task["id"]} {task["title"]}\n")
                             while True:
                                 complete = input(
                                     "Mark this task as complete? "
@@ -359,10 +370,11 @@ def start_application():
                                         print(f"\nTask: {task_id} "
                                               f"{task["title"]} marked "
                                               f"as complete.\n")
+                                        break
                                     else:
                                         print(f"\nError! Update failed. Task: "
                                               f"{task_id} not updated.\n")
-                                    break
+                                        
                                 elif complete == "n":
                                     break
                                 else:

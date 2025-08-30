@@ -91,12 +91,23 @@ def start_application():
                 # Task inputs
                 title = input("\nTask Title: ")
                 description = input("Tasks Description: ")
-                assigned_date = datetime.date.today().strftime("%d/%m/%Y")
-                due_date_input = date_validation("Task due date "
-                                                 "(e.g., 01/01/2000): ")
+                auto_assigned_date = datetime.date.today()
+
+                while True:
+                    entered_due_date = input("Task due date (e.g., 01/01/2000): ")
+                    due_date_input = date_validation(entered_due_date)
+
+                    if due_date_input < auto_assigned_date:
+                        print("Due date cannot be before assigned date. Please try again.")
+                        continue
+                    else:
+                        break
+
+                assigned_date = auto_assigned_date.strftime("%d/%m/%Y")
                 due_date = due_date_input.strftime("%d/%m/%Y")
+
                 task_id = task_service.add_task(
-                    title, description, due_date, assigned_date, user
+                    title, description, assigned_date, due_date, user
                 )
 
                 # Confirm task added and provide task number and title

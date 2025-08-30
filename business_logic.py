@@ -6,14 +6,14 @@ class TaskService:
         """Initialise the TaskService with a TaskRepository"""
         self.task_repository = TaskRepository()
 
-    def add_task(self, title, description, due_date, assigned_date, user):
+    def add_task(self, title, description, assigned_date, due_date, user):
         """
         Adds a new task to the database.
         Calls 'add_task' function from the TaskRepository in data_access.py
         to handle interaction with the database.
         """
         return self.task_repository.add_task(
-            title, description, due_date, assigned_date, user)
+            title, description, assigned_date, due_date, user)
 
     def get_task(self, task_id):
         """
@@ -153,14 +153,14 @@ class UserService:
         """
         return self.user_repository.validate_username(prompt)
 
-    def assignee_exists(self, prompt):
+    def assignee_exists(self, username):
         """
         Checks to make sure that a user exists when they're being assigned
         to a task.
         Calls 'lassignee_exists' function from the UserRepository in
         data_access.py to handle interaction with the database.
         """
-        return self.user_repository.assignee_exists(prompt)
+        return self.user_repository.assignee_exists(username)
 
     def get_user(self, id):
         """

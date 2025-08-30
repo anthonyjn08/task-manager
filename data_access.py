@@ -764,7 +764,7 @@ class UserRepository:
         if not user:
             return None
         
-        return user[0]
+        return user[1]
 
     def get_user(self, id):
         """

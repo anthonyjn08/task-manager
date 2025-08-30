@@ -27,7 +27,7 @@ def validate_email(prompt):
         return email
 
 
-def date_validation(prompt):
+def date_validation(due_date):
     '''
     Function: date_validation
 
@@ -41,10 +41,10 @@ def date_validation(prompt):
     - date_obj: (date) returns the user string in date format
     '''
     while True:
-        date_input = input(prompt)
+        date_input = due_date
 
         try:
-            date_obj = datetime.strptime(date_input.strip(), "%d/%m/%Y")
+            date_obj = datetime.strptime(date_input.strip(), "%d/%m/%Y").date()
             return date_obj
 
         except ValueError:

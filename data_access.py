@@ -135,7 +135,6 @@ class TaskRepository:
         db.close()
 
         if task is None:
-            print("\nTask not found\n")
             return None
 
         # Task dictionary
@@ -177,7 +176,6 @@ class TaskRepository:
         db.close()
 
         if tasks is None:
-            print("\nYou have no tasks!\n")
             return None
 
         return tasks
@@ -204,7 +202,6 @@ class TaskRepository:
         db.close()
 
         if tasks is None:
-            print("\nThere are currently no tasks!\n")
             return None
 
         return tasks
@@ -234,7 +231,7 @@ class TaskRepository:
         db.close()
 
         if completed_tasks is None:
-            print("\nThere are currently no completed tasks!\n")
+            return None
 
         return completed_tasks
 
@@ -353,7 +350,6 @@ class TaskRepository:
         db.close()
 
         if overdue_tasks is None:
-            print("No overdue tasks.")
             return None
 
         return overdue_tasks
@@ -432,7 +428,7 @@ class TaskRepository:
                     description = task[2].strip()
                     assigned_date = task[3].strip()
                     due_date = task[4].strip()
-                    is_complete = task[5].strip()
+                    is_complete = task[5].strip().capitalize()
                     user = task[6].strip()
 
                     try:
@@ -488,7 +484,6 @@ class TaskRepository:
 
         db.commit()
         db.close()
-        print("\nTasks imported.\n")
 
     def export_tasks(self):
         """
@@ -769,9 +764,8 @@ class UserRepository:
         user = cursor.fetchone()
         db.close()
         if not user:
-            print("Assignee does not exist. Please create the assignee then"
-                  " try again.")
             return None
+        
         return username
 
     def get_user(self, id):
@@ -973,7 +967,7 @@ class UserRepository:
                     username = user[1].strip()
                     password = user[2].strip()
                     email = user[3].strip()
-                    is_admin = user[4].strip()
+                    is_admin = user[4].strip().capitalize()
 
                     # Validate email address, skip line where not valid
                     if not re.match(r"[^@]+@[^@]+\.[^@]+", email):

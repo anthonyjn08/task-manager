@@ -192,6 +192,7 @@ def start_application():
                             task_id = task["id"]
                             title = task["title"]
                             description = task["description"]
+                            stored_assigned_date = task["assigned_date"]
                             due_date = task["due_date"]
                             user = task["user"]
 
@@ -215,7 +216,7 @@ def start_application():
                                     break
                                 else:
                                     print("Invalid option. Try again")
-                            # print(f"Title: {title}")
+
                             # DESCRIPTION update
                             print(f"\nDescription: {description}")
                             while True:
@@ -240,8 +241,23 @@ def start_application():
                                                     "(y/n): ").lower()
 
                                 if update_date == "y":
-                                    due_date = date_validation("Enter new "
+                                    while True:
+                                        entered_due_date = input("Enter new "
                                                                "due date: ")
+                                        due_date_input = date_validation(
+                                            entered_due_date)
+                                        
+                                        assigned_date = datetime.datetime.strptime(
+                                            stored_assigned_date, "%d/%m/%Y"
+                                            ).date()
+                                        
+                                        if due_date_input < assigned_date:
+                                            print("Due date can not be before assigned date. Try again")
+                                            continue
+                                        else:
+                                            due_date = due_date_input.strftime("%d/%m/%Y")
+                                            break
+
                                     break
                                 elif update_date == "n":
                                     break
@@ -282,6 +298,7 @@ def start_application():
 
                             if update:
                                 print(f"\nTask {task_id}: {title} updated.\n")
+                                break
                             else:
                                 print(f"\nError! Update failed. Task: "
                                       f"{task_id} not updated.\n")

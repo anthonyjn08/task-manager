@@ -144,11 +144,11 @@ def start_application():
             elif choice == 3:
                 # View my tasks
                 print("\nView my tasks\n")
-                tasks = task_service.get_my_tasks(username)
+                tasks = task_service.get_my_tasks(logged_in_user)
 
                 if tasks:
                     for task in tasks:
-                        print("\n" + "-" * 80)
+                        print("-" * 80)
                         print(f"Task Number: {task[0]}")
                         print(f"Task Assignee: {task[6]}")
                         print(f"Assigned date: {task[3]}")

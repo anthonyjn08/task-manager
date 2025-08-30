@@ -6,15 +6,15 @@ def validate_email(prompt):
     """
     Function: validate_email
 
-    This function ensures that there is text before and after the '@' symbol for email
-    adresses.
+    This function ensures that there is text before and after the '@' symbol
+    for email adresses.
 
     Input:
     - prompt: user is given a prompt to enter the email address
 
     Output:
-    - email: valid email address is returned. Invaldi emails triggers message to
-      enter email addtress again
+    - email: valid email address is returned. Invalid emails triggers message
+      to enter email addtress again
     """
     while True:
         email = input(prompt)
@@ -31,9 +31,8 @@ def date_validation(prompt):
     '''
     Function: date_validation
 
-    This function converts the string date when adding tasks into an
-    acutal date format that can be used when checking if a task
-    is overdue.
+    This function converts the string date when adding tasks into an acutal
+    date format that can be used when adding or updating tasks.
 
     Input:
     - prompt: (str) asks users to input a date.

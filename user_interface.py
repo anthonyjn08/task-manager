@@ -1,5 +1,6 @@
 import sys
-from datetime import datetime, time
+import time
+from datetime import datetime, date
 from business_logic import TaskService, UserService
 from utilities import validate_email, date_validation
 
@@ -92,19 +93,23 @@ def start_application():
                 # Task inputs
                 title = input("\nTask Title: ")
                 description = input("Tasks Description: ")
-                auto_assigned_date = datetime.date.today()
+                auto_assigned_date = date.today()
 
                 while True:
                     entered_due_date = input("Task due date (e.g., "
                                              "01/01/2000): ")
-                    due_date_input = date_validation(entered_due_date)
 
-                    if due_date_input < auto_assigned_date:
-                        print("Due date cannot be before assigned date. "
-                              "Please try again.")
-                        continue
-                    else:
+                    try:
+                        due_date_input = date_validation(entered_due_date)
+
+                        if due_date_input < auto_assigned_date:
+                            print("Due date cannot be before assigned date. "
+                                "Please try again.")
+                            continue
+
                         break
+                    except ValueError as e:
+                        print(f"Invalid date: {e}")
 
                 assigned_date = auto_assigned_date.strftime("%d/%m/%Y")
                 due_date = due_date_input.strftime("%d/%m/%Y")
@@ -197,6 +202,7 @@ def start_application():
                             description = task["description"]
                             stored_assigned_date = task["assigned_date"]
                             due_date = task["due_date"]
+                            is_complete = task["is_complete"]
                             user = task["user"]
 
                             if role == "user":
@@ -204,6 +210,10 @@ def start_application():
                                     print("\nUsers only allowed to edit "
                                           "own tasks!\n")
                                     continue
+
+                            if is_complete == "Yes":
+                                print("Completed tasks can not be updated.")
+                                continue
 
                             # TITLE update
                             print(f"\nTitle: {title}")
@@ -247,23 +257,24 @@ def start_application():
                                     while True:
                                         entered_due_date = input("Enter new "
                                                                  "due date: ")
-                                        due_date_input = date_validation(
-                                            entered_due_date)
+                                        
+                                        try:
+                                            due_date_input = date_validation(
+                                                entered_due_date)
+                                            assigned_date = datetime.strptime(
+                                                stored_assigned_date, "%d/%m/%Y").date()
 
-                                        assigned_date = datetime.strptime(
-                                            stored_assigned_date, "%d/%m/%Y"
-                                            ).date()
+                                            if due_date_input < assigned_date:
+                                                print("Due date cannot be before assigned date. Try again.\n")
+                                                continue
 
-                                        if due_date_input < assigned_date:
-                                            print("Due date can not be before "
-                                                  "assigned date. Try again")
-                                            continue
-                                        else:
-                                            due_date = due_date_input.strftime(
-                                                "%d/%m/%Y")
+                                            due_date = due_date_input.strftime("%d/%m/%Y")
                                             break
 
+                                        except ValueError as e:
+                                            print(f"Invalid date: {e}\n")
                                     break
+
                                 elif update_date == "n":
                                     break
                                 else:

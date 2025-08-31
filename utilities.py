@@ -40,12 +40,7 @@ def date_validation(due_date):
     Output:
     - date_obj: (date) returns the user string in date format
     '''
-    while True:
-        date_input = due_date
-
-        try:
-            date_obj = datetime.strptime(date_input.strip(), "%d/%m/%Y").date()
-            return date_obj
-
-        except ValueError:
-            print("\nPlease enter a date in following format: 'DD/MM/YYYY'.\n")
+    try:
+        return datetime.strptime(due_date.strip(), "%d/%m/%Y").date()
+    except ValueError:
+        raise ValueError("Date must be a valid DD/MM/YYYY date.")

@@ -763,7 +763,7 @@ class UserRepository:
         db.close()
         if not user:
             return None
-        
+
         return user[1]
 
     def get_user(self, id):

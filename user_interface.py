@@ -104,7 +104,7 @@ def start_application():
 
                         if due_date_input < auto_assigned_date:
                             print("Due date cannot be before assigned date. "
-                                "Please try again.")
+                                  "Please try again.")
                             continue
 
                         break
@@ -257,18 +257,23 @@ def start_application():
                                     while True:
                                         entered_due_date = input("Enter new "
                                                                  "due date: ")
-                                        
+
                                         try:
                                             due_date_input = date_validation(
                                                 entered_due_date)
                                             assigned_date = datetime.strptime(
-                                                stored_assigned_date, "%d/%m/%Y").date()
+                                                stored_assigned_date, "%d/%m/%Y"
+                                                ).date()
 
                                             if due_date_input < assigned_date:
-                                                print("Due date cannot be before assigned date. Try again.\n")
+                                                print("Due date cannot be "
+                                                      "before assigned date. "
+                                                      "Try again.\n")
+
                                                 continue
 
-                                            due_date = due_date_input.strftime("%d/%m/%Y")
+                                            due_date = due_date_input.strftime(
+                                                "%d/%m/%Y")
                                             break
 
                                         except ValueError as e:

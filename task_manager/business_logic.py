@@ -6,14 +6,13 @@ class TaskService:
         """Initialise the TaskService with a TaskRepository"""
         self.task_repository = TaskRepository()
 
-    def add_task(self, title, description, assigned_date, due_date, user):
+    def add_task(self, task):
         """
         Adds a new task to the database.
         Calls 'add_task' function from the TaskRepository in data_access.py
         to handle interaction with the database.
         """
-        return self.task_repository.add_task(
-            title, description, assigned_date, due_date, user)
+        return self.task_repository.add_task(task)
 
     def get_task(self, task_id):
         """
@@ -47,7 +46,7 @@ class TaskService:
         """
         return self.task_repository.completed_tasks()
 
-    def update_task(self, title, description, due_date, user, task_id):
+    def update_task(self, task):
         """
         Allows users to update the task title, description, due date
         and assignee using the unique task ID. Users can only edit their
@@ -55,8 +54,7 @@ class TaskService:
         Calls 'update_task' function from the TaskRepository in data_access.py
         to handle interaction with the database.
         """
-        return self.task_repository.update_task(title, description, due_date,
-                                                user, task_id)
+        return self.task_repository.update_task(task)
 
     def mark_complete(self, task_id):
         """

@@ -49,7 +49,7 @@ class TaskRepository:
             db.close()
 
     # ********** Task functions **********
-    def add_task(self, title, description, assigned_date, due_date, user):
+    def add_task(self, task):
         """
         Function: add_task
 
@@ -76,7 +76,7 @@ class TaskRepository:
                 INSERT INTO tasks(title, description, assignedDate, dueDate,
                 user)
                 VALUES(?, ?, ?, ?, ?)
-                """, (title, description, assigned_date, due_date, user)
+                """, (task.title, task.description, task.assigned_date, task.due_date, task.user)
             )
             # Commit the changes
             db.commit()
@@ -137,15 +137,15 @@ class TaskRepository:
             return None
 
         # Task dictionary
-        return {
-            "id": task[0],
-            "title": task[1],
-            "description": task[2],
-            "assigned_date": task[3],
-            "due_date": task[4],
-            "is_complete": task[5],
-            "user": task[6],
-        }
+        return Task(
+            title=task[1],
+            description=task[2],
+            assigned_date=task[3],
+            due_date=task[4],
+            is_complete=task[5],
+            user=task[6],
+            id=task[0],
+        )
 
     def get_my_tasks(self, user):
         """

@@ -1,7 +1,7 @@
 import sys
 import time
 from datetime import datetime, date
-from business_logic import TaskService, UserService
+from business_logic import TaskService, UserService, Task
 from utilities import validate_email, date_validation
 
 
@@ -114,9 +114,14 @@ def start_application():
                 assigned_date = auto_assigned_date.strftime("%d/%m/%Y")
                 due_date = due_date_input.strftime("%d/%m/%Y")
 
-                task_id = task_service.add_task(
-                    title, description, assigned_date, due_date, user
+                new_task = Task(
+                    title=title,
+                    description=description,
+                    assigned_date=assigned_date,
+                    due_date=due_date,
+                    user=user
                 )
+                task_id = task_service.add_task(new_task)
 
                 # Confirm task added and provide task number and title
                 if task_id:
@@ -318,6 +323,15 @@ def start_application():
                                 else:
                                     print("\nInvalid option. Try again\n")
 
+                            updated_task = Task(
+                                title=title,
+                                description=description,
+                                assigned_date=assigned_date,
+                                due_date=due_date,
+                                user=user,
+                                id=task_id
+                            )
+
                             if (update_title == "n" and update_desc == "n"
                                     and update_date == "n" and
                                     update_user == "n"):
@@ -330,9 +344,7 @@ def start_application():
                                 time.sleep(2)
                                 break
                             else:
-                                update = task_service.update_task(
-                                    title, description, due_date, user, task_id
-                                )
+                                update = task_service.update_task(updated_task)
 
                             if update:
                                 print(f"\nTask {task_id}: {title} updated.\n")

@@ -341,7 +341,7 @@ class TaskRepository:
         db.close()
 
         if overdue_tasks is None:
-            return None
+            return []
 
         return overdue_tasks
 

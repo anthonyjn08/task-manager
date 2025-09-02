@@ -41,6 +41,6 @@ def date_validation(due_date):
     - date_obj: (date) returns the user string in date format
     '''
     try:
-        return datetime.strptime(due_date.strip(), "%d/%m/%Y").date()
-    except ValueError:
-        raise ValueError("Date must be a valid DD/MM/YYYY date.")
+        return datetime.strptime(due_date.strip(), "%Y-%m-%d").date()
+    except ValueError as exc:
+        raise ValueError("Date must be a valid YYYY-MM-DD date.") from exc

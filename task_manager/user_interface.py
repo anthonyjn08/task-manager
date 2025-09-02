@@ -96,8 +96,8 @@ def start_application():
                 auto_assigned_date = date.today()
 
                 while True:
-                    entered_due_date = input("Task due date (e.g., "
-                                             "01/01/2000): ")
+                    entered_due_date = input("Task due date "
+                                             "(YYYY-MM-DD): ").strip()
 
                     try:
                         due_date_input = date_validation(entered_due_date)
@@ -111,8 +111,8 @@ def start_application():
                     except ValueError as e:
                         print(f"Invalid date: {e}")
 
-                assigned_date = auto_assigned_date.strftime("%d/%m/%Y")
-                due_date = due_date_input.strftime("%d/%m/%Y")
+                assigned_date = auto_assigned_date.strftime("%Y-%m-%d")
+                due_date = due_date_input.strftime("%Y-%m-%d")
 
                 new_task = Task(
                     title=title,
@@ -157,8 +157,8 @@ def start_application():
                             print(f"{task.description}")
                             print("-" * 80 + "\n")
                             break
-                        else:
-                            print("\nThat task doesn't exist.\n")
+
+                        print("\nThat task doesn't exist.\n")
 
                     except ValueError:
                         print("\nPlease enter a valid task number!\n")
@@ -267,7 +267,7 @@ def start_application():
                                             due_date_input = date_validation(
                                                 entered_due_date)
                                             assigned_date = datetime.strptime(
-                                                stored_assigned_date, "%d/%m/%Y"
+                                                stored_assigned_date, "%Y-%m-%d"
                                                 ).date()
 
                                             if due_date_input < assigned_date:
@@ -278,7 +278,11 @@ def start_application():
                                                 continue
 
                                             due_date = due_date_input.strftime(
-                                                "%d/%m/%Y")
+                                                "%Y-%m-%d")
+                                            assigned_date = (assigned_date
+                                                             .strftime(
+                                                                 "%Y-%m-%d"))
+
                                             break
 
                                         except ValueError as e:
@@ -384,41 +388,41 @@ def start_application():
                         if task:
                             # Make sure user it editing their own task
                             if role == "user":
-                                if logged_in_user != task["user"]:
+                                if logged_in_user != task.user:
                                     print("\nUsers only allowed to edit "
                                           "own tasks!\n")
                                     continue
 
-                            # If task completed already return to task
-                            # number entry
-                            if task["is_complete"] == "Yes":
-                                print(f"\nTask {task_id} already completed.\n")
-                                continue
+                        # If task completed already return to task
+                        # number entry
+                        if task.is_complete == "Yes":
+                            print(f"\nTask {task_id} already completed.\n")
+                            continue
 
-                            # Mark Complete
-                            print(f"\nTask: {task["id"]} {task["title"]}\n")
-                            while True:
-                                complete = input(
-                                    "Mark this task as complete? "
-                                    "(y/n): ").lower()
+                        # Mark Complete
+                        print(f"\nTask: {task.id} {task.title}\n")
+                        while True:
+                            complete = input(
+                                "Mark this task as complete? "
+                                "(y/n): ").lower()
 
-                                if complete == "y":
-                                    complete = task_service.mark_complete(
-                                        task_id)
-                                    if complete:
-                                        print(f"\nTask: {task_id} "
-                                              f"{task["title"]} marked "
-                                              f"as complete.\n")
-                                        break
-                                    else:
-                                        print(f"\nError! Update failed. Task: "
-                                              f"{task_id} not updated.\n")
-
-                                elif complete == "n":
+                            if complete == "y":
+                                complete = task_service.mark_complete(
+                                    task_id)
+                                if complete:
+                                    print(f"\nTask: {task_id} "
+                                          f"{task.title} marked "
+                                          f"as complete.\n")
                                     break
                                 else:
-                                    print("\nInvalid option! Try again.\n")
+                                    print(f"\nError! Update failed. Task: "
+                                          f"{task_id} not updated.\n")
 
+                            elif complete == "n":
+                                break
+                            else:
+                                print("\nInvalid option! Try again.\n")
+                        break
                     except ValueError:
                         print("\nPlease enter a valid task number!\n")
 
@@ -448,18 +452,22 @@ def start_application():
 
             elif choice == 7:
                 # ***** Overdue tasks *****
+                print("\nOverdue Tasks\n")
                 tasks = task_service.overdue_tasks()
+
+                if tasks is None:
+                    print("No overdue tasks.")
                 if tasks:
                     for task in tasks:
                         print("-" * 80)
-                        print(f"Task Number: {task[0]}")
-                        print(f"Task Assignee: {task[6]}")
-                        print(f"Assigned date: {task[3]}")
-                        print(f"Due date: {task[4]}")
-                        print(f"Task Title: {task[1]}")
-                        print(f"Completed: {task[5]}")
+                        print(f"Task Number: {task.id}")
+                        print(f"Task Assignee: {task.user}")
+                        print(f"Assigned date: {task.assigned_date}")
+                        print(f"Due date: {task.due_date}")
+                        print(f"Task Title: {task.title}")
+                        print(f"Completed: {task.is_complete}")
                         print("Task Description:")
-                        print(f"{task[2]}\n")
+                        print(f"{task.description}\n")
                     print("-" * 80 + "\n")
                 else:
                     print("\nNo overdue tasks.\n")
@@ -472,14 +480,14 @@ def start_application():
                 if tasks:
                     for task in tasks:
                         print("-" * 80)
-                        print(f"Task Number: {task[0]}")
-                        print(f"Task Assignee: {task[6]}")
-                        print(f"Assigned date: {task[3]}")
-                        print(f"Due date: {task[4]}")
-                        print(f"Task Title: {task[1]}")
-                        print(f"Completed: {task[5]}")
+                        print(f"Task Number: {task.id}")
+                        print(f"Task Assignee: {task.user}")
+                        print(f"Assigned date: {task.assigned_date}")
+                        print(f"Due date: {task.due_date}")
+                        print(f"Task Title: {task.title}")
+                        print(f"Completed: {task.is_complete}")
                         print("Task Description:")
-                        print(f"{task[2]}\n")
+                        print(f"{task.description}\n")
                     print("-" * 80 + "\n")
                 else:
                     print("There are no completed tasks!")
@@ -493,14 +501,14 @@ def start_application():
                 task = task_service.get_task(task_id)
                 if task:
                     print("-" * 80)
-                    print(f"Task Number: {task["id"]}")
-                    print(f"Task Assignee: {task["user"]}")
-                    print(f"Assigned date: {task["assigned_date"]}")
-                    print(f"Due date: {task["due_date"]}")
-                    print(f"Task Title: {task["title"]}")
-                    print(f"Completed: {task["is_complete"]}")
+                    print(f"Task Number: {task.id}")
+                    print(f"Task Assignee: {task.user}")
+                    print(f"Assigned date: {task.assigned_date}")
+                    print(f"Due date: {task.due_date}")
+                    print(f"Task Title: {task.title}")
+                    print(f"Completed: {task.is_complete}")
                     print("Task Description:")
-                    print(f"{task["description"]}\n")
+                    print(f"{task.description}\n")
                     print("-" * 80 + "\n")
                 else:
                     print("\nTask not found. Returning to main menu.\n")
@@ -510,16 +518,16 @@ def start_application():
                 print("Deleting a task can not be undone!")
                 while True:
                     confirmation = input(f"Do you want to delete task "
-                                         f"{task_id}: {task["title"]}? "
+                                         f"{task_id}: {task.title}? "
                                          f"(y/n): ").lower()
 
                     if confirmation == "y":
                         deleted = task_service.delete_task(task_id)
                         if deleted:
-                            print(f"Task {task_id}: {task["title"]} "
+                            print(f"Task {task_id}: {task.title} "
                                   f"successfully deleted.")
                         else:
-                            print(f"Error! Task: {task_id}: {task["title"]} "
+                            print(f"Error! Task: {task_id}: {task.title} "
                                   f"not deleted. Try again.")
                         break
                     elif confirmation == "n":

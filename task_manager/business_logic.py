@@ -140,7 +140,23 @@ class TaskService:
         Calls 'overdue_tasks' function from the TaskRepository in
         data_access.py to handle interaction with the database.
         """
-        return self.task_repository.overdue_tasks()
+        tasks = self.task_repository.overdue_tasks()
+
+        if not tasks:
+            return []
+
+        return [
+            Task(
+                id=task[0],
+                title=task[1],
+                description=task[2],
+                assigned_date=task[3],
+                due_date=task[4],
+                is_complete=task[5],
+                user=task[6]
+            )
+            for task in tasks
+        ]
 
     def delete_task(self, id):
         """
@@ -171,7 +187,8 @@ class TaskService:
 
 
 class Task:
-    def __init__(self, id, title, description, assigned_date, due_date, is_complete, user):
+    def __init__(self, title, description, assigned_date, due_date, user,
+                 id=None, is_complete="No"):
         """Initialises task object"""
         self.id = id  # is primary key, only used when reading from DB
         self.title = title

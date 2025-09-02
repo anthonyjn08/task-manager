@@ -12,7 +12,12 @@ class TaskService:
         Calls 'add_task' function from the TaskRepository in data_access.py
         to handle interaction with the database.
         """
-        return self.task_repository.add_task(task)
+        return self.task_repository.add_task(task.title,
+                                             task.description,
+                                             task.assigned_date,
+                                             task.due_date,
+                                             task.user
+                                             )
 
     def get_task(self, task_id):
         """
@@ -54,7 +59,11 @@ class TaskService:
         Calls 'update_task' function from the TaskRepository in data_access.py
         to handle interaction with the database.
         """
-        return self.task_repository.update_task(task)
+        return self.task_repository.update_task(task.title,
+                                                task.description,
+                                                task.due_date,
+                                                task.user,
+                                                task.id)
 
     def mark_complete(self, task_id):
         """

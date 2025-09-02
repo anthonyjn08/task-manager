@@ -49,7 +49,7 @@ class TaskRepository:
             db.close()
 
     # ********** Task functions **********
-    def add_task(self, task):
+    def add_task(self, title, description, assigned_date, due_date, user):
         """
         Function: add_task
 
@@ -76,7 +76,7 @@ class TaskRepository:
                 INSERT INTO tasks(title, description, assignedDate, dueDate,
                 user)
                 VALUES(?, ?, ?, ?, ?)
-                """, (task.title, task.description, task.assigned_date, task.due_date, task.user)
+                """, (title, description, assigned_date, due_date, user)
             )
             # Commit the changes
             db.commit()

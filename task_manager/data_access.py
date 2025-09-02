@@ -137,15 +137,7 @@ class TaskRepository:
             return None
 
         # Task dictionary
-        return Task(
-            title=task[1],
-            description=task[2],
-            assigned_date=task[3],
-            due_date=task[4],
-            is_complete=task[5],
-            user=task[6],
-            id=task[0],
-        )
+        return task
 
     def get_my_tasks(self, user):
         """
@@ -174,8 +166,8 @@ class TaskRepository:
         tasks = cursor.fetchall()
         db.close()
 
-        if tasks is None:
-            return None
+        if not tasks:
+            return []
 
         return tasks
 
@@ -201,7 +193,7 @@ class TaskRepository:
         db.close()
 
         if tasks is None:
-            return None
+            return []
 
         return tasks
 
@@ -230,7 +222,7 @@ class TaskRepository:
         db.close()
 
         if completed_tasks is None:
-            return None
+            return []
 
         return completed_tasks
 

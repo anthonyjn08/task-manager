@@ -147,14 +147,14 @@ def start_application():
                         if task:
                             # Print task
                             print("\n" + "-" * 80)
-                            print(f"Task Number: {task["id"]}")
-                            print(f"Task Assignee: {task["user"]}")
-                            print(f"Assigned date: {task["assigned_date"]}")
-                            print(f"Due date: {task["due_date"]}")
-                            print(f"Task Title: {task["title"]}")
-                            print(f"Completed: {task["is_complete"]}")
+                            print(f"Task Number: {task.id}")
+                            print(f"Task Assignee: {task.user}")
+                            print(f"Assigned date: {task.assigned_date}")
+                            print(f"Due date: {task.due_date}")
+                            print(f"Task Title: {task.title}")
+                            print(f"Completed: {task.is_complete}")
                             print("Task Description:")
-                            print(f"{task["description"]}")
+                            print(f"{task.description}")
                             print("-" * 80 + "\n")
                             break
                         else:
@@ -173,14 +173,14 @@ def start_application():
                 if tasks:
                     for task in tasks:
                         print("-" * 80)
-                        print(f"Task Number: {task[0]}")
-                        print(f"Task Assignee: {task[6]}")
-                        print(f"Assigned date: {task[3]}")
-                        print(f"Due date: {task[4]}")
-                        print(f"Task Title: {task[1]}")
-                        print(f"Completed: {task[5]}")
+                        print(f"Task Number: {task.id}")
+                        print(f"Task Assignee: {task.user}")
+                        print(f"Assigned date: {task.assigned_date}")
+                        print(f"Due date: {task.due_date}")
+                        print(f"Task Title: {task.title}")
+                        print(f"Completed: {task.is_complete}")
                         print("Task Description:")
-                        print(f"{task[2]}\n")
+                        print(f"{task.description}")
                     print("-" * 80 + "\n")
                 else:
                     print("You have no tasks.")
@@ -202,13 +202,13 @@ def start_application():
                         task = task_service.get_task(get_task_id)
 
                         if task:
-                            task_id = task["id"]
-                            title = task["title"]
-                            description = task["description"]
-                            stored_assigned_date = task["assigned_date"]
-                            due_date = task["due_date"]
-                            is_complete = task["is_complete"]
-                            user = task["user"]
+                            task_id = task.id
+                            title = task.title
+                            description = task.description
+                            stored_assigned_date = task.assigned_date
+                            due_date = task.due_date
+                            is_complete = task.is_complete
+                            user = task.user
 
                             if role == "user":
                                 if logged_in_user != user:
@@ -432,14 +432,14 @@ def start_application():
                 if tasks:
                     for task in tasks:
                         print("-" * 80)
-                        print(f"Task Number: {task[0]}")
-                        print(f"Task Assignee: {task[6]}")
-                        print(f"Assigned date: {task[3]}")
-                        print(f"Due date: {task[4]}")
-                        print(f"Task Title: {task[1]}")
-                        print(f"Completed: {task[5]}")
+                        print(f"Task Number: {task.id}")
+                        print(f"Task Assignee: {task.user}")
+                        print(f"Assigned date: {task.assigned_date}")
+                        print(f"Due date: {task.due_date}")
+                        print(f"Task Title: {task.title}")
+                        print(f"Completed: {task.is_complete}")
                         print("Task Description:")
-                        print(f"{task[2]}\n")
+                        print(f"{task.description}\n")
                     print("-" * 80 + "\n")
                 else:
                     print("\nThere are no tasks!\n")

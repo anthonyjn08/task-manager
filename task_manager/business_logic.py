@@ -25,7 +25,19 @@ class TaskService:
         Calls 'get_task' function from the TaskRepository in data_access.py to
         handle interaction with the database.
         """
-        return self.task_repository.get_task(task_id)
+        task = self.task_repository.get_task(task_id)
+        if not task:
+            return None
+        
+        return Task(
+            id=task[0],
+            title=task[1],
+            description=task[2],
+            assigned_date=task[3],
+            due_date=task[4],
+            is_complete=task[5],
+            user=task[6],
+        )
 
     def get_my_tasks(self, user):
         """
@@ -33,7 +45,22 @@ class TaskService:
         Calls 'get_my_tasks' function from the TaskRepository in data_access.py
         to handle interaction with the database.
         """
-        return self.task_repository.get_my_tasks(user)
+        tasks = self.task_repository.get_my_tasks(user)
+        if not tasks:
+            return []
+        
+        return [
+            Task(
+                id=task[0],
+                title=task[1],
+                description=task[2],
+                assigned_date=task[3],
+                due_date=task[4],
+                is_complete=task[5],
+                user=task[6]
+            )
+            for task in tasks
+        ]
 
     def view_all_tasks(self):
         """
@@ -41,7 +68,23 @@ class TaskService:
         Calls 'view_all' function from the TaskRepository in data_access.py to
         handle interaction with the database.
         """
-        return self.task_repository.view_all_tasks()
+        tasks = self.task_repository.view_all_tasks()
+
+        if not tasks:
+            return []
+        
+        return [
+            Task(
+                id=task[0],
+                title=task[1],
+                description=task[2],
+                assigned_date=task[3],
+                due_date=task[4],
+                is_complete=task[5],
+                user=task[6]
+            )
+            for task in tasks
+        ]
 
     def completed_tasks(self):
         """
@@ -49,7 +92,23 @@ class TaskService:
         Calls 'completed_tasks' function from the TaskRepository in
         data_access.py to handle interaction with the database.
         """
-        return self.task_repository.completed_tasks()
+        tasks = self.task_repository.completed_tasks()
+
+        if not tasks:
+            return []
+        
+        return [
+            Task(
+                id=task[0],
+                title=task[1],
+                description=task[2],
+                assigned_date=task[3],
+                due_date=task[4],
+                is_complete=task[5],
+                user=task[6]
+            )
+            for task in tasks
+        ]
 
     def update_task(self, task):
         """
@@ -112,12 +171,14 @@ class TaskService:
 
 
 class Task:
-    def __init__(self, title, description, assigned_date, due_date, user):
+    def __init__(self, id, title, description, assigned_date, due_date, is_complete, user):
         """Initialises task object"""
+        self.id = id  # is primary key, only used when reading from DB
         self.title = title
         self.description = description
         self.assigned_date = assigned_date
         self.due_date = due_date
+        self.is_complete = is_complete  # Defaults to 'No' for new tasks.
         self.user = user
 
 

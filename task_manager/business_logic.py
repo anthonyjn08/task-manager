@@ -221,13 +221,14 @@ class UserService:
         """
         return self.user_repository.view_all_users()
 
-    def add_user(self, username, password, email):
+    def add_user(self, user):
         """
         Allows admins to add a new user to the system.
         Calls 'add_user' function from the UserRepository in data_access.py to
         handle interaction with the database.
         """
-        return self.user_repository.add_user(username, password, email)
+        return self.user_repository.add_user(user.username, user.password,
+                                             user.email)
 
     def validate_user(self, prompt):
         """
@@ -252,15 +253,28 @@ class UserService:
         Returns the datails of a user using the unique ID.
         Calls 'get_user' function from the UserRepository in data_access.py to
         handle interaction with the database."""
-        return self.user_repository.get_user(id)
+        user = self.user_repository.get_user(id)
 
-    def update_user(self, id, username, password, email):
+        if not user:
+            return None
+        
+        return User(
+            id=user[0],
+            username=user[1],
+            password=user[2],
+            email=user[3],
+            is_admin=[4],
+        )
+
+    def update_user(self, user):
         """
         Allows admins to update a users details.
         Calls 'update_user' function from the UserRepository in data_access.py
         to handle interaction with the database.
         """
-        return self.user_repository.update_user(id, username, password, email)
+        return self.user_repository.update_user(user.id,
+                                                user.username,
+                                                user.email)
 
     def make_admin(self, id):
         """
@@ -297,9 +311,11 @@ class UserService:
 
 
 class User:
-    def __init__(self, username, password, email, is_admin):
+    def __init__(self, username, password, email,
+                 id=None, is_admin="No"):
         """Initialises user object"""
+        self.id = id  # Is primary key, only used when reading from DB
         self.username = username
         self.password = password
         self.email = email
-        self.is_admin = is_admin
+        self.is_admin = is_admin  # Defaults to 'No' for new users

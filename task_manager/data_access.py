@@ -136,7 +136,6 @@ class TaskRepository:
         if task is None:
             return None
 
-        # Task dictionary
         return task
 
     def get_my_tasks(self, user):
@@ -651,6 +650,9 @@ class UserRepository:
         users = cursor.fetchall()
         db.close()
 
+        if not users:
+            return []
+
         return users
 
     def add_user(self, username, password, email):
@@ -791,13 +793,7 @@ class UserRepository:
         if user is None:
             return None
         else:
-            return {
-                "id": user[0],
-                "username": user[1],
-                "password": user[2],
-                "email": user[3],
-                "admin": user[4]
-            }
+            return user
 
     def update_user(self, id, username, password, email):
         """

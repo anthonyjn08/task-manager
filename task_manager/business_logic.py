@@ -219,7 +219,21 @@ class UserService:
         Calls 'view_all_users' function from the UserRepository in
         data_access.py to handle interaction with the database.
         """
-        return self.user_repository.view_all_users()
+        users = self.user_repository.view_all_users()
+
+        if not users:
+            return []
+
+        return [
+            User(
+                id=user[0],
+                username=user[1],
+                password=user[2],
+                email=user[3],
+                is_admin=user[4],
+            )
+            for user in users
+        ]
 
     def add_user(self, user):
         """

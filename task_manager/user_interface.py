@@ -1,8 +1,8 @@
 import sys
 import time
 from datetime import datetime, date
-from business_logic import TaskService, UserService, Task
-from utilities import validate_email, date_validation
+from task_manager.business_logic import TaskService, UserService, Task, User
+from task_manager.utilities import validate_email, date_validation
 
 
 def start_application():
@@ -559,18 +559,15 @@ def start_application():
                 print("\nView all userss\n")
                 users = user_service.view_all_users()
 
-                for user in users:
-                    user_id = user[0]
-                    username = user[1]
-                    email = user[3]
-                    admin = user[4]
+                if users:
+                    for user in users:
+                        print("\n" + "-" * 80)
+                        print(f"User ID: {user.id}")
+                        print(f"Username: {user.username}")
+                        print(f"User Email: {user.email}")
+                        print(f"Admin User: {user.is_admin}")
+                    print("-" * 80 + "\n")
 
-                    print("\n" + "-" * 90)
-                    print(f"User ID: {user_id}")
-                    print(f"Username: {username}")
-                    print(f"User Email: {email}")
-                    print(f"Admin User: {admin}")
-                print("-" * 90 + "\n")
                 time.sleep(2)
 
             elif choice == 13:
@@ -579,7 +576,13 @@ def start_application():
                 username = user_service.validate_user("Enter the username: ")
                 password = input("Enter the upassword: ")
                 email = validate_email("Enter the email address: ")
-                user = user_service.add_user(username, password, email)
+
+                new_user = User(
+                    username=username,
+                    password=password,
+                    email=email
+                )
+                user = user_service.add_user(new_user)
                 if user:
                     print(f"Print user {user} {username} added.")
                 else:
@@ -598,12 +601,12 @@ def start_application():
 
                 if user:
                     # USERNAME update
-                    print(f"Username: {user["username"]}")
+                    print(f"Username: {user.username}")
                     while True:
                         update_username = input(
                             "Update username (y/n): ").lower()
                         if update_username == "y":
-                            user["username"] = user_service.validate_user(
+                            username = user_service.validate_user(
                                 "Enter new username: ")
                             break
                         elif update_username == "n":
@@ -612,11 +615,11 @@ def start_application():
                             print("Invalid option. Try again.")
 
                     # PASSWORD update
-                    print(f"\nPassword: {user["password"]}")
+                    print(f"\nPassword: {user.password}")
                     while True:
                         update_pwd = input("Update password (y/n): ").lower()
                         if update_pwd == "y":
-                            user["password"] = input("Enter new password: ")
+                            password = input("Enter new password: ")
                             break
                         elif update_pwd == "n":
                             break
@@ -624,11 +627,11 @@ def start_application():
                             print("Invalid option. Try again.")
 
                     # EMAIL update
-                    print(f"Email: {user["email"]}")
+                    print(f"\nEmail: {user.email}")
                     while True:
                         update_email = input("Update email (y/n)").lower()
                         if update_email == "y":
-                            user["email"] = validate_email(
+                            email = validate_email(
                                 "Enter new email address: ")
                             break
                         elif update_email == "n":
@@ -637,16 +640,19 @@ def start_application():
                             print("Invalid option. Try again")
                 else:
                     print("User not founc.")
+                
+                updated_user = User(
+                    username=username,
+                    password=password,
+                    email=email,
+                    id=user_id
+                )
 
-                id = user_id
-                username = user["username"]
-                password = user["password"]
-                email = user["email"]
-                update = user_service.update_user(id, username, password, email)
+                update = user_service.update_user(updated_user)
                 if update:
-                    print(f"User: {id} {username} updated.")
+                    print(f"User: {user_id} {username} updated.")
                 else:
-                    print(f"Error occurred, user {id} {username} not updated")
+                    print(f"Error occurred, user {user_id} {username} not updated")
                 time.sleep(2)
 
             elif choice == 15:
@@ -656,16 +662,16 @@ def start_application():
                 user = user_service.get_user(user_id)
                 if user:
                     while True:
-                        confirm = input(f"Make user {user["username"]} "
+                        confirm = input(f"Make user {user.username} "
                                         f"a system admin? (y/n): ").lower()
                         if confirm == "y":
                             admin = user_service.make_admin(user_id)
                             if admin:
-                                print(f"User: {user_id} {user["username"]} "
+                                print(f"User: {user_id} {user.username} "
                                       f"made admin.")
                             else:
                                 print(f"Error occurred, user {user_id} "
-                                      f"{user["username"]} not updated.")
+                                      f"{user.username} not updated.")
                             break
                         elif confirm == "n":
                             break
@@ -692,16 +698,16 @@ def start_application():
                     if user:
                         while True:
                             print("WARNING. This can not be undone!")
-                            confirm = input(f"Delete user {user["username"]} "
+                            confirm = input(f"Delete user {user.username} "
                                             f"from system? (y/n): ").lower()
                             if confirm == "y":
                                 delete = user_service.delete_user(user_id)
                                 if delete:
-                                    print(f"User: {user_id} {user["username"]} "
+                                    print(f"User: {user_id} {user.username} "
                                           f"deleted.")
                                 else:
                                     print(f"Error occurred, user {user_id} "
-                                          f"{user["username"]} not deleted.")
+                                          f"{user.username} not deleted.")
                                 break
                             elif confirm == "n":
                                 break

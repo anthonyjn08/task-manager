@@ -1,4 +1,4 @@
-from data_access import TaskRepository, UserRepository
+from task_manager.data_access import TaskRepository, UserRepository
 
 
 class TaskService:
@@ -288,6 +288,7 @@ class UserService:
         """
         return self.user_repository.update_user(user.id,
                                                 user.username,
+                                                user.password,
                                                 user.email)
 
     def make_admin(self, id):

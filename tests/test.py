@@ -1,3 +1,6 @@
+"""
+Unit tests for the TaskService class in the task_manager project.
+"""
 import unittest
 from task_manager.business_logic import TaskService, UserService, Task, User
 
@@ -5,7 +8,14 @@ from task_manager.business_logic import TaskService, UserService, Task, User
 task_service = TaskService()
 user_service = UserService()
 
+
 class TestTaskService(unittest.TestCase):
+    """
+    Unit testing of the TaskService class.
+    Tests will validate that core features of the task management system
+    work.
+    Methods tested are add_task and update_tasks.
+    """
     def test_add_task(self):
         """Test the add_task method of TaskService"""
         # Arrange
@@ -13,8 +23,8 @@ class TestTaskService(unittest.TestCase):
         initial_task_count = len(task_service.view_all_tasks())
 
         new_task = Task(
-            title="helen",
-            description="testing",
+            title="unit tests",
+            description="unit testing",
             assigned_date="03/09/2025",
             due_date="03/09/2025",
             user="admin"
@@ -41,17 +51,17 @@ class TestTaskService(unittest.TestCase):
     def test_update_task(self):
         """Test the update_task method of TaskService"""
         # Arrange
-        # Get task id 
+        # Get task id
         all_tasks = task_service.view_all_tasks()
 
         for task in all_tasks:
-            if task.title == "helen":
+            if task.title == "unit tests":
                 updated_task = task
                 break
 
         updated_task = Task(
-            title="updated Helen",
-            description="updated descrption",
+            title="updated unit tests",
+            description="updated unit testsing",
             assigned_date=updated_task.assigned_date,
             due_date=updated_task.due_date,
             user=updated_task.user,
@@ -72,7 +82,14 @@ class TestTaskService(unittest.TestCase):
 
         self.assertEqual(updated_task.title, updated_title)
 
+
 class TestUserService(unittest.TestCase):
+    """
+    Unit testing of the UserService class.
+    Tests will validate that core features of the task management system
+    work.
+    Methods tested are add_user and delete_user.
+    """
     def test_add_user(self):
         """Test the add_user method of UserService"""
         # Arrange

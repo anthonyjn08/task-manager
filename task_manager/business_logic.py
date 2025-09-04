@@ -1,7 +1,18 @@
+"""
+Business logic layer for Task Manager.
+
+Creates services for managing tasks and users and provides the link between
+database and user interface.
+"""
 from task_manager.data_access import TaskRepository, UserRepository
 
 
 class TaskService:
+    """
+    Provides business logic for managing tasks.
+
+    Coordniates with the TaskRepository to support CRUD for tasks.
+    """
     def __init__(self):
         """Initialise the TaskService with a TaskRepository"""
         self.task_repository = TaskRepository()
@@ -28,9 +39,9 @@ class TaskService:
         task = self.task_repository.get_task(task_id)
         if not task:
             return None
-        
+
         return Task(
-            id=task[0],
+            task_id=task[0],
             title=task[1],
             description=task[2],
             assigned_date=task[3],
@@ -48,10 +59,10 @@ class TaskService:
         tasks = self.task_repository.get_my_tasks(user)
         if not tasks:
             return []
-        
+
         return [
             Task(
-                id=task[0],
+                task_id=task[0],
                 title=task[1],
                 description=task[2],
                 assigned_date=task[3],
@@ -72,10 +83,10 @@ class TaskService:
 
         if not tasks:
             return []
-        
+
         return [
             Task(
-                id=task[0],
+                task_id=task[0],
                 title=task[1],
                 description=task[2],
                 assigned_date=task[3],
@@ -96,10 +107,10 @@ class TaskService:
 
         if not tasks:
             return []
-        
+
         return [
             Task(
-                id=task[0],
+                task_id=task[0],
                 title=task[1],
                 description=task[2],
                 assigned_date=task[3],
@@ -122,7 +133,7 @@ class TaskService:
                                                 task.description,
                                                 task.due_date,
                                                 task.user,
-                                                task.id)
+                                                task.task_id)
 
     def mark_complete(self, task_id):
         """
@@ -147,7 +158,7 @@ class TaskService:
 
         return [
             Task(
-                id=task[0],
+                task_id=task[0],
                 title=task[1],
                 description=task[2],
                 assigned_date=task[3],
@@ -158,13 +169,13 @@ class TaskService:
             for task in tasks
         ]
 
-    def delete_task(self, id):
+    def delete_task(self, task_id):
         """
         Allows admins to delete a task, if required, using the unique task ID.
         Calls 'delete_task' function from the TaskRepository in
         data_access.py to handle interaction with the database.
         """
-        return self.task_repository.delete_task(id)
+        return self.task_repository.delete_task(task_id)
 
     def import_tasks(self):
         """
@@ -187,10 +198,22 @@ class TaskService:
 
 
 class Task:
+    """
+    A task object in the system.
+
+    Attributes:
+    - task_id (int): Unique ID for the task
+    - title (str): Title of the task
+    - description (str): Description of the task
+    - assigned_date (str): Date task was created and assigned
+    - due_date (str): Deadline for task to be completed
+    - is_complete (str): Status of the task completion
+    - user (str): Username of the task assignee
+    """
     def __init__(self, title, description, assigned_date, due_date, user,
-                 id=None, is_complete="No"):
+                 task_id=None, is_complete="No"):
         """Initialises task object"""
-        self.id = id  # is primary key, only used when reading from DB
+        self.task_id = task_id  # is primary key, only used when reading from DB
         self.title = title
         self.description = description
         self.assigned_date = assigned_date
@@ -200,7 +223,11 @@ class Task:
 
 
 class UserService:
+    """
+    Provides business logic for managing users.
 
+    Coordniates with the UserRepository to support CRUD for users.
+    """
     def __init__(self):
         """Initialise the TaskService with a TaskRepository"""
         self.user_repository = UserRepository()
@@ -226,7 +253,7 @@ class UserService:
 
         return [
             User(
-                id=user[0],
+                user_id=user[0],
                 username=user[1],
                 password=user[2],
                 email=user[3],
@@ -262,18 +289,18 @@ class UserService:
         """
         return self.user_repository.assignee_exists(username)
 
-    def get_user(self, id):
+    def get_user(self, user_id):
         """
         Returns the datails of a user using the unique ID.
         Calls 'get_user' function from the UserRepository in data_access.py to
         handle interaction with the database."""
-        user = self.user_repository.get_user(id)
+        user = self.user_repository.get_user(user_id)
 
         if not user:
             return None
-        
+
         return User(
-            id=user[0],
+            user_id=user[0],
             username=user[1],
             password=user[2],
             email=user[3],
@@ -286,26 +313,26 @@ class UserService:
         Calls 'update_user' function from the UserRepository in data_access.py
         to handle interaction with the database.
         """
-        return self.user_repository.update_user(user.id,
+        return self.user_repository.update_user(user.user_id,
                                                 user.username,
                                                 user.password,
                                                 user.email)
 
-    def make_admin(self, id):
+    def make_admin(self, user_id):
         """
         Allows admins to grant admin privaliges to a user.
         Calls 'make_admin' function from the UserRepository in data_access.py
         to handle interaction with the database.
         """
-        return self.user_repository.make_admin(id)
+        return self.user_repository.make_admin(user_id)
 
-    def delete_user(self, id):
+    def delete_user(self, user_id):
         """
         Allows admins to delete a user from the system.
         Calls 'delete_user' function from the UserRepository in data_access.py
         to handle interaction with the database.
         """
-        return self.user_repository.delete_user(id)
+        return self.user_repository.delete_user(user_id)
 
     def import_users(self):
         """
@@ -326,10 +353,20 @@ class UserService:
 
 
 class User:
+    """
+    Represents a user in the system.
+
+    Attributes:
+    - id (int): Unique ID for the user
+    - username (str): Username used for login and task assignment
+    - password (str): User's password
+    - email (str): User's email address
+    - is_admin (str): Identfies if user has admin access or not
+    """
     def __init__(self, username, password, email,
-                 id=None, is_admin="No"):
+                 user_id=None, is_admin="No"):
         """Initialises user object"""
-        self.id = id  # Is primary key, only used when reading from DB
+        self.user_id = user_id  # Is primary key, only used when reading from DB
         self.username = username
         self.password = password
         self.email = email

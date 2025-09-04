@@ -119,7 +119,7 @@ class TaskRepository:
 
         Output:
         - task: If found, returns a dictionary with keys:
-            - "id": (int) Task ID
+            - "task_id": (int) Task ID
             - "title": (str) Task title
             - "description": (str) Description of the task
             - "assigned_date": (str) Date the task was created
@@ -360,12 +360,12 @@ class TaskRepository:
         Deletes selected task from the database. Available to admins only.
 
         Input:
-        - id: (int) ID of the task to delete.
-        - None: occurs if there is a sqlite3 error
+        - task_id: (int) ID of the task to delete.
 
         Output:
         - cursor.rowcount: if more than 0 the deletion was completed,
           else it failed
+        - None: occurs if there is a sqlite3 error
         """
         try:
             db = sqlite3.connect("taskManager.db")
@@ -784,7 +784,7 @@ class UserRepository:
 
         Output:
         - user: (dict) A dictionary containing user details if found.
-            -   "id": (int) users unique ID
+            -   "user_id": (int) users unique ID
             -   "username": (str) users username, must be unique
             -   "password": (str) users password
             -   "email": (str) users email address
@@ -818,7 +818,7 @@ class UserRepository:
         Available to admins only.
 
         Input:
-        - id: (int) The ID of the user to update.
+        - user_id: (int) The ID of the user to update.
         - username: (str) The updated/existing username.
         - password: (str) The updated/existing password.
         - email: (str) The updated/existing email address.
@@ -861,7 +861,7 @@ class UserRepository:
         Available to admins only.
 
         Input:
-        - id: (int) ID of the user to promote.
+        - user_id: (int) ID of the user to promote.
 
         Output:
         - cursor.rowcount: If > 0 update was completed else it failed.
@@ -902,7 +902,7 @@ class UserRepository:
         Available to admins only.
 
         Input:
-        - id: (int) The ID of the user to delete.
+        - user_id: (int) The ID of the user to delete.
 
         Output:
         - cursor.rowcount: If rowcount > 0 user was deleted else

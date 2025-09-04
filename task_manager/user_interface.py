@@ -1,3 +1,8 @@
+"""
+Provides console based user interface for Task Manager system.
+
+Handles the input/output, menus and interacts with business logic.
+"""
 import sys
 import time
 from datetime import datetime, date
@@ -6,6 +11,10 @@ from task_manager.utilities import validate_email, date_validation
 
 
 def start_application():
+    """
+    Handles user login, displays user menus based on user role and provides
+    interaction between user interface and business logic. Runs in a loop until
+    user decides to exit the program."""
     task_service = TaskService()
     user_service = UserService()
 
@@ -93,12 +102,16 @@ def start_application():
                 # Task inputs
                 title = input("\nTask Title: ")
                 description = input("Tasks Description: ")
+
+                # Assigned date auto created using current date
                 auto_assigned_date = date.today()
 
                 while True:
                     entered_due_date = input("Task due date "
                                              "(YYYY-MM-DD): ").strip()
 
+                    # Validates that due date is a valid date
+                    # Also ensures due date is not before assigned date
                     try:
                         due_date_input = date_validation(entered_due_date)
 
@@ -106,11 +119,11 @@ def start_application():
                             print("Due date cannot be before assigned date. "
                                   "Please try again.")
                             continue
-
                         break
                     except ValueError as e:
                         print(f"Invalid date: {e}")
 
+                # Converts data to string format
                 assigned_date = auto_assigned_date.strftime("%Y-%m-%d")
                 due_date = due_date_input.strftime("%Y-%m-%d")
 
@@ -147,7 +160,7 @@ def start_application():
                         if task:
                             # Print task
                             print("\n" + "-" * 80)
-                            print(f"Task Number: {task.id}")
+                            print(f"Task Number: {task.task_id}")
                             print(f"Task Assignee: {task.user}")
                             print(f"Assigned date: {task.assigned_date}")
                             print(f"Due date: {task.due_date}")
@@ -173,7 +186,7 @@ def start_application():
                 if tasks:
                     for task in tasks:
                         print("-" * 80)
-                        print(f"Task Number: {task.id}")
+                        print(f"Task Number: {task.task_id}")
                         print(f"Task Assignee: {task.user}")
                         print(f"Assigned date: {task.assigned_date}")
                         print(f"Due date: {task.due_date}")
@@ -202,7 +215,7 @@ def start_application():
                         task = task_service.get_task(get_task_id)
 
                         if task:
-                            task_id = task.id
+                            task_id = task.task_id
                             title = task.title
                             description = task.description
                             stored_assigned_date = task.assigned_date
@@ -264,6 +277,7 @@ def start_application():
                                                                  "due date: ")
 
                                         try:
+                                            # Date validation and comparison
                                             due_date_input = date_validation(
                                                 entered_due_date)
                                             assigned_date = datetime.strptime(
@@ -274,7 +288,6 @@ def start_application():
                                                 print("Due date cannot be "
                                                       "before assigned date. "
                                                       "Try again.\n")
-
                                                 continue
 
                                             due_date = due_date_input.strftime(
@@ -282,7 +295,6 @@ def start_application():
                                             assigned_date = (assigned_date
                                                              .strftime(
                                                                  "%Y-%m-%d"))
-
                                             break
 
                                         except ValueError as e:
@@ -333,7 +345,7 @@ def start_application():
                                 assigned_date=assigned_date,
                                 due_date=due_date,
                                 user=user,
-                                id=task_id
+                                task_id=task_id
                             )
 
                             if (update_title == "n" and update_desc == "n"
@@ -400,7 +412,7 @@ def start_application():
                             continue
 
                         # Mark Complete
-                        print(f"\nTask: {task.id} {task.title}\n")
+                        print(f"\nTask: {task.task_id} {task.title}\n")
                         while True:
                             complete = input(
                                 "Mark this task as complete? "
@@ -436,7 +448,7 @@ def start_application():
                 if tasks:
                     for task in tasks:
                         print("-" * 80)
-                        print(f"Task Number: {task.id}")
+                        print(f"Task Number: {task.task_id}")
                         print(f"Task Assignee: {task.user}")
                         print(f"Assigned date: {task.assigned_date}")
                         print(f"Due date: {task.due_date}")
@@ -460,7 +472,7 @@ def start_application():
                 if tasks:
                     for task in tasks:
                         print("-" * 80)
-                        print(f"Task Number: {task.id}")
+                        print(f"Task Number: {task.task_id}")
                         print(f"Task Assignee: {task.user}")
                         print(f"Assigned date: {task.assigned_date}")
                         print(f"Due date: {task.due_date}")
@@ -480,7 +492,7 @@ def start_application():
                 if tasks:
                     for task in tasks:
                         print("-" * 80)
-                        print(f"Task Number: {task.id}")
+                        print(f"Task Number: {task.task_id}")
                         print(f"Task Assignee: {task.user}")
                         print(f"Assigned date: {task.assigned_date}")
                         print(f"Due date: {task.due_date}")
@@ -501,7 +513,7 @@ def start_application():
                 task = task_service.get_task(task_id)
                 if task:
                     print("-" * 80)
-                    print(f"Task Number: {task.id}")
+                    print(f"Task Number: {task.task_id}")
                     print(f"Task Assignee: {task.user}")
                     print(f"Assigned date: {task.assigned_date}")
                     print(f"Due date: {task.due_date}")
@@ -562,7 +574,7 @@ def start_application():
                 if users:
                     for user in users:
                         print("\n" + "-" * 80)
-                        print(f"User ID: {user.id}")
+                        print(f"User ID: {user.user_id}")
                         print(f"Username: {user.username}")
                         print(f"User Email: {user.email}")
                         print(f"Admin User: {user.is_admin}")
@@ -639,20 +651,21 @@ def start_application():
                         else:
                             print("Invalid option. Try again")
                 else:
-                    print("User not founc.")
-                
+                    print("User not found.")
+
                 updated_user = User(
                     username=username,
                     password=password,
                     email=email,
-                    id=user_id
+                    user_id=user_id
                 )
 
                 update = user_service.update_user(updated_user)
                 if update:
                     print(f"User: {user_id} {username} updated.")
                 else:
-                    print(f"Error occurred, user {user_id} {username} not updated")
+                    print(f"Error occurred, user {user_id} {username} "
+                          f"not updated")
                 time.sleep(2)
 
             elif choice == 15:

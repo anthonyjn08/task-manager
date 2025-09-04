@@ -1,10 +1,19 @@
+"""
+Data access layer for Task Manager.
+
+Handles interaction with the data base for CRUD operations.
+"""
 import sqlite3
 import re
 from datetime import datetime
 
 
 class TaskRepository:
+    """
+    Data access layer for tasks.
 
+    Handles database CRUD operations for tasks.
+    """
     def __init__(self):
         """
         Initialise the Task Repository
@@ -344,7 +353,7 @@ class TaskRepository:
 
         return overdue_tasks
 
-    def delete_task(self, id):
+    def delete_task(self, task_id):
         """
         Function: delete_task
 
@@ -365,7 +374,7 @@ class TaskRepository:
                 '''
                 DELETE FROM tasks
                 WHERE ID = ?
-                ''', (id,)
+                ''', (task_id,)
             )
             db.commit()
             return cursor.rowcount > 0
@@ -413,7 +422,7 @@ class TaskRepository:
                               f" format.")
                         continue
 
-                    id = int(task[0].strip())
+                    task_id = int(task[0].strip())
                     title = task[1].strip()
                     description = task[2].strip()
                     assigned_date = task[3].strip()
@@ -442,7 +451,7 @@ class TaskRepository:
                     user_exist = cursor.fetchone()
 
                     if not user_exist:
-                        print(f"Task {id} skipped: {user} does not exist.")
+                        print(f"Task {task_id} skipped: {user} does not exist.")
                         continue
 
                     try:
@@ -452,7 +461,7 @@ class TaskRepository:
                             assignedDate, dueDate, isComplete, user)
                             VALUES (?, ?, ?, ?, ?, ?, ?)
                             ON CONFLICT(id) DO NOTHING
-                            ''', (id, title, description, assigned_date,
+                            ''', (task_id, title, description, assigned_date,
                                   due_date, is_complete, user)
                         )
                     except sqlite3.IntegrityError as e:
@@ -493,10 +502,10 @@ class TaskRepository:
 
         with open("tasks.txt", "w", encoding="utf-8") as file:
             for task in tasks:
-                (id, title, description, assigned_date, due_date,
+                (task_id, title, description, assigned_date, due_date,
                  is_complete, user) = task
 
-                line = (f"{id},{title},{description},{assigned_date},"
+                line = (f"{task_id},{title},{description},{assigned_date},"
                         f"{due_date}, {is_complete},{user}")
 
                 file.write(line+"\n")
@@ -505,7 +514,11 @@ class TaskRepository:
 
 
 class UserRepository:
+    """
+    Data access layer for users.
 
+    Handles database CRUD operations for users
+    """
     def __init__(self):
         """
         Initialise the User Repository
@@ -760,7 +773,7 @@ class UserRepository:
 
         return user[1]
 
-    def get_user(self, id):
+    def get_user(self, user_id):
         """
         Function: get_user
 
@@ -785,7 +798,7 @@ class UserRepository:
             SELECT *
             FROM user
             WHERE id = ?
-            ''', (id,)
+            ''', (user_id,)
         )
         user = cursor.fetchone()
         db.close()
@@ -795,7 +808,7 @@ class UserRepository:
         else:
             return user
 
-    def update_user(self, id, username, password, email):
+    def update_user(self, user_id, username, password, email):
         """
         Function: update_user
 
@@ -821,7 +834,7 @@ class UserRepository:
                 UPDATE user
                 SET username = ?, password = ?, email = ?
                 WHERE id = ?
-                ''', (username, password, email, id)
+                ''', (username, password, email, user_id)
             )
             db.commit()
             return cursor.rowcount > 0
@@ -840,7 +853,7 @@ class UserRepository:
         finally:
             db.close()
 
-    def make_admin(self, id):
+    def make_admin(self, user_id):
         """
         Function: make_admin
 
@@ -862,7 +875,7 @@ class UserRepository:
                 UPDATE user
                 SET isAdmin = ?
                 WHERE id = ?
-                ''', (is_admin, id)
+                ''', (is_admin, user_id)
             )
             db.commit()
             return cursor.rowcount > 0
@@ -881,7 +894,7 @@ class UserRepository:
         finally:
             db.close()
 
-    def delete_user(self, id):
+    def delete_user(self, user_id):
         """
         Function: delete_user
 
@@ -902,7 +915,7 @@ class UserRepository:
                 '''
                 DELETE FROM user
                 WHERE id = ?
-                ''', (id,)
+                ''', (user_id,)
             )
             db.commit()
             return cursor.rowcount > 0
@@ -949,7 +962,7 @@ class UserRepository:
                               f" incorrect format.")
                         continue
 
-                    id = int(user[0].strip())
+                    user_id = int(user[0].strip())
                     username = user[1].strip()
                     password = user[2].strip()
                     email = user[3].strip()
@@ -957,7 +970,7 @@ class UserRepository:
 
                     # Validate email address, skip line where not valid
                     if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
-                        print(f"User: {id} {username} skipped. "
+                        print(f"User: {user_id} {username} skipped. "
                               f"Incorrect email format")
                         continue
 
@@ -968,7 +981,7 @@ class UserRepository:
                         SELECT id, username
                         FROM user
                         WHERE id = ? OR username = ?
-                        """, (id, username)
+                        """, (user_id, username)
                     )
 
                     users_check = cursor.fetchall()
@@ -976,12 +989,12 @@ class UserRepository:
                     conflict = False
                     for user in users_check:
                         exist_id, exist_username = user
-                        if exist_id == id and exist_username != username:
-                            print(f"User: {id} {username} skipped. "
+                        if exist_id == user_id and exist_username != username:
+                            print(f"User: {user_id} {username} skipped. "
                                   f"ID in use by {exist_id} {exist_username}")
                             conflict = True
-                        elif exist_username == username and exist_id != id:
-                            print(f"User: {id} {username} skipped. "
+                        elif exist_username == username and exist_id != user_id:
+                            print(f"User: {user_id} {username} skipped. "
                                   f"Username used by user ID "
                                   f"{exist_id} {exist_username}")
                             conflict = True
@@ -996,7 +1009,7 @@ class UserRepository:
                             isAdmin)
                             VALUES (?, ?, ?, ?, ?)
                             ON CONFLICT(id) DO NOTHING
-                            """, (id, username, password, email, is_admin)
+                            """, (user_id, username, password, email, is_admin)
                         )
                     except sqlite3.IntegrityError as e:
                         db.rollback()
@@ -1037,9 +1050,9 @@ class UserRepository:
 
         with open("users.txt", "w", encoding="utf-8") as file:
             for user in users:
-                id, username, password, email, is_admin = user
+                user_id, username, password, email, is_admin = user
 
-                line = (f"{id},{username},{password},{email},{is_admin}")
+                line = (f"{user_id},{username},{password},{email},{is_admin}")
 
                 file.write(line+"\n")
 

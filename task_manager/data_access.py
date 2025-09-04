@@ -432,13 +432,13 @@ class TaskRepository:
 
                     try:
                         assigned_date = datetime.strptime(
-                            assigned_date.strip(), "%d/%m/%Y").strftime(
-                                "%d/%m/%Y")
+                            assigned_date.strip(), "%Y-%m-%d").strftime(
+                                "%Y-%m-%d")
                         due_date = datetime.strptime(
-                            due_date.strip(), "%d/%m/%Y").strftime(
-                                "%d/%m/%Y")
+                            due_date.strip(), "%Y-%m-%d").strftime(
+                                "%Y-%m-%d")
                     except ValueError:
-                        print(f"Task {id} skipped: Incorrect date format")
+                        print(f"Task {task_id} skipped: Incorrect date format")
                         continue
 
                     cursor.execute(
@@ -506,7 +506,7 @@ class TaskRepository:
                  is_complete, user) = task
 
                 line = (f"{task_id},{title},{description},{assigned_date},"
-                        f"{due_date}, {is_complete},{user}")
+                        f"{due_date},{is_complete},{user}")
 
                 file.write(line+"\n")
         db.close()

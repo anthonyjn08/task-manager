@@ -653,6 +653,12 @@ def start_application():
                 else:
                     print("User not found.")
 
+                if (update_username == "n" and update_pwd == "n"
+                        and update_email == "n"):
+                    print("Nothing to update")
+                    time.sleep(2)
+                    continue
+
                 updated_user = User(
                     username=username,
                     password=password,

@@ -1,5 +1,7 @@
 """
 Unit tests for the TaskService class in the task_manager project.
+
+Enter "python -m unittest tests.test" into console to run tests.
 """
 import unittest
 from task_manager.business_logic import TaskService, UserService, Task, User
@@ -25,8 +27,8 @@ class TestTaskService(unittest.TestCase):
         new_task = Task(
             title="unit tests",
             description="unit testing",
-            assigned_date="03/09/2025",
-            due_date="03/09/2025",
+            assigned_date="2025-09-03",
+            due_date="2025-09-03",
             user="admin"
         )
 
@@ -61,11 +63,11 @@ class TestTaskService(unittest.TestCase):
 
         updated_task = Task(
             title="updated unit tests",
-            description="updated unit testsing",
+            description="updated unit testing",
             assigned_date=updated_task.assigned_date,
             due_date=updated_task.due_date,
             user=updated_task.user,
-            id=updated_task.id
+            task_id=updated_task.task_id
         )
 
         # Act
@@ -76,7 +78,7 @@ class TestTaskService(unittest.TestCase):
         all_tasks = task_service.view_all_tasks()
 
         for task in all_tasks:
-            if task.id == updated_task.id:
+            if task.task_id == updated_task.task_id:
                 updated_title = task.title
                 break
 
@@ -132,7 +134,7 @@ class TestUserService(unittest.TestCase):
 
         for user in all_users:
             if user.username == "unittester":
-                user_id = user.id
+                user_id = user.user_id
                 break
 
         # Act
@@ -150,7 +152,7 @@ class TestUserService(unittest.TestCase):
         # Check user is no longer in user list
         updated_all_users = user_service.view_all_users()
 
-        user_ids = [user.id for user in updated_all_users]
+        user_ids = [user.user_id for user in updated_all_users]
         self.assertNotIn(user_id, user_ids)
 
 

@@ -552,12 +552,8 @@ def start_application():
             elif choice == 10:
                 # ***** Import tasks *****
                 print("\nImport Tasks\n")
-                print("New tasks will be added to the database.")
-                print("Please note, option '4. Update tasks' to update "
-                      "existing tasks.\n")
                 time.sleep(2)
                 task_service.import_tasks()
-                print("Tasks Imported.")
                 time.sleep(2)
 
             elif choice == 11:
@@ -742,11 +738,6 @@ def start_application():
             elif choice == 17:
                 # ***** Import users *****
                 print("\nImport users\n")
-                print("New users will be added to the system.")
-                print(
-                    "Please note, option '14. Update users' "
-                    "to update existing users\n"
-                )
                 time.sleep(2)
                 user_service.import_users()
                 time.sleep(2)

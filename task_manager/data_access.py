@@ -6,6 +6,14 @@ Handles interaction with the data base for CRUD operations.
 import sqlite3
 import re
 from datetime import datetime
+from pathlib import Path
+
+# Build absolute paths to data files based on module's location.
+# This to to ensure that 'users.txt' and 'tasks/txt' are found indenpendent
+# of where the program is run from
+BASE_DIR = Path(__file__).resolve().parent
+USERS_FILE = BASE_DIR / "users.txt"
+TASKS_FILE = BASE_DIR / "tasks.txt"
 
 
 class TaskRepository:
@@ -409,80 +417,102 @@ class TaskRepository:
         db = sqlite3.connect("taskManager.db")
         cursor = db.cursor()
 
-        with open("tasks.txt", "r", encoding="utf-8") as file:
-            for line in file:
-                if not line.strip():
-                    continue
-
-                try:
-                    task = line.strip().split(",")
-
-                    if len(task) != 7:
-                        print(f"{line.strip()} skipped due to incorrect"
-                              f" format.")
-                        continue
-
-                    task_id = int(task[0].strip())
-                    title = task[1].strip()
-                    description = task[2].strip()
-                    assigned_date = task[3].strip()
-                    due_date = task[4].strip()
-                    is_complete = task[5].strip().capitalize()
-                    user = task[6].strip()
-
-                    try:
-                        assigned_date = datetime.strptime(
-                            assigned_date.strip(), "%Y-%m-%d").strftime(
-                                "%Y-%m-%d")
-                        due_date = datetime.strptime(
-                            due_date.strip(), "%Y-%m-%d").strftime(
-                                "%Y-%m-%d")
-                    except ValueError:
-                        print(f"Task {task_id} skipped: Incorrect date format")
-                        continue
-
-                    cursor.execute(
-                        '''
-                        SELECT id FROM user
-                        WHERE username = ?
-                        ''', (user.strip(), )
-                    )
-
-                    user_exist = cursor.fetchone()
-
-                    if not user_exist:
-                        print(f"Task {task_id} skipped: {user} does not exist.")
+        try:
+            with open(TASKS_FILE, "r", encoding="utf-8") as file:
+                print("New tasks will be added to the database.")
+                print("Please note, option '4. Update tasks' to update "
+                      "existing tasks.\n")
+                for line in file:
+                    if not line.strip():
                         continue
 
                     try:
+                        task = line.strip().split(",")
+
+                        if len(task) != 7:
+                            print(f"{line.strip()} skipped due to incorrect"
+                                  f" format.")
+                            continue
+
+                        task_id = int(task[0].strip())
+                        title = task[1].strip()
+                        description = task[2].strip()
+                        assigned_date = task[3].strip()
+                        due_date = task[4].strip()
+                        is_complete = task[5].strip().capitalize()
+                        user = task[6].strip()
+
+                        try:
+                            assigned_date = datetime.strptime(
+                                assigned_date.strip(), "%Y-%m-%d").strftime(
+                                    "%Y-%m-%d")
+                            due_date = datetime.strptime(
+                                due_date.strip(), "%Y-%m-%d").strftime(
+                                    "%Y-%m-%d")
+                        except ValueError:
+                            print(f"Task {task_id} skipped: Incorrect "
+                                  f"date format")
+                            continue
+
                         cursor.execute(
                             '''
-                            INSERT INTO tasks(id, title, description,
-                            assignedDate, dueDate, isComplete, user)
-                            VALUES (?, ?, ?, ?, ?, ?, ?)
-                            ON CONFLICT(id) DO NOTHING
-                            ''', (task_id, title, description, assigned_date,
-                                  due_date, is_complete, user)
+                            SELECT id FROM user
+                            WHERE username = ?
+                            ''', (user.strip(), )
                         )
-                    except sqlite3.IntegrityError as e:
-                        db.rollback()
-                        print(f"Integrity error: {e}")
-                        return None
-                    except sqlite3.OperationalError as e:
-                        db.rollback()
-                        print(f"Operational error: {e}")
-                        return None
-                    except sqlite3.DatabaseError as e:
-                        db.rollback()
-                        print(f"Database error: {e}")
-                        return None
 
-                except ValueError:
-                    print(f"{line.strip()} skipped due to incorrect format.")
-                    continue
+                        user_exist = cursor.fetchone()
 
-        db.commit()
-        db.close()
+                        if not user_exist:
+                            print(f"Task {task_id} skipped: {user} "
+                                  f"does not exist.")
+                            continue
+
+                        try:
+                            cursor.execute(
+                                '''
+                                INSERT INTO tasks(id, title, description,
+                                assignedDate, dueDate, isComplete, user)
+                                VALUES (?, ?, ?, ?, ?, ?, ?)
+                                ON CONFLICT(id) DO NOTHING
+                                ''', (task_id, title, description,
+                                      assigned_date, due_date,
+                                      is_complete, user)
+                            )
+
+                        except sqlite3.IntegrityError as e:
+                            db.rollback()
+                            print(f"Integrity error: {e}")
+                            return None
+                        except sqlite3.OperationalError as e:
+                            db.rollback()
+                            print(f"Operational error: {e}")
+                            return None
+                        except sqlite3.DatabaseError as e:
+                            db.rollback()
+                            print(f"Database error: {e}")
+                            return None
+
+                    except ValueError:
+                        print(f"{line.strip()} skipped due to "
+                              f"incorrect format.")
+                        continue
+
+                db.commit()
+                db.close()
+                print("Tasks Imported.")
+
+        except FileNotFoundError:
+            print("File 'tasks.txt' not found. Please create file or "
+                  "export tasks first.")
+        except PermissionError:
+            print(f"Error: No permission to read {TASKS_FILE}.")
+        except UnicodeDecodeError:
+            print(f"Error: Could not decode {TASKS_FILE} (encoding issue).")
+        except sqlite3.OperationalError as e:
+            print(f"Database operational error: {e}")
+        except sqlite3.DatabaseError as e:
+            print(f"Database error: {e}")
 
     def export_tasks(self):
         """
@@ -500,17 +530,28 @@ class TaskRepository:
         )
         tasks = cursor.fetchall()
 
-        with open("tasks.txt", "w", encoding="utf-8") as file:
-            for task in tasks:
-                (task_id, title, description, assigned_date, due_date,
-                 is_complete, user) = task
+        try:
+            with open(TASKS_FILE, "w", encoding="utf-8") as file:
+                for task in tasks:
+                    (task_id, title, description, assigned_date, due_date,
+                     is_complete, user) = task
 
-                line = (f"{task_id},{title},{description},{assigned_date},"
-                        f"{due_date},{is_complete},{user}")
+                    line = (f"{task_id},{title},{description},{assigned_date},"
+                            f"{due_date},{is_complete},{user}")
 
-                file.write(line+"\n")
-        db.close()
-        print(f"All tasks exported successfully. Total: {len(tasks)} tasks.")
+                    file.write(line+"\n")
+            print(f"All tasks exported successfully. Total: "
+                  f"{len(tasks)} tasks.")
+        except FileNotFoundError:
+            print(f"Error: File not found {TASKS_FILE}")
+        except PermissionError:
+            print(f"Error: No permission to write {TASKS_FILE}")
+        except sqlite3.OperationalError as e:
+            print(f"Database operational error: {e}")
+        except sqlite3.DatabaseError as e:
+            print(f"Database error: {e}")
+        finally:
+            db.close()
 
 
 class UserRepository:
@@ -598,7 +639,6 @@ class UserRepository:
             db.close()
 
     # User functions
-
     def login(self, username, password):
         """
         Function: login
@@ -631,16 +671,17 @@ class UserRepository:
         if user is None:
             return None
 
+        role = None
         is_admin = user[4]
         stored_password = user[2]
         if stored_password == password and is_admin == "Yes":
             role = "admin"
-            return role, password
         elif stored_password == password:
             role = "user"
-            return role, password
         else:
             print("Incorrect password.")
+            return None
+        return role, stored_password
 
     def view_all_users(self):
         """
@@ -949,87 +990,109 @@ class UserRepository:
         db = sqlite3.connect("taskManager.db")
         cursor = db.cursor()
 
-        with open("users.txt", "r", encoding="utf-8") as file:
-            for line in file:
-                if not line.strip():
-                    continue
-
-                try:
-                    user = line.strip().split(",")
-
-                    if len(user) != 5:
-                        print(f"{line.strip()} skipped due to"
-                              f" incorrect format.")
-                        continue
-
-                    user_id = int(user[0].strip())
-                    username = user[1].strip()
-                    password = user[2].strip()
-                    email = user[3].strip()
-                    is_admin = user[4].strip().capitalize()
-
-                    # Validate email address, skip line where not valid
-                    if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
-                        print(f"User: {user_id} {username} skipped. "
-                              f"Incorrect email format")
-                        continue
-
-                    # Check for iD and username already existing,
-                    # Skip where ID or user name conflict happen
-                    cursor.execute(
-                        """
-                        SELECT id, username
-                        FROM user
-                        WHERE id = ? OR username = ?
-                        """, (user_id, username)
-                    )
-
-                    users_check = cursor.fetchall()
-
-                    conflict = False
-                    for user in users_check:
-                        exist_id, exist_username = user
-                        if exist_id == user_id and exist_username != username:
-                            print(f"User: {user_id} {username} skipped. "
-                                  f"ID in use by {exist_id} {exist_username}")
-                            conflict = True
-                        elif exist_username == username and exist_id != user_id:
-                            print(f"User: {user_id} {username} skipped. "
-                                  f"Username used by user ID "
-                                  f"{exist_id} {exist_username}")
-                            conflict = True
-
-                    if conflict:
+        try:
+            with open(USERS_FILE, "r", encoding="utf-8") as file:
+                print("New users will be added to the system.")
+                print("Please note, option '14. Update users' "
+                      "to update existing users\n")
+                for line in file:
+                    if not line.strip():
                         continue
 
                     try:
+                        user = line.strip().split(",")
+
+                        if len(user) != 5:
+                            print(f"{line.strip()} skipped due to"
+                                  f" incorrect format.")
+                            continue
+
+                        user_id = int(user[0].strip())
+                        username = user[1].strip()
+                        password = user[2].strip()
+                        email = user[3].strip()
+                        is_admin = user[4].strip().capitalize()
+
+                        # Validate email address, skip line where not valid
+                        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+                            print(f"User: {user_id} {username} skipped. "
+                                  f"Incorrect email format")
+                            continue
+
+                        # Check for iD and username already existing,
+                        # Skip where ID or user name conflict happen
                         cursor.execute(
                             """
-                            INSERT INTO user(id, username, password, email,
-                            isAdmin)
-                            VALUES (?, ?, ?, ?, ?)
-                            ON CONFLICT(id) DO NOTHING
-                            """, (user_id, username, password, email, is_admin)
+                            SELECT id, username
+                            FROM user
+                            WHERE id = ? OR username = ?
+                            """, (user_id, username)
                         )
-                    except sqlite3.IntegrityError as e:
-                        db.rollback()
-                        print(f"Integrity error: {e}")
-                        return None
-                    except sqlite3.OperationalError as e:
-                        db.rollback()
-                        print(f"Operational error: {e}")
-                        return None
-                    except sqlite3.DatabaseError as e:
-                        db.rollback()
-                        print(f"Database error: {e}")
-                        return None
 
-                except ValueError:
-                    print(f"{line.strip()} skipped. Invalid ID format")
-                    continue
+                        users_check = cursor.fetchall()
 
-        db.commit()
-        db.close()
+                        conflict = False
+                        for user in users_check:
+                            exist_id, exist_username = user
+                            if (exist_id == user_id and
+                                    exist_username != username):
+                                print(f"User: {user_id} {username} skipped. "
+                                      f"ID in use by {exist_id} "
+                                      f"{exist_username}")
+                                conflict = True
+                            elif (exist_username == username
+                                  and exist_id != user_id):
+                                print(f"User: {user_id} {username} skipped. "
+                                      f"Username used by user ID "
+                                      f"{exist_id} {exist_username}")
+                                conflict = True
+
+                        if conflict:
+                            continue
+
+                        try:
+                            cursor.execute(
+                                """
+                                INSERT INTO user(id, username, password, email,
+                                isAdmin)
+                                VALUES (?, ?, ?, ?, ?)
+                                ON CONFLICT(id) DO NOTHING
+                                """, (user_id, username, password, email,
+                                      is_admin)
+                            )
+
+                        except sqlite3.IntegrityError as e:
+                            db.rollback()
+                            print(f"Integrity error: {e}")
+                            return None
+                        except sqlite3.OperationalError as e:
+                            db.rollback()
+                            print(f"Operational error: {e}")
+                            return None
+                        except sqlite3.DatabaseError as e:
+                            db.rollback()
+                            print(f"Database error: {e}")
+                            return None
+
+                    except ValueError:
+                        print(f"{line.strip()} skipped. Invalid ID format")
+                        continue
+
+                db.commit()
+                db.close()
+                print("Users Imported.")
+
+        except FileNotFoundError:
+            print("File 'users.txt' not found. Please create file or "
+                  "export users first.")
+        except PermissionError:
+            print(f"Error: No permission to read {USERS_FILE}.")
+        except UnicodeDecodeError:
+            print("Error: Could not decode 'users.txt' (encoding issue).")
+        except sqlite3.OperationalError as e:
+            print(f"Database operational error: {e}")
+        except sqlite3.DatabaseError as e:
+            print(f"Database error: {e}")
 
     def export_users(self):
         """
@@ -1048,14 +1111,24 @@ class UserRepository:
         )
         users = cursor.fetchall()
 
-        with open("users.txt", "w", encoding="utf-8") as file:
-            for user in users:
-                user_id, username, password, email, is_admin = user
+        try:
+            with open(USERS_FILE, "w", encoding="utf-8") as file:
+                for user in users:
+                    user_id, username, password, email, is_admin = user
 
-                line = (f"{user_id},{username},{password},{email},{is_admin}")
+                    line = (f"{user_id},{username},{password},{email},"
+                            f"{is_admin}")
 
-                file.write(line+"\n")
+                    file.write(line+"\n")
 
-        db.close()
-
-        print(f"All users exported successfully. Total: {len(users)} users.")
+            db.close()
+            print(f"All users exported successfully. Total: "
+                  f"{len(users)} users.")
+        except FileNotFoundError:
+            print("Error: File 'users.txt' not found")
+        except PermissionError:
+            print(f"Error: No permission to write {USERS_FILE}")
+        except sqlite3.OperationalError as e:
+            print(f"Database operational error: {e}")
+        except sqlite3.DatabaseError as e:
+            print(f"Database error: {e}")

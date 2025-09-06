@@ -1,6 +1,0 @@
-1,admin,admin,test@test.com,Yes
-2,saka,starboy,saka@arsenal.com,No
-3,test,test,test@test.com,No
-4,eze,ebs,eze@arsenal.com,No
-5,goodz,durrty,durrty@goodz.com,No
-6,durrty,goodz,goodz@durrty.com,No
